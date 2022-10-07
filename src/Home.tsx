@@ -1,4 +1,4 @@
-import Icono from "@mui/icons-material/Add";
+import Icono from "@mui/icons-material/AddCircle";
 import Button from "@mui/material/Button";
 import Escritos from "./Escritos";
 import { useNavigate } from "react-router-dom";

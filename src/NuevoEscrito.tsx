@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import Icono from "@mui/icons-material/ChevronLeft";
 import { useState } from "react";
 import { Button, Grid } from "@mui/material";
 import { crearEscrito } from "./firebase";
@@ -10,32 +11,42 @@ const NuevoEscrito = () => {
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
+	const volverALasNotas = () => {
+		if (titulo != "")
+			crearEscrito(titulo, cuerpo);
+		navigate("/");
+	};
+
 	return <Grid
 		container
 		flexDirection="column"
 		rowGap="20px"
 		padding="1em"
 	>
+		<Grid container>
+			<Button startIcon={<Icono />} variant="outlined" onClick={volverALasNotas}>
+				Ir a las notas
+			</Button>
+		</Grid>
 		<TextField
 			id="outlined-name"
-			label="Título"
+			InputProps={{ disableUnderline: true, autoFocus: true, style: { fontSize: "1.5rem" } }}
+			variant="standard"
+			placeholder="Título"
 			value={titulo}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
 		/>
-		<TextField
+		<TextField			
 			id="outlined-multiline-static"
-			label="Texto"
+			InputProps={{ disableUnderline: true }}
+			variant="standard"
+			placeholder="Texto"
 			multiline
-			rows={10}
+			rows={15}
 			value={cuerpo}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
 		/>
-		<Button variant="outlined" onClick={() => navigate("/")}>
-				Cancelar
-		</Button>
-		<Button variant="contained" onClick={() => {crearEscrito(titulo, cuerpo); navigate("/");}}>
-				Crear escrito
-		</Button>
+
 	</Grid>;
 };
 
