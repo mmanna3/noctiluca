@@ -3,12 +3,14 @@ import ListItemText from "@mui/material/ListItemText";
 import { IEscrito } from "./Interfaces";
 
 const Escrito = (escrito: IEscrito) => {
-	// return <div>{escrito.titulo}</div>;
+	
+	const obtenerResumen = (texto: string) => texto.slice(0, 50) + "..."; 
+
 	return <>
 		<ListItem alignItems="flex-start">
 			<ListItemText
 				primary={escrito.titulo}
-				secondary={escrito.cuerpo}	  
+				secondary={obtenerResumen(escrito.cuerpo)}	  
 			/>
 		</ListItem>
 	</>;
