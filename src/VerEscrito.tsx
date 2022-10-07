@@ -10,10 +10,10 @@ const VerEscrito = () => {
 
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const [escrito, setEscrito] = useState<IEscrito>({titulo:"", cuerpo:"", fechaHora: ""});
+	const [escrito, setEscrito] = useState<IEscrito>({titulo:"", cuerpo:"", fechaHora: "", id: ""});
 
 	useEffect(() => {
-		const callback = (_escrito: any) => {
+		const callback = (_escrito: IEscrito) => {
 			console.log(_escrito);
 			setEscrito(_escrito);
 		};

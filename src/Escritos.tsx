@@ -5,13 +5,14 @@ import { escucharEscritos } from "./firebase";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import { IEscrito } from "./Interfaces";
 
 function Escritos() {
-	const [escritos, setEscritos] = useState<any[]>([]);
+	const [escritos, setEscritos] = useState<IEscrito[]>([]);
 
 	useEffect(() => {
-		const callback = (_escritos: any) => {
-			console.log(_escritos);
+		const callback = (_escritos: IEscrito[]) => {
+			console.table(_escritos);
 			setEscritos(_escritos);
 		};
 
@@ -23,9 +24,9 @@ function Escritos() {
 			alignItems="center"
 			justifyContent="center">
 			<List sx={{ width: "100%", bgcolor: "background.paper" }}>
-				{Object.keys(escritos).map((escrito: any) => (
-					<Grid item xs={12} key={escrito}>
-						<Escrito {...escritos[escrito]} id={escrito} />
+				{escritos.map((escrito: IEscrito) => (
+					<Grid item xs={12} key={escrito.id}>
+						<Escrito {...escrito} />
 						<Divider variant='inset' component='li' />
 					</Grid>
 				))}
