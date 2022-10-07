@@ -10,7 +10,7 @@ interface IEscritoInput extends IEscrito {
 const Escrito = (escrito: IEscritoInput) => {
 	
 	const navigate = useNavigate();
-	const obtenerResumen = (texto: string) => texto.slice(0, 50) + "..."; 
+	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : ""); 
 
 	return <>
 		<ListItem alignItems="flex-start">
