@@ -1,16 +1,23 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { IEscrito } from "./Interfaces";
+import { useNavigate } from "react-router-dom";
 
-const Escrito = (escrito: IEscrito) => {
+interface IEscritoInput extends IEscrito {
+	id: string;
+}
+
+const Escrito = (escrito: IEscritoInput) => {
 	
+	const navigate = useNavigate();
 	const obtenerResumen = (texto: string) => texto.slice(0, 50) + "..."; 
 
 	return <>
 		<ListItem alignItems="flex-start">
 			<ListItemText
 				primary={escrito.titulo}
-				secondary={obtenerResumen(escrito.cuerpo)}	  
+				secondary={obtenerResumen(escrito.cuerpo)}
+				onClick={() => navigate(`/ver/${escrito.id}`)}
 			/>
 		</ListItem>
 	</>;

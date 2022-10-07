@@ -25,7 +25,7 @@ function Escritos() {
 			<List sx={{ width: "100%", bgcolor: "background.paper" }}>
 				{Object.keys(escritos).map((escrito: any) => (
 					<Grid item xs={12} key={escrito}>
-						<Escrito {...escritos[escrito]} />
+						<Escrito {...escritos[escrito]} id={escrito} />
 						<Divider variant='inset' component='li' />
 					</Grid>
 				))}

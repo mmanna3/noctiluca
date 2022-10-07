@@ -2,6 +2,7 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./Home";
 import NuevoEscrito from "./NuevoEscrito";
+import VerEscrito from "./VerEscrito";
 
 const App = () => {
 	return (
@@ -10,6 +11,7 @@ const App = () => {
 				<Routes>
 					<Route path="/" element={<Home/>} />
 					<Route path="/nuevo" element={<NuevoEscrito/>} />
+					<Route path="/ver/:id" element={<VerEscrito/>} />
 				</Routes>
 			</Router>
 		</div>

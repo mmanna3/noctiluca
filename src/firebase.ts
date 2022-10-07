@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getDatabase, ref, get, child, set, onValue } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -42,4 +42,18 @@ export const escucharEscritos = (callback: (data: any) => void) => {
 		// updateStarCount(postElement, data);
 		callback(data);
 	});
+};
+
+export const obtenerEscrito = (id: string, callback: (data: any) => void) => {
+	const dbRef = ref(db, "escritos");
+	get(child(dbRef, id)).then((snapshot) => {
+		if (snapshot.exists()) {
+		  console.log(snapshot.val());
+		  callback(snapshot.val());
+		} else {
+		  console.log("No se encontró el escrito");
+		}
+	  }).catch((error) => {
+		console.error(error);
+	  });
 };
