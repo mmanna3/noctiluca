@@ -1,13 +1,20 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "jest": true
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        }
     },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react/jsx-runtime",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
     ],
     "overrides": [
     ],
@@ -17,8 +24,10 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
-        "@typescript-eslint"
+        "react", 
+        "react-hooks", 
+        "@typescript-eslint", 
+        "prettier"
     ],
     "rules": {
         "indent": [
@@ -36,6 +45,10 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "react/react-in-jsx-scope": "off",
+        "camelcase": "error",
+        "spaced-comment": "error",
+        "no-duplicate-imports": "error"
     }
 }

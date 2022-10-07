@@ -1,13 +1,15 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Escrito from "./Escrito";
-import {escucharEscritos} from "./firebase";
+import { escucharEscritos } from "./firebase";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
 
 function Escritos() {
 	const [escritos, setEscritos] = useState<any[]>([]);
 
-	useEffect(()=> {
-		const callback = (_escritos: any) => { 
+	useEffect(() => {
+		const callback = (_escritos: any) => {
 			console.log(_escritos);
 			setEscritos(_escritos);
 		};
@@ -16,11 +18,14 @@ function Escritos() {
 	}, []);
 
 	return (
-		<div>			
-			{Object.keys(escritos).map((escrito: any) => 
-				<Escrito key={escrito} {...escritos[escrito]} />
-			)}
-		</div>
+		<List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+			{Object.keys(escritos).map((escrito: any) => (
+				<>
+					<Escrito key={escrito} {...escritos[escrito]} />
+					<Divider variant='inset' component='li' />
+				</>
+			))}
+		</List>
 	);
 }
 

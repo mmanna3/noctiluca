@@ -14,28 +14,31 @@ const firebaseConfig = {
 	storageBucket: "backend-mandarina.appspot.com",
 	messagingSenderId: "928506352172",
 	appId: "1:928506352172:web:c21a80e46354d27aab7789",
-	measurementId: "G-BGBTGH5FQR"
+	measurementId: "G-BGBTGH5FQR",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-export const convertirASnakeCase = 
-  (txt: string) => txt.toLowerCase().replace(/[^a-z0-9 áéíóúÁÉÍÓÚ]/gi, "").replace(/ /g,"_");
+export const convertirASnakeCase = (txt: string) =>
+	txt
+		.toLowerCase()
+		.replace(/[^a-z0-9 áéíóúÁÉÍÓÚ]/gi, "")
+		.replace(/ /g, "_");
 
 export function crearEscrito(titulo: string, cuerpo: string) {
-	set(ref(db, "escritos/"+ convertirASnakeCase(titulo)), {
+	set(ref(db, "escritos/" + convertirASnakeCase(titulo)), {
 		titulo: titulo,
 		cuerpo: cuerpo,
-		fechaHora: new Date().toISOString()
+		fechaHora: new Date().toISOString(),
 	});
 }
 
 export interface Escrito {
-  titulo: string;
-  cuerpo: string;
-  fechaHora: string;
+	titulo: string;
+	cuerpo: string;
+	fechaHora: string;
 }
 
 export const escucharEscritos = (callback: (data: Escrito) => void) => {
@@ -46,5 +49,3 @@ export const escucharEscritos = (callback: (data: Escrito) => void) => {
 		callback(data);
 	});
 };
-
-
