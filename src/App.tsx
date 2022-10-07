@@ -1,20 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
+import {useEffect, useState} from 'react';
 import './App.css';
-import {crearEscrito} from './firebase';
+import {crearEscrito, escucharEscritos} from './firebase';
 
 function App() {
+  const [escritos, setEscritos] = useState<any[]>([]);
+
+  useEffect(()=> {
+    const callback = (_escritos: any) => { 
+      console.log(_escritos);
+      setEscritos(_escritos)
+    };
+
+    escucharEscritos(callback);
+  }, []);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Cami <strong>te amo mucho</strong>.
-        </p>
-        <p>¿Querés comer picadita y después empanadas conmigo?</p>
-      </header>
-      <button onClick={() => crearEscrito('Otro título', 'bla sa dlba cuerpito eas das as ')}>Crear escrito</button>
+      {Object.keys(escritos).map((escrito: any) => <div key={escrito}>{escritos[escrito].titulo}</div>)}
+      <button onClick={() => crearEscrito('Che che che', 'bla sa dlba cuerpito eas das as ')}>Crear escrito</button>
     </div>
   );
 }

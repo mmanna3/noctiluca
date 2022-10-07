@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// export default getDatabase(app);
+const db = getDatabase(app);
 
 export const convertirASnakeCase = 
   (txt: string) => txt.toLowerCase()
@@ -27,11 +27,20 @@ export const convertirASnakeCase =
                       .replace(/ /g,"_");
 
 export function crearEscrito(titulo: string, cuerpo: string) {
-  const db = getDatabase(app);
-  // set(ref(db, 'escritos/' + userId), {
   set(ref(db, 'escritos/'+ convertirASnakeCase(titulo)), {
     titulo: titulo,
     cuerpo: cuerpo,
     fechaHora: new Date().toISOString()
   });
 }
+
+export const escucharEscritos = (callback: Function) => {
+  const starCountRef = ref(db, 'escritos');
+  onValue(starCountRef, (snapshot) => {
+    const data = snapshot.val();
+    // updateStarCount(postElement, data);
+    callback(data);
+  });
+}
+
+
