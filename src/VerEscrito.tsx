@@ -3,7 +3,7 @@ import { Button, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { IEscrito } from "./Interfaces";
 import { useEffect, useState } from "react";
-import { obtenerEscrito } from "./firebase";
+import { editarEscrito, obtenerEscrito } from "./firebase";
 import Icono from "@mui/icons-material/ChevronLeft";
 
 
@@ -28,6 +28,8 @@ const VerEscrito = () => {
 	}, [id]);
 
 	const volverALasNotas = () => {
+		if (id && titulo != "")
+			editarEscrito({id, titulo, cuerpo, fechaHora: ""});
 		navigate("/");
 	};
 

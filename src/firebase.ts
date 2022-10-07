@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, child, set, onValue, DataSnapshot } from "firebase/database";
+import { getDatabase, ref, get, child, set, onValue, DataSnapshot, update } from "firebase/database";
 import { IEscrito } from "./Interfaces";
 import { convertirASnakeCase } from "./utilidades";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -69,4 +69,18 @@ export const obtenerEscrito = (id: string, callback: (data: IEscrito) => void) =
 	  }).catch((error) => {
 		console.error(error);
 	  });
+};
+
+export const editarEscrito = (escrito: IEscrito) => {
+	const dbRef = ref(db, "escritos");
+	const updates: any = {};
+	const ahora = new Date();
+
+	updates[`/${escrito.id}`] = {
+		titulo: escrito.titulo,
+		cuerpo: escrito.cuerpo,
+		fechaHora: ahora.toISOString(),
+	};
+
+	return update(dbRef, updates);
 };
