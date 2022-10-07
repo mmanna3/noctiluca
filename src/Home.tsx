@@ -1,19 +1,18 @@
-import NoteAdd from "@mui/icons-material/NoteAdd";
-import IconButton from "@mui/material/IconButton";
+import Icono from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
 import Escritos from "./Escritos";
-import { crearEscrito } from "./firebase";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+
+	const navigate = useNavigate();
+
 	return (
-		<div>			
-			<IconButton color='primary' aria-label='upload picture' component='label'>
-				<input hidden accept='image/*' type='file' />
-				<NoteAdd />
-			</IconButton>
+		<div style={{padding: "1em"}}>
+			<Button sx={{float: "right"}} variant="contained" onClick={() => navigate("/nuevo")} endIcon={<Icono />}>
+  				Nuevo escrito
+			</Button>
 			<Escritos />
-			<button onClick={() => crearEscrito("Che che che", "bla sa dlba cuerpito eas das as ")}>
-				Crear escrito
-			</button>
 		</div>
 	);
 };
