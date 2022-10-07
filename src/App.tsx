@@ -1,20 +1,18 @@
-import NoteAdd from "@mui/icons-material/NoteAdd";
-import IconButton from "@mui/material/IconButton";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Escritos from "./Escritos";
-import { crearEscrito } from "./firebase";
+import Home from "./Home";
 
 const App = () => {
 	return (
 		<div className='App'>
-			<IconButton color='primary' aria-label='upload picture' component='label'>
-				<input hidden accept='image/*' type='file' />
-				<NoteAdd />
-			</IconButton>
-			<Escritos />
-			<button onClick={() => crearEscrito("Che che che", "bla sa dlba cuerpito eas das as ")}>
-				Crear escrito
-			</button>
+			<Router>
+				<Routes>
+					<Route path="/" element={<Home/>} />
+					{/* <Route exact path="page1" element={<Page1 />} />
+					<Route exact path="page2" element={<Page2 />} />
+					<Route exact path="page3" element={<Page3 />} /> */}
+				</Routes>
+			</Router>
 		</div>
 	);
 };
