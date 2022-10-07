@@ -35,13 +35,7 @@ export function crearEscrito(titulo: string, cuerpo: string) {
 	});
 }
 
-export interface Escrito {
-	titulo: string;
-	cuerpo: string;
-	fechaHora: string;
-}
-
-export const escucharEscritos = (callback: (data: Escrito) => void) => {
+export const escucharEscritos = (callback: (data: any) => void) => {
 	const starCountRef = ref(db, "escritos");
 	onValue(starCountRef, (snapshot: any) => {
 		const data = snapshot.val();
