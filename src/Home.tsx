@@ -1,7 +1,7 @@
 import Icono from "@mui/icons-material/AddCircle";
-import Button from "@mui/material/Button";
 import Escritos from "./Escritos";
 import { useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
 
 const Home = () => {
 
@@ -9,9 +9,13 @@ const Home = () => {
 
 	return (
 		<div style={{padding: "1em"}}>
-			<Button sx={{float: "right"}} variant="contained" onClick={() => navigate("/nuevo")} endIcon={<Icono />}>
-  				Nuevo escrito
-			</Button>
+			<IconButton 
+				sx={{float: "right"}} 
+				aria-label="agregar"
+				color="primary"
+				onClick={() => navigate("/nuevo")}>
+				<Icono style={{ height: "3rem", width: "3rem" }} />
+			</IconButton>
 			<Escritos />
 		</div>
 	);
