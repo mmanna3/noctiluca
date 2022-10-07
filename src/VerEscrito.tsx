@@ -11,12 +11,15 @@ const VerEscrito = () => {
 
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const [escrito, setEscrito] = useState<IEscrito>({titulo:"", cuerpo:"", fechaHora: "", id: ""});
+
+	const [titulo, setTitulo] = useState("");
+	const [cuerpo, setCuerpo] = useState("");
 
 	useEffect(() => {
 		const callback = (_escrito: IEscrito) => {
 			console.log(_escrito);
-			setEscrito(_escrito);
+			setTitulo(_escrito.titulo);
+			setCuerpo(_escrito.cuerpo);
 		};
 
 		if (id)
@@ -41,19 +44,23 @@ const VerEscrito = () => {
 		</Grid>
 		<TextField
 			id="outlined-name"
-			InputProps={{ disableUnderline: true, autoFocus: true, style: { fontSize: "1.5rem" }, readOnly: true }}
+			InputProps={{ disableUnderline: true, style: { fontSize: "1.5rem" } }}
 			variant="standard"
 			placeholder="Título"
-			value={escrito.titulo}
+			value={titulo}
+			// onClick={() => setEdicionTitulo((prev) => !prev)}
+			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
 		/>
 		<TextField			
 			id="outlined-multiline-static"
-			InputProps={{ disableUnderline: true, readOnly: true }}
+			InputProps={{ disableUnderline: true }}
 			variant="standard"
 			placeholder="Texto"
 			multiline
 			rows={15}
-			value={escrito.cuerpo}			
+			value={cuerpo}
+			// onClick={() => setEdicionCuerpo((prev) => !prev)}
+			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
 		/>
 
 	</Grid>;
