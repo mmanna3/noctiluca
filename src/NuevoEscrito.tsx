@@ -24,7 +24,7 @@ const NuevoEscrito = () => {
 		padding="1em"
 	>
 		<Grid container>
-			<Button startIcon={<Icono />} variant="outlined" onClick={volverALasNotas}>
+			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={volverALasNotas}>
 				Ir a las notas
 			</Button>
 		</Grid>
