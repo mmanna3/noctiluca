@@ -14,7 +14,7 @@ const NuevoEscrito = () => {
 	const volverALasNotas = () => {
 		if (titulo != "")
 			crearEscrito(titulo, cuerpo);
-		navigate("/");
+		navigate("/home");
 	};
 
 	return <Grid
