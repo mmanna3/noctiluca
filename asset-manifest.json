@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/noctiluca/static/css/main.63a6f6b1.css",
-    "main.js": "/noctiluca/static/js/main.a6897f08.js",
+    "main.js": "/noctiluca/static/js/main.f3707c9d.js",
     "static/js/787.49162ce7.chunk.js": "/noctiluca/static/js/787.49162ce7.chunk.js",
     "static/media/roboto-all-500-normal.woff": "/noctiluca/static/media/roboto-all-500-normal.0ab669b7a0d19b178f57.woff",
     "static/media/roboto-all-700-normal.woff": "/noctiluca/static/media/roboto-all-700-normal.a457fde362a540fcadff.woff",
@@ -38,11 +38,11 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/noctiluca/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/noctiluca/index.html",
     "main.63a6f6b1.css.map": "/noctiluca/static/css/main.63a6f6b1.css.map",
-    "main.a6897f08.js.map": "/noctiluca/static/js/main.a6897f08.js.map",
+    "main.f3707c9d.js.map": "/noctiluca/static/js/main.f3707c9d.js.map",
     "787.49162ce7.chunk.js.map": "/noctiluca/static/js/787.49162ce7.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.63a6f6b1.css",
-    "static/js/main.a6897f08.js"
+    "static/js/main.f3707c9d.js"
   ]
 }
