@@ -14,7 +14,7 @@ const Home = () => {
 			<IconButton 
 				sx={{float: "left"}} 
 				aria-label="agregar"
-				onClick={() => auth.signOut()}>
+				onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
 				<IconoLogout sx={{transform: "scaleX(-1)"}} />
 			</IconButton>
 			<IconButton 

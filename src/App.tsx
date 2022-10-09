@@ -10,11 +10,14 @@ import VerEscrito from "./VerEscrito";
 
 const App = () => {
 
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<User | null>(null);		
 
 	useEffect(()=>{		
-		auth.onAuthStateChanged(()=> {
-			setUser(auth.currentUser);
+		auth.onAuthStateChanged((user)=> {
+			setUser(user);
+			if (user) {				
+				localStorage.setItem("noctiluca.uid", user.uid);
+			}			
 		});
 	}, []);
 
@@ -23,7 +26,7 @@ const App = () => {
 			<Router>
 				<Routes>
 					{
-						!user ?
+						!user && !localStorage.getItem("noctiluca.uid") ?
 							<Route path="/" element={<Logueo/>} /> :
 							<>
 								<Route path="/" element={<Home/>} />
