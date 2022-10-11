@@ -1,32 +1,28 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./App.css";
 import Escrito from "./Escrito";
-import { escucharEscritos } from "./firebase";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import { IEscrito } from "./Interfaces";
+import { Contexto } from "./Contexto";
 
 function Escritos() {
-	const [escritos, setEscritos] = useState<IEscrito[]>([]);
+	const [escritos, setEscritos] = useState<any>([]);
+	const {carpetaSeleccionada} = useContext(Contexto);
 
 	useEffect(() => {
-		const callback = (_escritos: IEscrito[]) => {
-			console.table(_escritos);
-			setEscritos(_escritos);
-		};
-
-		escucharEscritos(callback);
-	}, []);
+		console.log(carpetaSeleccionada);
+		setEscritos(carpetaSeleccionada.escritos);
+	}, [carpetaSeleccionada]);
 
 	return (
 		<Grid container   
 			alignItems="center"
 			justifyContent="center">
 			<List sx={{ width: "100%", bgcolor: "background.paper" }}>
-				{escritos.map((escrito: IEscrito) => (
-					<Grid item xs={12} key={escrito.id}>
-						<Escrito {...escrito} />
+				{Object.keys(escritos).length && Object.keys(escritos).map((clave: string) => (
+					<Grid item xs={12} key={clave}>
+						<Escrito {...escritos[clave]} />
 						<Divider variant='inset' component='li' />
 					</Grid>
 				))}

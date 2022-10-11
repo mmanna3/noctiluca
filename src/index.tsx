@@ -1,9 +1,9 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
+import { ContextoProvider } from "./Contexto";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import "@fontsource/roboto/300.css";
@@ -13,10 +13,10 @@ import "@fontsource/roboto/700.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-	<>
+	<ContextoProvider>
 		<CssBaseline />
 		<App />
-	</>,
+	</ContextoProvider>,
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -7,5 +7,5 @@ export interface IEscrito {
 
 export interface ICarpeta {
 	titulo: string;
-	escritos: IEscrito[];
+	escritos: any;
 }

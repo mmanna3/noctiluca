@@ -2,6 +2,7 @@ import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
+import CarpetasLista from "./CarpetasLista";
 import { auth } from "./firebase";
 import Home from "./Home";
 import Logueo from "./Logueo";
@@ -29,7 +30,7 @@ const App = () => {
 						!user && !localStorage.getItem("noctiluca.uid") ?
 							<Route path="/" element={<Logueo/>} /> :
 							<>
-								<Route path="/" element={<Home/>} />
+								<Route path="/" element={<CarpetasLista/>} />
 								<Route path="/home" element={<Home/>} />
 								<Route path="/nuevo" element={<NuevoEscrito/>} />
 								<Route path="/ver/:id" element={<VerEscrito/>} />
