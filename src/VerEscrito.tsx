@@ -30,7 +30,7 @@ const VerEscrito = () => {
 	const volverALasNotas = () => {
 		if (id && titulo != "")
 			editarEscrito({id, titulo, cuerpo, fechaHora: ""});
-		navigate("/");
+		navigate("/home");
 	};
 
 	return <Grid
