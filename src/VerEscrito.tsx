@@ -3,8 +3,9 @@ import { Button, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { IEscrito } from "./Interfaces";
 import { useEffect, useState } from "react";
-import { editarEscrito, obtenerEscrito } from "./firebase";
+import { editarEscrito, obtenerEscrito, eliminarEscrito } from "./firebase";
 import Icono from "@mui/icons-material/ChevronLeft";
+import IconoTacho from "@mui/icons-material/DeleteOutline";
 
 
 const VerEscrito = () => {
@@ -33,6 +34,12 @@ const VerEscrito = () => {
 		navigate("/home");
 	};
 
+	const eliminar = () => {
+		if (id)
+			eliminarEscrito(id);
+		navigate("/home");
+	};
+
 	return <Grid
 		container
 		flexDirection="column"
@@ -40,9 +47,18 @@ const VerEscrito = () => {
 		padding="1em"
 	>
 		<Grid container>
-			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={volverALasNotas}>
+			<Grid item xs={12}>
+				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={volverALasNotas}>
 				Ir a las notas
-			</Button>
+				</Button>
+				<IconoTacho 
+					sx={{float: "right"}}
+					aria-label="agregar"
+					color="disabled"
+					onClick={() => eliminar()}>
+					<Icono style={{ height: "3rem", width: "3rem" }} />
+				</IconoTacho>
+			</Grid>
 		</Grid>
 		<TextField
 			id="outlined-name"

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, child, set, onValue, DataSnapshot, update } from "firebase/database";
+import { getDatabase, ref, get, child, set, onValue, DataSnapshot, update, remove } from "firebase/database";
 import "firebase/compat/auth";
 import { IEscrito } from "./Interfaces";
 import { convertirASnakeCase } from "./utilidades";
@@ -80,4 +80,9 @@ export const editarEscrito = (escrito: IEscrito) => {
 	};
 
 	return update(dbRef, updates);
+};
+
+export const eliminarEscrito = (id: string) => {
+	const dbRef = ref(db, `escritos/${id}`);
+	return remove(dbRef);
 };
