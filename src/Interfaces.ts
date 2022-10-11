@@ -4,3 +4,8 @@ export interface IEscrito {
 	cuerpo: string;
 	fechaHora: string;
 }
+
+export interface ICarpeta {
+	titulo: string;
+	escritos: IEscrito[];
+}

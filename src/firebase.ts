@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, child, set, onValue, DataSnapshot, update, remove } from "firebase/database";
 import "firebase/compat/auth";
-import { IEscrito } from "./Interfaces";
+import { IEscrito, ICarpeta } from "./Interfaces";
 import { convertirASnakeCase } from "./utilidades";
 import { getAuth } from "firebase/auth";
 
@@ -49,6 +49,22 @@ export const escucharEscritos = (callback: (data: IEscrito[]) => void) => {
 		});
 		
 		resultado.sort(compararFechas);
+
+		callback(resultado);
+	});
+};
+
+export const escucharCarpetas = (callback: (data: ICarpeta[]) => void) => {	
+	const dbRef = ref(db, "/");
+	onValue(dbRef, (snapshot: DataSnapshot) => {
+		const resultado: ICarpeta[] = [];
+		
+		console.log(snapshot);
+
+		snapshot.forEach((child) => {
+			if (child && child.key)
+				resultado.push({"titulo": child.key, "escritos": child.val()});
+		});		
 
 		callback(resultado);
 	});
