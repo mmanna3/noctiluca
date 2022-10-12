@@ -8,6 +8,9 @@ const usarNavegacion = () => {
 	return {
 		escritoId: id,
 		carpetaId: carpetaId,
+		irACarpetasHome: () => {
+			navigate("/", { replace: true });
+		},
 		verEscritosDeLaCarpeta: (_carpetaId: string) => {
 			navigate(`/${_carpetaId}/escritos`);
 		},
@@ -19,8 +22,10 @@ const usarNavegacion = () => {
 		},
 		irANuevoEscrito: () => {
 			navigate(`/${carpetaId}/nuevo`, { replace: true });
+		},
+		irANuevaCarpeta: () => {
+			navigate("/nueva-carpeta", { replace: true });
 		}
-	
 	};
 };
 

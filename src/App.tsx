@@ -6,6 +6,7 @@ import CarpetasHome from "./Pantallas/CarpetasHome/CarpetasHome";
 import EscritosHome from "./Pantallas/EscritosHome/EscritosHome";
 import Logueo from "./Pantallas/Logueo";
 import NuevoEscrito from "./Pantallas/NuevoEscrito";
+import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
 
@@ -34,6 +35,7 @@ const App = () => {
 								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
 								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
+								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta/>} />
 								<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
 							</>
 					}

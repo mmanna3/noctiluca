@@ -3,8 +3,11 @@ import IconoLogout from "@mui/icons-material/Logout";
 import IconButton from "@mui/material/IconButton";
 import { auth } from "../../firebase";
 import ListaDeCarpetas from "./ListaDeCarpetas";
+import usarNavegacion from "../../usarNavegacion";
 
-const Home = () => {
+const CarpetasHome = () => {
+
+	const {irANuevaCarpeta} = usarNavegacion();
 
 	return (
 		<div style={{padding: "1em"}}>
@@ -16,8 +19,8 @@ const Home = () => {
 			</IconButton>
 			<IconButton 
 				sx={{float: "right"}} 
-				aria-label="agregar">
-				{/* onClick={() => navigate("/nuevo")}> */}
+				aria-label="agregar"
+				onClick={irANuevaCarpeta}>
 				<Icono style={{ height: "3rem", width: "3rem" }} />
 			</IconButton>
 			<ListaDeCarpetas />
@@ -25,4 +28,4 @@ const Home = () => {
 	);
 };
 
-export default Home;
+export default CarpetasHome;
