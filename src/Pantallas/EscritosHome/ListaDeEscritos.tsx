@@ -19,7 +19,8 @@ function ListaDeEscritos() {
 			setEscritos(_escritos);
 		};
 
-		escucharEscritos(callback);
+		if (carpetaId)
+			escucharEscritos(carpetaId, callback);
 	}, []);
 
 	return (

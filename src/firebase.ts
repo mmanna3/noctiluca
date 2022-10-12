@@ -30,17 +30,17 @@ export function crearEscrito(titulo: string, cuerpo: string) {
 	});
 }
 
-export const escucharEscritos = (callback: (data: IEscrito[]) => void) => {
-	function compararFechas(a: IEscrito, b: IEscrito) {
-		const fechaHoraA = new Date(a.fechaHora);
-		const fechaHoraB = new Date(b.fechaHora);
+function compararFechas(a: IEscrito, b: IEscrito) {
+	const fechaHoraA = new Date(a.fechaHora);
+	const fechaHoraB = new Date(b.fechaHora);
 
-		if (fechaHoraA < fechaHoraB) return 1;
-		if (fechaHoraA > fechaHoraB) return -1;
-		return 0;
-	  }
-	
-	const dbRef = ref(db, "escritos");
+	if (fechaHoraA < fechaHoraB) return 1;
+	if (fechaHoraA > fechaHoraB) return -1;
+	return 0;
+}
+
+export const escucharEscritos = (carpetaId: string, callback: (data: IEscrito[]) => void) => {	
+	const dbRef = ref(db, carpetaId);
 	onValue(dbRef, (snapshot: DataSnapshot) => {
 		const resultado: IEscrito[] = [];
 		
