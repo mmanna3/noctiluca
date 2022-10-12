@@ -54,6 +54,25 @@ export const escucharEscritos = (callback: (data: IEscrito[]) => void) => {
 	});
 };
 
+const ordenarEscritos = (snapshot: DataSnapshot) => {
+	function compararFechas(a: IEscrito, b: IEscrito) {
+		const fechaHoraA = new Date(a.fechaHora);
+		const fechaHoraB = new Date(b.fechaHora);
+
+		if (fechaHoraA < fechaHoraB) return 1;
+		if (fechaHoraA > fechaHoraB) return -1;
+		return 0;
+	  }
+
+	const resultado: IEscrito[] = [];
+		
+	snapshot.forEach((child) => {
+		resultado.push({...child.val(), id: child.key} as unknown as IEscrito);
+	});
+	
+	return resultado.sort(compararFechas);
+};
+
 export const escucharCarpetas = (callback: (data: ICarpeta[]) => void) => {	
 	const dbRef = ref(db, "/");
 	onValue(dbRef, (snapshot: DataSnapshot) => {
@@ -62,8 +81,11 @@ export const escucharCarpetas = (callback: (data: ICarpeta[]) => void) => {
 		console.log(snapshot);
 
 		snapshot.forEach((child) => {
-			if (child && child.key)
-				resultado.push({"titulo": child.key, "escritos": child.val()});
+			if (child && child.key) {
+				const escritosOrdenados = ordenarEscritos(child);
+				resultado.push({"titulo": child.key, "escritos": escritosOrdenados});
+			}
+				
 		});		
 
 		callback(resultado);

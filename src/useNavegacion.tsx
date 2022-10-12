@@ -7,6 +7,9 @@ const useNavegacion = () => {
 	return {
 		navegarAEscritosHome: (carpetaTitulo: string) => {
 			navigate(`${carpetaTitulo}/escritos`);
+		},
+		irAVerEscrito: (escritoId: string) => {
+			navigate(`ver/${escritoId}`);
 		}
 	};
 };

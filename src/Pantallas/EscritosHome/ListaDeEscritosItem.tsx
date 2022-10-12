@@ -1,7 +1,7 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { IEscrito } from "../../Interfaces";
-import { useNavigate } from "react-router-dom";
+import useNavegacion from "../../useNavegacion";
 
 interface IEscritoInput extends IEscrito {
 	id: string;
@@ -9,7 +9,7 @@ interface IEscritoInput extends IEscrito {
 
 const Escrito = (escrito: IEscritoInput) => {
 	
-	const navigate = useNavigate();
+	const { irAVerEscrito } = useNavegacion();
 	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : ""); 
 
 	return <>
@@ -17,7 +17,7 @@ const Escrito = (escrito: IEscritoInput) => {
 			<ListItemText
 				primary={escrito.titulo}
 				secondary={obtenerResumen(escrito.cuerpo)}
-				onClick={() => navigate(`/ver/${escrito.id}`)}
+				onClick={() => irAVerEscrito(escrito.id)}
 			/>
 		</ListItem>
 	</>;
