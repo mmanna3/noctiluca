@@ -22,7 +22,7 @@ const usarNavegacion = () => {
 		irAVerEscrito: (escritoId: string) => {
 			navigate(`ver/${escritoId}`);
 		},
-		irANuevoEscrito: (carpetaId: string) => {
+		irANuevoEscrito: () => {
 			navigate(`/${carpetaId}/nuevo`, { replace: true });
 		}
 	
