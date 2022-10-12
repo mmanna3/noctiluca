@@ -3,7 +3,6 @@ import IconoTacho from "@mui/icons-material/DeleteOutline";
 import { Button, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import { IEscrito } from "../Interfaces";
 import usarNavegacion from "../usarNavegacion";
@@ -11,8 +10,7 @@ import usarNavegacion from "../usarNavegacion";
 
 const VerEscrito = () => {
 
-	const {volverAEscritosHome} = usarNavegacion();
-	const { carpetaId, id } = useParams();
+	const {volverAEscritosHome, carpetaId, escritoId} = usarNavegacion();
 
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
@@ -24,20 +22,20 @@ const VerEscrito = () => {
 			setCuerpo(_escrito.cuerpo);
 		};
 
-		if (carpetaId && id)
-			obtenerEscrito(carpetaId, id, callback);
+		if (carpetaId && escritoId)
+			obtenerEscrito(carpetaId, escritoId, callback);
 			
-	}, [id]);
+	}, [escritoId]);
 
 	const volverALasNotas = () => {
-		if (carpetaId && id && titulo != "")
-			editarEscrito(carpetaId, {id, titulo, cuerpo, fechaHora: ""});
+		if (carpetaId && escritoId && titulo != "")
+			editarEscrito(carpetaId, {id: escritoId, titulo, cuerpo, fechaHora: ""});
 		volverAEscritosHome();
 	};
 
 	const eliminar = () => {
-		if (carpetaId && id)
-			eliminarEscrito(carpetaId, id);
+		if (carpetaId && escritoId)
+			eliminarEscrito(carpetaId, escritoId);
 		volverAEscritosHome();
 	};
 
@@ -50,7 +48,7 @@ const VerEscrito = () => {
 		<Grid container>
 			<Grid item xs={12}>
 				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={volverALasNotas}>
-				Ir a las notas
+					{carpetaId}/{escritoId}
 				</Button>
 				<IconoTacho 
 					sx={{float: "right"}}
