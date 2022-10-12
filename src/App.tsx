@@ -8,6 +8,7 @@ import EscritosHome from "./Pantallas/EscritosHome/EscritosHome";
 import Logueo from "./Pantallas/Logueo";
 import NuevoEscrito from "./Pantallas/NuevoEscrito";
 import VerEscrito from "./Pantallas/VerEscrito";
+import rutas from "./rutas";
 
 const App = () => {
 
@@ -30,11 +31,11 @@ const App = () => {
 						!user && !localStorage.getItem("noctiluca.uid") ?
 							<Route path="/" element={<Logueo/>} /> :
 							<>
-								<Route path="/" element={<CarpetasHome/>} />
-								<Route path="/carpetas-home" element={<CarpetasHome/>} />
-								<Route path="/home" element={<EscritosHome/>} />
-								<Route path="/nuevo" element={<NuevoEscrito/>} />
-								<Route path="/ver/:id" element={<VerEscrito/>} />
+								<Route path={rutas.RAIZ} element={<CarpetasHome/>} />
+								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
+								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
+								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
+								<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
 							</>
 					}
 				</Routes>

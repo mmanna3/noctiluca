@@ -4,6 +4,7 @@ import { ICarpeta } from "../../Interfaces";
 import { useContext, useEffect } from "react";
 import { Contexto } from "../../Contexto";
 import { useNavigate } from "react-router-dom";
+import rutas from "../../rutas";
 
 const CarpetaListaItem = (carpeta: ICarpeta) => {
 	const navigate = useNavigate();
@@ -17,7 +18,7 @@ const CarpetaListaItem = (carpeta: ICarpeta) => {
 	const clickEnCarpeta = () => {
 		if (seleccionarCarpeta) {
 			seleccionarCarpeta(carpeta);
-			navigate("/home");
+			navigate(rutas.ESCRITOS_HOME);
 		}			
 	};
 

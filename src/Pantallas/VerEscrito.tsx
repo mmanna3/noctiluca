@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { editarEscrito, obtenerEscrito, eliminarEscrito } from "../firebase";
 import Icono from "@mui/icons-material/ChevronLeft";
 import IconoTacho from "@mui/icons-material/DeleteOutline";
+import rutas from "../rutas";
 
 
 const VerEscrito = () => {
@@ -31,13 +32,13 @@ const VerEscrito = () => {
 	const volverALasNotas = () => {
 		if (id && titulo != "")
 			editarEscrito({id, titulo, cuerpo, fechaHora: ""});
-		navigate("/home");
+		navigate(rutas.ESCRITOS_HOME);
 	};
 
 	const eliminar = () => {
 		if (id)
 			eliminarEscrito(id);
-		navigate("/home");
+		navigate(rutas.ESCRITOS_HOME);
 	};
 
 	return <Grid

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, Grid } from "@mui/material";
 import { crearEscrito } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import rutas from "../rutas";
 
 const NuevoEscrito = () => {
 
@@ -14,7 +15,7 @@ const NuevoEscrito = () => {
 	const volverALasNotas = () => {
 		if (titulo != "")
 			crearEscrito(titulo, cuerpo);
-		navigate("/home");
+		navigate(rutas.ESCRITOS_HOME);
 	};
 
 	return <Grid
