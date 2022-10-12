@@ -3,22 +3,19 @@ import ListItemText from "@mui/material/ListItemText";
 import { ICarpeta } from "../../Interfaces";
 import usarNavegacion from "../../usarNavegacion";
 
-const CarpetaListaItem = (carpeta: ICarpeta) => {
-	const { seleccionarCarpeta } = usarNavegacion();	
+const ListaDeCarpetasItem = (carpeta: ICarpeta) => {
 
-	const clickEnCarpeta = () => {		
-		seleccionarCarpeta(carpeta);					
-	};
+	const {verEscritosDeLaCarpeta} = usarNavegacion();
 
 	return <>
 		<ListItem alignItems="flex-start">
 			<ListItemText
 				primary={carpeta.titulo}
 				secondary={`${Object.keys(carpeta.escritos).length} escritos`}
-				onClick={clickEnCarpeta}
+				onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}
 			/>
 		</ListItem>
 	</>;
 };
 
-export default CarpetaListaItem;
+export default ListaDeCarpetasItem;
