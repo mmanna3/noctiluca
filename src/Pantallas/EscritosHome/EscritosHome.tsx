@@ -1,7 +1,7 @@
 import Icono from "@mui/icons-material/AddCircle";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
-import Escritos from "./ListaDeEscritos";
+import ListaDeEscritos from "./ListaDeEscritos";
 
 const Home = () => {
 
@@ -16,7 +16,7 @@ const Home = () => {
 				onClick={() => navigate("/nuevo")}>
 				<Icono style={{ height: "3rem", width: "3rem" }} />
 			</IconButton>
-			<Escritos />
+			<ListaDeEscritos />
 		</div>
 	);
 };
