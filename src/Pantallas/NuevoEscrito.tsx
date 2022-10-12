@@ -3,17 +3,17 @@ import Icono from "@mui/icons-material/ChevronLeft";
 import { useState } from "react";
 import { Button, Grid } from "@mui/material";
 import { crearEscrito } from "../firebase";
-import useNavegacion from "../useNavegacion";
+import usarNavegacion from "../usarNavegacion";
 
 const NuevoEscrito = () => {
 
-	const {volverAEscritosHome} = useNavegacion();
+	const {volverAEscritosHome, carpetaId } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
 	const volverALasNotas = () => {
-		if (titulo != "")
-			crearEscrito(titulo, cuerpo);
+		if (carpetaId && titulo != "")
+			crearEscrito(carpetaId, titulo, cuerpo);
 		volverAEscritosHome();
 	};
 

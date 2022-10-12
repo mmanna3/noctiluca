@@ -1,13 +1,13 @@
 import Icono from "@mui/icons-material/AddCircle";
 import IconButton from "@mui/material/IconButton";
-import useNavegacion from "../../useNavegacion";
+import usarNavegacion from "../../usarNavegacion";
 import ListaDeEscritos from "./ListaDeEscritos";
 import { useParams } from "react-router-dom";
 
 const Home = () => {
 
 	const {carpetaId} = useParams();
-	const {irANuevoEscrito} = useNavegacion();
+	const {irANuevoEscrito} = usarNavegacion();
 
 	return (
 		<div style={{padding: "1em"}}>

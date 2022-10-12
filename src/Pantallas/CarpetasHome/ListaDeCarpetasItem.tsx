@@ -1,10 +1,10 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { ICarpeta } from "../../Interfaces";
-import useNavegacion from "../../useNavegacion";
+import usarNavegacion from "../../usarNavegacion";
 
 const CarpetaListaItem = (carpeta: ICarpeta) => {
-	const { seleccionarCarpeta } = useNavegacion();	
+	const { seleccionarCarpeta } = usarNavegacion();	
 
 	const clickEnCarpeta = () => {		
 		seleccionarCarpeta(carpeta);					

@@ -1,7 +1,7 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { IEscrito } from "../../Interfaces";
-import useNavegacion from "../../useNavegacion";
+import usarNavegacion from "../../usarNavegacion";
 
 interface IEscritoInput extends IEscrito {
 	id: string;
@@ -9,7 +9,7 @@ interface IEscritoInput extends IEscrito {
 
 const Escrito = (escrito: IEscritoInput) => {
 	
-	const { irAVerEscrito } = useNavegacion();
+	const { irAVerEscrito } = usarNavegacion();
 	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : ""); 
 
 	return <>

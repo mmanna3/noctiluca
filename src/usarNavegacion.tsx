@@ -2,15 +2,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { usarContexto } from "./Contexto";
 import { ICarpeta } from "./Interfaces";
 
-const useNavegacion = () => {
+const usarNavegacion = () => {
 
 	const navigate = useNavigate();
 	const { carpetaId, id } = useParams();
 	const {seleccionarCarpeta} = usarContexto();
 
 	return {
-		obtenerEscritoId: id,
-		obtenerCarpetaId: carpetaId,
+		escritoId: id,
+		carpetaId: carpetaId,
 		volverAEscritosHome: () => {
 			navigate(`/${carpetaId}/escritos`, { replace: true });
 		},
@@ -29,4 +29,4 @@ const useNavegacion = () => {
 	};
 };
 
-export default useNavegacion;
+export default usarNavegacion;

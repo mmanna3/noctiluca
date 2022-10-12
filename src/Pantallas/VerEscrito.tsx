@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import { IEscrito } from "../Interfaces";
-import useNavegacion from "../useNavegacion";
+import usarNavegacion from "../usarNavegacion";
 
 
 const VerEscrito = () => {
 
-	const {volverAEscritosHome} = useNavegacion();
+	const {volverAEscritosHome} = usarNavegacion();
 	const { carpetaId, id } = useParams();
 
 	const [titulo, setTitulo] = useState("");
