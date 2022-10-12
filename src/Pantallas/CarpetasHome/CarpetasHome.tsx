@@ -20,6 +20,7 @@ const CarpetasHome = () => {
 			<IconButton 
 				sx={{float: "right"}} 
 				aria-label="agregar"
+				color="primary"
 				onClick={irANuevaCarpeta}>
 				<Icono style={{ height: "3rem", width: "3rem" }} />
 			</IconButton>
