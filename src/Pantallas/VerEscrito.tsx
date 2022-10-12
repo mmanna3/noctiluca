@@ -11,8 +11,8 @@ import useNavegacion from "../useNavegacion";
 
 const VerEscrito = () => {
 
-	const {volverAEscritosHome: navegarAEscritosHome} = useNavegacion();
-	const { id } = useParams();
+	const {volverAEscritosHome} = useNavegacion();
+	const { carpetaId, id } = useParams();
 
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
@@ -24,21 +24,21 @@ const VerEscrito = () => {
 			setCuerpo(_escrito.cuerpo);
 		};
 
-		if (id)
-			obtenerEscrito(id, callback);
+		if (carpetaId && id)
+			obtenerEscrito(carpetaId, id, callback);
 			
 	}, [id]);
 
 	const volverALasNotas = () => {
-		if (id && titulo != "")
-			editarEscrito({id, titulo, cuerpo, fechaHora: ""});
-		navegarAEscritosHome();
+		if (carpetaId && id && titulo != "")
+			editarEscrito(carpetaId, {id, titulo, cuerpo, fechaHora: ""});
+		volverAEscritosHome();
 	};
 
 	const eliminar = () => {
-		if (id)
-			eliminarEscrito(id);
-		navegarAEscritosHome();
+		if (carpetaId && id)
+			eliminarEscrito(carpetaId, id);
+		volverAEscritosHome();
 	};
 
 	return <Grid

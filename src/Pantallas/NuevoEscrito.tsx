@@ -3,19 +3,18 @@ import Icono from "@mui/icons-material/ChevronLeft";
 import { useState } from "react";
 import { Button, Grid } from "@mui/material";
 import { crearEscrito } from "../firebase";
-import { useNavigate } from "react-router-dom";
-import rutas from "../rutas";
+import useNavegacion from "../useNavegacion";
 
 const NuevoEscrito = () => {
 
-	const navigate = useNavigate();
+	const {volverAEscritosHome} = useNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
 	const volverALasNotas = () => {
 		if (titulo != "")
 			crearEscrito(titulo, cuerpo);
-		navigate(rutas.ESCRITOS_HOME);
+		volverAEscritosHome();
 	};
 
 	return <Grid

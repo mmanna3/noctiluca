@@ -1,15 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { usarContexto } from "./Contexto";
 import { ICarpeta } from "./Interfaces";
 
 const useNavegacion = () => {
 
 	const navigate = useNavigate();
-	const {carpetaSeleccionada, seleccionarCarpeta} = usarContexto();
+	const { carpetaId, id } = useParams();
+	const {seleccionarCarpeta} = usarContexto();
 
 	return {
+		obtenerEscritoId: id,
+		obtenerCarpetaId: carpetaId,
 		volverAEscritosHome: () => {
-			navigate(`/${carpetaSeleccionada.titulo}/escritos`, { replace: true });
+			navigate(`/${carpetaId}/escritos`, { replace: true });
 		},
 		seleccionarCarpeta: (carpeta: ICarpeta) => {
 			if (seleccionarCarpeta)
@@ -18,7 +21,11 @@ const useNavegacion = () => {
 		},
 		irAVerEscrito: (escritoId: string) => {
 			navigate(`ver/${escritoId}`);
+		},
+		irANuevoEscrito: (carpetaId: string) => {
+			navigate(`/${carpetaId}/nuevo`, { replace: true });
 		}
+	
 	};
 };
 

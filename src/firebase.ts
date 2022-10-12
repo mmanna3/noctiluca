@@ -77,23 +77,18 @@ export const escucharCarpetas = (callback: (data: ICarpeta[]) => void) => {
 	const dbRef = ref(db, "/");
 	onValue(dbRef, (snapshot: DataSnapshot) => {
 		const resultado: ICarpeta[] = [];
-		
-		console.log(snapshot);
-
 		snapshot.forEach((child) => {
 			if (child && child.key) {
-				const escritosOrdenados = ordenarEscritos(child);
-				resultado.push({"titulo": child.key, "escritos": escritosOrdenados});
-			}
-				
-		});		
+				resultado.push({"titulo": child.key, "escritos": child.val()});
+			}	
+		});
 
 		callback(resultado);
 	});
 };
 
-export const obtenerEscrito = (id: string, callback: (data: IEscrito) => void) => {
-	const dbRef = ref(db, "escritos");
+export const obtenerEscrito = (carpetaId: string, id: string, callback: (data: IEscrito) => void) => {
+	const dbRef = ref(db, carpetaId);
 	get(child(dbRef, id)).then((snapshot) => {
 		if (snapshot.exists()) {
 		  console.log(snapshot.val());
@@ -106,8 +101,8 @@ export const obtenerEscrito = (id: string, callback: (data: IEscrito) => void) =
 	  });
 };
 
-export const editarEscrito = (escrito: IEscrito) => {
-	const dbRef = ref(db, "escritos");
+export const editarEscrito = (carpetaId: string, escrito: IEscrito) => {
+	const dbRef = ref(db, carpetaId);
 	const updates: any = {};
 	const ahora = new Date();
 
@@ -120,7 +115,7 @@ export const editarEscrito = (escrito: IEscrito) => {
 	return update(dbRef, updates);
 };
 
-export const eliminarEscrito = (id: string) => {
-	const dbRef = ref(db, `escritos/${id}`);
+export const eliminarEscrito = (carpetaId: string, id: string) => {
+	const dbRef = ref(db, `${carpetaId}/${id}`);
 	return remove(dbRef);
 };

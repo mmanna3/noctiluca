@@ -1,11 +1,13 @@
 import Icono from "@mui/icons-material/AddCircle";
 import IconButton from "@mui/material/IconButton";
-import { useNavigate } from "react-router-dom";
+import useNavegacion from "../../useNavegacion";
 import ListaDeEscritos from "./ListaDeEscritos";
+import { useParams } from "react-router-dom";
 
 const Home = () => {
 
-	const navigate = useNavigate();
+	const {carpetaId} = useParams();
+	const {irANuevoEscrito} = useNavegacion();
 
 	return (
 		<div style={{padding: "1em"}}>
@@ -13,7 +15,7 @@ const Home = () => {
 				sx={{float: "right"}} 
 				aria-label="agregar"
 				color="primary"
-				onClick={() => navigate("/nuevo")}>
+				onClick={() => carpetaId && irANuevoEscrito(carpetaId)}>
 				<Icono style={{ height: "3rem", width: "3rem" }} />
 			</IconButton>
 			<ListaDeEscritos />
