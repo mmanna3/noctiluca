@@ -11,7 +11,7 @@ const NuevoEscrito = () => {
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
-	const volverALasNotas = () => {
+	const crearYVolver = () => {
 		if (carpetaId && titulo != "")
 			crearEscrito(carpetaId, titulo, cuerpo);
 		volverAEscritosHome();
@@ -24,8 +24,8 @@ const NuevoEscrito = () => {
 		padding="1em"
 	>
 		<Grid container>
-			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={volverALasNotas}>
-				Ir a las notas
+			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={crearYVolver}>
+				Crear en /{carpetaId}
 			</Button>
 		</Grid>
 		<TextField

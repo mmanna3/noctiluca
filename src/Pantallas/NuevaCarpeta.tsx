@@ -10,7 +10,7 @@ const NuevaCarpeta = () => {
 	const {irACarpetasHome } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 
-	const volverALasNotas = () => {		
+	const crearYVolver = () => {		
 		if (titulo != "")
 			crearCarpeta(titulo);
 		irACarpetasHome();
@@ -23,7 +23,7 @@ const NuevaCarpeta = () => {
 		padding="1em"
 	>
 		<Grid container>
-			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={volverALasNotas}>
+			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={crearYVolver}>
 				Crear carpeta
 			</Button>
 		</Grid>

@@ -27,7 +27,7 @@ const VerEscrito = () => {
 			
 	}, [escritoId]);
 
-	const volverALasNotas = () => {
+	const editarYVolver = () => {
 		if (carpetaId && escritoId && titulo != "")
 			editarEscrito(carpetaId, {id: escritoId, titulo, cuerpo, fechaHora: ""});
 		volverAEscritosHome();
@@ -47,7 +47,7 @@ const VerEscrito = () => {
 	>
 		<Grid container>
 			<Grid item xs={12}>
-				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={volverALasNotas}>
+				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={editarYVolver}>
 					{carpetaId}/{escritoId}
 				</Button>
 				<IconoTacho 
