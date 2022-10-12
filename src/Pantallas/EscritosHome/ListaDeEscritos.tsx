@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
 import Escrito from "./ListaDeEscritosItem";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import { Contexto } from "../../Contexto";
+import { usarContexto } from "../../Contexto";
+import { useEffect, useState } from "react";
 
 function Escritos() {
 	const [escritos, setEscritos] = useState<any>([]);
-	const {carpetaSeleccionada} = useContext(Contexto);
+	const {carpetaSeleccionada} = usarContexto();
 
 	useEffect(() => {
 		console.log(carpetaSeleccionada);

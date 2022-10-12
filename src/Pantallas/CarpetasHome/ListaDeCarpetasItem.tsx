@@ -1,14 +1,13 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { useEffect } from "react";
+import { usarContexto } from "../../Contexto";
 import { ICarpeta } from "../../Interfaces";
-import { useContext, useEffect } from "react";
-import { Contexto } from "../../Contexto";
-import rutas from "../../rutas";
 import useNavegacion from "../../useNavegacion";
 
 const CarpetaListaItem = (carpeta: ICarpeta) => {
 	const { navegarAEscritosHome } = useNavegacion();
-	const {carpetaSeleccionada, seleccionarCarpeta} = useContext(Contexto);
+	const {carpetaSeleccionada, seleccionarCarpeta} = usarContexto();
 
 	useEffect(() => {
 		console.log("seleccionada");

@@ -30,6 +30,6 @@ export const ContextoProvider = ({children}: any) => {
 	return <Contexto.Provider value={nuevoContexto}>{children}</Contexto.Provider>;
 };
 
-export const usarConexto = () => {
+export const usarContexto = () => {
 	return useContext(Contexto);
 };
