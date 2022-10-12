@@ -11,9 +11,8 @@ function Logueo() {
 	};
 
 	return (
-		<div>
+		<div style={{ textAlign: "center"}}>
 			<h1>Noctiluca</h1>
-			<p>Logueate:</p>
 			<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
 		</div>
 	);
