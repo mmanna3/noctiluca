@@ -3,11 +3,11 @@ import ListItemText from "@mui/material/ListItemText";
 import { ICarpeta } from "../../Interfaces";
 import { useContext, useEffect } from "react";
 import { Contexto } from "../../Contexto";
-import { useNavigate } from "react-router-dom";
 import rutas from "../../rutas";
+import useNavegacion from "../../useNavegacion";
 
 const CarpetaListaItem = (carpeta: ICarpeta) => {
-	const navigate = useNavigate();
+	const { navegarAEscritosHome } = useNavegacion();
 	const {carpetaSeleccionada, seleccionarCarpeta} = useContext(Contexto);
 
 	useEffect(() => {
@@ -18,7 +18,7 @@ const CarpetaListaItem = (carpeta: ICarpeta) => {
 	const clickEnCarpeta = () => {
 		if (seleccionarCarpeta) {
 			seleccionarCarpeta(carpeta);
-			navigate(rutas.ESCRITOS_HOME);
+			navegarAEscritosHome(carpeta.titulo);
 		}			
 	};
 
