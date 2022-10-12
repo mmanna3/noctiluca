@@ -3,6 +3,7 @@ import IconoLogout from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import { auth } from "../../firebase";
+import ListaDeCarpetas from "./ListaDeCarpetas";
 
 const Home = () => {
 
@@ -23,6 +24,7 @@ const Home = () => {
 				onClick={() => navigate("/nuevo")}>
 				<Icono style={{ height: "3rem", width: "3rem" }} />
 			</IconButton>
+			<ListaDeCarpetas />
 		</div>
 	);
 };
