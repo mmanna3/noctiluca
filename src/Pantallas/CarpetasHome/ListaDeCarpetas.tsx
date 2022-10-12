@@ -2,10 +2,9 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import { useEffect, useState } from "react";
-import "./App.css";
-import CarpetasListaItem from "./CarpetaListaItem";
-import { escucharCarpetas } from "./firebase";
-import { ICarpeta } from "./Interfaces";
+import CarpetasListaItem from "./ListaDeCarpetasItem";
+import { escucharCarpetas } from "../../firebase";
+import { ICarpeta } from "../../Interfaces";
 
 function CarpetasLista() {
 	const [carpetas, setCarpetas] = useState<ICarpeta[]>([]);

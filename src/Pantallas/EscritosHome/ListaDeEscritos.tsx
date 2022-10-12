@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import "./App.css";
-import Escrito from "./Escrito";
+import Escrito from "./ListaDeEscritosItem";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import { Contexto } from "./Contexto";
+import { Contexto } from "../../Contexto";
 
 function Escritos() {
 	const [escritos, setEscritos] = useState<any>([]);

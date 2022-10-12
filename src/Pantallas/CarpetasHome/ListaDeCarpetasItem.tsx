@@ -1,8 +1,8 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { ICarpeta } from "./Interfaces";
+import { ICarpeta } from "../../Interfaces";
 import { useContext, useEffect } from "react";
-import { Contexto } from "./Contexto";
+import { Contexto } from "../../Contexto";
 import { useNavigate } from "react-router-dom";
 
 const CarpetaListaItem = (carpeta: ICarpeta) => {

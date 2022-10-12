@@ -1,6 +1,6 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { IEscrito } from "./Interfaces";
+import { IEscrito } from "../../Interfaces";
 import { useNavigate } from "react-router-dom";
 
 interface IEscritoInput extends IEscrito {

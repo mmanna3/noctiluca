@@ -2,12 +2,12 @@ import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import CarpetasLista from "./CarpetasLista";
+import CarpetasLista from "./Pantallas/CarpetasHome/ListaDeCarpetas";
 import { auth } from "./firebase";
-import Home from "./Home";
-import Logueo from "./Logueo";
-import NuevoEscrito from "./NuevoEscrito";
-import VerEscrito from "./VerEscrito";
+import Home from "./Pantallas/EscritosHome/EscritosHome";
+import Logueo from "./Pantallas/Logueo";
+import NuevoEscrito from "./Pantallas/NuevoEscrito";
+import VerEscrito from "./Pantallas/VerEscrito";
 
 const App = () => {
 

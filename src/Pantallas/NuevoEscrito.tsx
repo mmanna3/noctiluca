@@ -2,7 +2,7 @@ import TextField from "@mui/material/TextField";
 import Icono from "@mui/icons-material/ChevronLeft";
 import { useState } from "react";
 import { Button, Grid } from "@mui/material";
-import { crearEscrito } from "./firebase";
+import { crearEscrito } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
 const NuevoEscrito = () => {

@@ -1,9 +1,9 @@
 import TextField from "@mui/material/TextField";
 import { Button, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { IEscrito } from "./Interfaces";
+import { IEscrito } from "../Interfaces";
 import { useEffect, useState } from "react";
-import { editarEscrito, obtenerEscrito, eliminarEscrito } from "./firebase";
+import { editarEscrito, obtenerEscrito, eliminarEscrito } from "../firebase";
 import Icono from "@mui/icons-material/ChevronLeft";
 import IconoTacho from "@mui/icons-material/DeleteOutline";
 
