@@ -1,17 +1,17 @@
-import TextField from "@mui/material/TextField";
-import { Button, Grid } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
-import { IEscrito } from "../Interfaces";
-import { useEffect, useState } from "react";
-import { editarEscrito, obtenerEscrito, eliminarEscrito } from "../firebase";
 import Icono from "@mui/icons-material/ChevronLeft";
 import IconoTacho from "@mui/icons-material/DeleteOutline";
-import rutas from "../rutas";
+import { Button, Grid } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
+import { IEscrito } from "../Interfaces";
+import useNavegacion from "../useNavegacion";
 
 
 const VerEscrito = () => {
 
-	const navigate = useNavigate();
+	const {volverAEscritosHome: navegarAEscritosHome} = useNavegacion();
 	const { id } = useParams();
 
 	const [titulo, setTitulo] = useState("");
@@ -32,13 +32,13 @@ const VerEscrito = () => {
 	const volverALasNotas = () => {
 		if (id && titulo != "")
 			editarEscrito({id, titulo, cuerpo, fechaHora: ""});
-		navigate(rutas.ESCRITOS_HOME);
+		navegarAEscritosHome();
 	};
 
 	const eliminar = () => {
 		if (id)
 			eliminarEscrito(id);
-		navigate(rutas.ESCRITOS_HOME);
+		navegarAEscritosHome();
 	};
 
 	return <Grid
