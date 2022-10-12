@@ -1,7 +1,6 @@
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import "./App.css";
 import { auth } from "./firebase";
 import CarpetasHome from "./Pantallas/CarpetasHome/CarpetasHome";
 import EscritosHome from "./Pantallas/EscritosHome/EscritosHome";
