@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, child, set, onValue, DataSnapshot, update, remove } from "firebase/database";
 import "firebase/compat/auth";
 import { IEscrito, ICarpeta } from "./Interfaces";
-import { convertirASnakeCase } from "./utilidades";
+import { convertirEnKey } from "./utilidades";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -23,7 +23,7 @@ export const auth = getAuth(app);
 export function crearEscrito(carpetaId: string, titulo: string, cuerpo: string) {
 	const ahora = new Date();
 	
-	set(ref(db, `${carpetaId}/` + convertirASnakeCase(titulo)), {
+	set(ref(db, `${carpetaId}/` + convertirEnKey(titulo)), {
 		titulo: titulo,
 		cuerpo: cuerpo,
 		fechaHora: ahora.toISOString(),
@@ -31,16 +31,16 @@ export function crearEscrito(carpetaId: string, titulo: string, cuerpo: string) 
 }
 
 export function crearCarpeta(carpetaId: string) {
-	const dbRef = ref(db, carpetaId);
+	const dbRef = ref(db, convertirEnKey(carpetaId));
 	get(dbRef).then((snapshot) => {
 		if (snapshot.exists()) {
 			console.log("Se encontró la carpeta así que no se creó");
 		} else {
-			set(ref(db, `${convertirASnakeCase(carpetaId)}/`), ""); 
+			set(ref(db, `${convertirEnKey(carpetaId)}/`), ""); 
 		}
 	  }).catch((error) => {
 		console.error(error);
-	  });	
+	  });
 }
 
 function compararFechas(a: IEscrito, b: IEscrito) {
