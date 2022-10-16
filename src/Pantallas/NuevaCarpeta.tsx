@@ -9,11 +9,21 @@ const NuevaCarpeta = () => {
 
 	const {irACarpetasHome } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
+	const [errorTitulo, setErrorTitulo] = useState("");
 
-	const crearYVolver = () => {		
-		if (titulo != "")
-			crearCarpeta(titulo);
-		irACarpetasHome();
+	const crearYVolver = async () => {		
+		if (titulo === "")
+			irACarpetasHome();
+		
+		const error = await crearCarpeta(titulo);
+		setErrorTitulo(error);
+		if (error === "")
+			irACarpetasHome();
+	};
+
+	const cuandoCambie = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTitulo(e.target.value);
+		setErrorTitulo("");
 	};
 
 	return <Grid
@@ -33,7 +43,9 @@ const NuevaCarpeta = () => {
 			variant="standard"
 			placeholder="Título"
 			value={titulo}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
+			onChange={cuandoCambie}
+			error={errorTitulo.length > 0}
+			helperText={errorTitulo}
 		/>
 	</Grid>;
 };

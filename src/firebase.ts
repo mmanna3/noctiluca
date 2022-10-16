@@ -30,17 +30,26 @@ export function crearEscrito(carpetaId: string, titulo: string, cuerpo: string) 
 	});
 }
 
-export function crearCarpeta(carpetaId: string) {
-	const dbRef = ref(db, convertirEnKey(carpetaId));
-	get(dbRef).then((snapshot) => {
-		if (snapshot.exists()) {
-			console.log("Se encontró la carpeta así que no se creó");
+export async function crearCarpeta(carpetaId: string) {
+	const carpetaKey = convertirEnKey(carpetaId);
+
+	if (carpetaKey.length === 0) {
+		return "No puede ser un nombre vacío";
+	}
+
+	const dbRef = ref(db, carpetaKey);	
+	try {
+		const snapshot = await get(dbRef);
+		if (snapshot.exists()) {			
+			return "El nombre de carpeta ya existe";
 		} else {
 			set(ref(db, `${convertirEnKey(carpetaId)}/`), ""); 
+			return "";
 		}
-	  }).catch((error) => {
+	} catch (error) {
 		console.error(error);
-	  });
+		return error as string;
+	}
 }
 
 function compararFechas(a: IEscrito, b: IEscrito) {
