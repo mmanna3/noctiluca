@@ -74,7 +74,7 @@ const VerEscrito = () => {
 			variant="standard"
 			placeholder="Texto"
 			multiline
-			rows={cuerpo.split(/\r\n|\r|\n/).length}
+			rows={cuerpo.split(/\r\n|\r|\n/).length + 2}
 			value={cuerpo}
 			// onClick={() => setEdicionCuerpo((prev) => !prev)}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
