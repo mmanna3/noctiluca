@@ -20,14 +20,32 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const auth = getAuth(app);
 
-export function crearEscrito(carpetaId: string, titulo: string, cuerpo: string) {
+export async function crearEscrito(carpetaId: string, titulo: string, cuerpo: string) {
 	const ahora = new Date();
 	
-	set(ref(db, `${carpetaId}/` + convertirEnKey(titulo)), {
-		titulo: titulo,
-		cuerpo: cuerpo,
-		fechaHora: ahora.toISOString(),
-	});
+	const escritoKey = convertirEnKey(titulo);
+
+	if (escritoKey.length === 0) {
+		return "No puede ser un nombre vacío";
+	}
+
+	const dbRef = ref(db, `${carpetaId}/` + convertirEnKey(titulo));	
+	try {
+		const snapshot = await get(dbRef);
+		if (snapshot.exists()) {			
+			return "Ya hay otro escrito con este título";
+		} else {
+			set(ref(db, `${carpetaId}/` + convertirEnKey(titulo)), {
+				titulo: titulo,
+				cuerpo: cuerpo,
+				fechaHora: ahora.toISOString(),
+			});
+			return "";
+		}
+	} catch (error) {
+		console.error(error);
+		return error as string;
+	}
 }
 
 export async function crearCarpeta(carpetaId: string) {

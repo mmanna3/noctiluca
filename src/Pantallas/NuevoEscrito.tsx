@@ -10,11 +10,23 @@ const NuevoEscrito = () => {
 	const {volverAEscritosHome, carpetaId } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
+	const [errorTitulo, setErrorTitulo] = useState("");
 
-	const crearYVolver = () => {
-		if (carpetaId && titulo != "")
-			crearEscrito(carpetaId, titulo, cuerpo);
-		volverAEscritosHome();
+	const crearYVolver = async () => {
+		if (titulo === "")
+			volverAEscritosHome();
+		
+		if (carpetaId) {
+			const error = await crearEscrito(carpetaId, titulo, cuerpo);
+			setErrorTitulo(error);
+			if (error === "")
+				volverAEscritosHome();
+		}
+	};
+
+	const cuandoCambieElTitulo = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTitulo(e.target.value);
+		setErrorTitulo("");
 	};
 
 	return <Grid
@@ -34,7 +46,9 @@ const NuevoEscrito = () => {
 			variant="standard"
 			placeholder="Título"
 			value={titulo}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
+			onChange={cuandoCambieElTitulo}
+			error={errorTitulo.length > 0}
+			helperText={errorTitulo}
 		/>
 		<TextField			
 			id="outlined-multiline-static"
