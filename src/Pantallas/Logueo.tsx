@@ -13,7 +13,7 @@ function Logueo() {
 			signInOptions: [
 				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 			],
-			signInSuccessUrl: "/autenticado",		
+			signInSuccessUrl: "/noctiluca",
 			signInFlow: "popup",	
 		});
 	}, []);
