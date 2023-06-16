@@ -1,19 +1,33 @@
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import { auth } from "../firebase";
+import { useEffect, useState } from "react";
+import * as firebaseui from "firebaseui";
 import firebase from "firebase/compat/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {auth} from "./../firebase";
+
 
 function Logueo() {
-	const uiConfig = {
-		signInFlow: "popup",
-		signInOptions: [
-			firebase.auth.EmailAuthProvider.PROVIDER_ID,
-		],
-	};
+	useEffect(() => {
+		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
+
+		ui.start(".firebase-auth-container", {
+			signInOptions: [
+				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+			],
+			signInSuccessUrl: "/autenticado",		
+			signInFlow: "popup",	
+		});
+	}, []);
+
+	useEffect(()=>{		
+		auth.onAuthStateChanged((user)=> {
+			console.log("usuario", user);		
+		});
+	}, []);
 
 	return (
 		<div style={{ textAlign: "center"}}>
 			<h1>Noctiluca</h1>
-			<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+			<div className="firebase-auth-container"></div>
 		</div>
 	);
 }
