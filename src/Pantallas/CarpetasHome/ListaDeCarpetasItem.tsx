@@ -7,11 +7,18 @@ const ListaDeCarpetasItem = (carpeta: ICarpeta) => {
 
 	const {verEscritosDeLaCarpeta} = usarNavegacion();
 
+	let texto = "";
+	const cantidadDeEscritos = Object.keys(carpeta.escritos).length;
+	if (cantidadDeEscritos === 1)
+		texto = "1 escrito";
+	else
+		texto = `${cantidadDeEscritos} escritos`;
+
 	return <>
 		<ListItem alignItems="flex-start">
 			<ListItemText
 				primary={carpeta.titulo}
-				secondary={`${Object.keys(carpeta.escritos).length} escritos`}
+				secondary={texto}
 				onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}
 			/>
 		</ListItem>
