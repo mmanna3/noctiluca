@@ -1,42 +1,29 @@
-import FlechaIzquierda from "@mui/icons-material/ChevronLeft";
-import Icono from "@mui/icons-material/AddCircle";
-import IconoLogout from "@mui/icons-material/Logout";
-import IconButton from "@mui/material/IconButton";
 import { auth } from "../../firebase";
 import ListaDeCarpetas from "./ListaDeCarpetas";
 import usarNavegacion from "../../usarNavegacion";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import Boton from "../../components/boton";
 
 const CarpetasHome = () => {
 
 	const {irANuevaCarpeta} = usarNavegacion();
 
 	return (
-		<div style={{padding: "1em"}}>
-			<Grid container>
-				<Grid item xs={12}>
-					<Button sx={{textTransform: "none", float: "left", marginTop: "0.5rem" }} variant="outlined">
-						/
-					</Button>
-					<IconButton 
-						sx={{float: "right"}} 
-						aria-label="agregar"
-						color="primary"
-						onClick={irANuevaCarpeta}>
-						<Icono style={{ height: "3rem", width: "3rem" }} />
-					</IconButton>
-				</Grid>
-			</Grid>
+		<div className="p-3">
+			<div className="flex justify-between w-full">
+				<Boton soloBorde>/</Boton>
+				<Boton soloBorde onClick={irANuevaCarpeta} className="rounded-full h-12 w-12 px-3">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+						<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+					</svg>
+				</Boton>
+			</div>
 			<ListaDeCarpetas />
-			<Button 
-				startIcon={<IconoLogout />}
-				color="inherit"
-				sx={{textTransform: "none", float: "right" }} 
-				variant="outlined" 
-				onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
+			<Boton soloBorde className="w-40 mt-2 flex justify-between" onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+				</svg>				
 				Cerrar sesión
-			</Button>
+			</Boton>
 		</div>
 	);
 };
