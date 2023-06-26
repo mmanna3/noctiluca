@@ -16,8 +16,10 @@ const CarpetasHome = () => {
 					<PlusIcon />
 				</Boton>
 			</div>
-			<ListaDeCarpetas />
-			<Boton soloBorde className="mt-2 w-44 h-11 flex justify-around items-center" onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
+			<div className="mt-4 mb-8 px-2">
+				<ListaDeCarpetas />
+			</div>
+			<Boton soloBorde className="w-44 h-11 flex justify-around items-center" onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
 				<XMarkIcon className="w-6"/>		
 				Cerrar sesión
 			</Boton>
