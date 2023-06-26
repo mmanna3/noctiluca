@@ -9,6 +9,7 @@ import NuevoEscrito from "./Pantallas/NuevoEscrito";
 import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
+import Matriz from "./Pantallas/Matriz";
 
 const App = () => {
 
@@ -30,14 +31,14 @@ const App = () => {
 					{
 						!user && !localStorage.getItem("noctiluca.uid") ?
 							<Route path="/" element={<Logueo/>} /> :
-							<>
+							<Route element={<Matriz/>}>
 								<Route path={rutas.RAIZ} element={<CarpetasHome/>} />
 								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
 								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
 								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta/>} />
 								<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
-							</>
+							</Route>
 					}
 				</Routes>
 			</Router>
