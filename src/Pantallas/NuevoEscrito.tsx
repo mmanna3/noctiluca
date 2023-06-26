@@ -56,7 +56,7 @@ const NuevoEscrito = () => {
 			variant="standard"
 			placeholder="Texto"
 			multiline
-			rows={15}
+			// rows={15}
 			value={cuerpo}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
 		/>
