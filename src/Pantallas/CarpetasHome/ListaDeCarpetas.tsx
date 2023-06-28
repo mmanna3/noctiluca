@@ -17,11 +17,9 @@ function CarpetasLista() {
 
 	return (
 		<div>
-			{carpetas.map((carpeta: ICarpeta) => (
-				<div className="border-b" key={carpeta.titulo}>
-					<CarpetasListaItem {...carpeta}/>
-				</div>
-			))}
+			{carpetas.map((carpeta: ICarpeta) =>
+				<CarpetasListaItem {...carpeta} key={carpeta.titulo}/>
+			)}
 		</div>
 	);
 }
