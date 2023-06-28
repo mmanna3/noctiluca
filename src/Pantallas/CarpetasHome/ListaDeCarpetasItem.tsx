@@ -1,6 +1,5 @@
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import { ICarpeta } from "../../Interfaces";
+import ListaItem from "../../components/listaItem";
 import usarNavegacion from "../../usarNavegacion";
 
 const ListaDeCarpetasItem = (carpeta: ICarpeta) => {
@@ -14,15 +13,7 @@ const ListaDeCarpetasItem = (carpeta: ICarpeta) => {
 	else
 		texto = `${cantidadDeEscritos} escritos`;
 
-	return <>
-		<ListItem alignItems="flex-start">
-			<ListItemText
-				primary={carpeta.titulo}
-				secondary={texto}
-				onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}
-			/>
-		</ListItem>
-	</>;
+	return <ListaItem titulo={carpeta.titulo} subtitulo={texto} onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}/>;
 };
 
 export default ListaDeCarpetasItem;
