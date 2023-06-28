@@ -1,9 +1,11 @@
-import TextField from "@mui/material/TextField";
-import Icono from "@mui/icons-material/ChevronLeft";
 import { useState } from "react";
-import { Button, Grid } from "@mui/material";
 import { crearCarpeta } from "../firebase";
 import usarNavegacion from "../usarNavegacion";
+import Encabezado from "../components/encabezado";
+import { Boton } from "../components/botones";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
+import Cuerpo from "../components/cuerpo";
+import Input from "../components/input";
 
 const NuevaCarpeta = () => {
 
@@ -26,28 +28,16 @@ const NuevaCarpeta = () => {
 		setErrorTitulo("");
 	};
 
-	return <Grid
-		container
-		flexDirection="column"
-		rowGap="20px"
-		padding="1em"
-	>
-		<Grid container>
-			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={crearYVolver}>
-				Crear carpeta
-			</Button>
-		</Grid>
-		<TextField
-			id="outlined-name"
-			InputProps={{ autoFocus: true, style: { fontSize: "1.5rem" } }}
-			variant="standard"
-			placeholder="Título"
-			value={titulo}
-			onChange={cuandoCambie}
-			error={errorTitulo.length > 0}
-			helperText={errorTitulo}
-		/>
-	</Grid>;
+	return <>
+		<Encabezado>
+			<Boton soloBorde className="flex justify-between items-center" onClick={crearYVolver}>
+				<ChevronLeftIcon className="w-4 h-4 mr-2"/>Crear carpeta
+			</Boton>
+		</Encabezado>
+		<Cuerpo>
+			<Input valor={titulo} autoFocus placeholder="Título" cuandoCambie={cuandoCambie} hayError={errorTitulo.length > 0} mensajeError={errorTitulo}/>
+		</Cuerpo>
+	</>;
 };
 
 export default NuevaCarpeta;
