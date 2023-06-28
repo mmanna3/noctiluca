@@ -1,33 +1,28 @@
-import FlechaIzquierda from "@mui/icons-material/ChevronLeft";
-import Icono from "@mui/icons-material/AddCircle";
-import { Button, Grid } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
 import usarNavegacion from "../../usarNavegacion";
 import ListaDeEscritos from "./ListaDeEscritos";
+import Encabezado from "../../components/encabezado";
+import { Boton, BotonIcono } from "../../components/botones";
+import { PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import Cuerpo from "../../components/cuerpo";
 
-const Home = () => {
+
+const EscritosHome = () => {
 
 	const {irACarpetasHome, irANuevoEscrito, carpetaId} = usarNavegacion();
 
-	return (
-		<div style={{padding: "1em"}}>
-			<Grid container>
-				<Grid item xs={12}>
-					<Button style={{ marginTop: "0.5rem" }} startIcon={<FlechaIzquierda />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={irACarpetasHome}>
-						/{carpetaId}
-					</Button>
-					<IconButton 
-						sx={{float: "right"}} 
-						aria-label="agregar"
-						color="primary"
-						onClick={irANuevoEscrito}>
-						<Icono style={{ height: "3rem", width: "3rem" }} />
-					</IconButton>
-				</Grid>
-			</Grid>
+	return <>
+		<Encabezado>
+			<Boton soloBorde className="flex justify-between items-center" onClick={irACarpetasHome}>
+				<ChevronLeftIcon className="w-5 h-5 mr-2"/>/{carpetaId}
+			</Boton>
+			<BotonIcono onClick={irANuevoEscrito}>
+				<PlusIcon className="h-8 w-8" />
+			</BotonIcono>
+		</Encabezado>
+		<Cuerpo>
 			<ListaDeEscritos />
-		</div>
-	);
+		</Cuerpo>
+	</>;
 };
 
-export default Home;
+export default EscritosHome;
