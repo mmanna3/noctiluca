@@ -1,7 +1,7 @@
 import { auth } from "../../firebase";
 import ListaDeCarpetas from "./ListaDeCarpetas";
 import usarNavegacion from "../../usarNavegacion";
-import Boton from "../../components/boton";
+import {Boton, BotonIcono} from "../../components/botones";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import Encabezado from "../../components/encabezado";
 import Cuerpo from "../../components/cuerpo";
@@ -14,9 +14,9 @@ const CarpetasHome = () => {
 		<>
 			<Encabezado>
 				<Boton soloBorde>/</Boton>
-				<Boton onClick={irANuevaCarpeta} className="rounded-full h-12 w-12 px-3">
-					<PlusIcon />
-				</Boton>
+				<BotonIcono onClick={irANuevaCarpeta}>
+					<PlusIcon className="h-8 w-8" />
+				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
 				<ListaDeCarpetas />
