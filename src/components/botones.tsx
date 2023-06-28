@@ -29,7 +29,7 @@ export const BotonIcono = (props: Props) => {
 
 	return (
 		<button onClick={props.onClick} 
-			className={`bg-slate-900 hover:bg-yellow-200 hover:text-slate-900 hover:border-black hover:border text-white font-bold rounded-full h-10 w-10 pl-1${props.className}`}>
+			className={`bg-slate-900 hover:bg-yellow-200 hover:text-slate-900 hover:border-black hover:border text-white font-bold rounded-full h-10 w-10 pl-1 ${props.className}`}>
 			{props.children}
 		</button>
 	);	
