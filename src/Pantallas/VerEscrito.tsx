@@ -6,12 +6,15 @@ import { useEffect, useState } from "react";
 import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import { IEscrito } from "../Interfaces";
 import usarNavegacion from "../usarNavegacion";
+import AutenticarParaVerDiario from "../components/autenticarParaVerDiario";
+import { tieneAccesoAlDiario } from "../utilidades";
 
 
 const VerEscrito = () => {
 
 	const {volverAEscritosHome, carpetaId, escritoId} = usarNavegacion();
-
+	const [hayQueRerenderizar, setHayQueRerenderizar] = useState(false);
+	
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
@@ -38,6 +41,10 @@ const VerEscrito = () => {
 			eliminarEscrito(carpetaId, escritoId);
 		volverAEscritosHome();
 	};
+
+
+	if (carpetaId === "diario" && !tieneAccesoAlDiario()) 
+		return <AutenticarParaVerDiario cuandoAutentica={() => setHayQueRerenderizar(true)}/>;
 
 	return <Grid
 		container
