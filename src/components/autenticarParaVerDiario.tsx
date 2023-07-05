@@ -22,12 +22,12 @@ const AutenticarParaVerDiario = ({cuandoAutentica}: Props) => {
 
 	return <>
 		<Encabezado>
-            Esta es una sección protegida que requiere contraseña
+			<div className="px-2">Esta es una sección protegida que requiere contraseña</div>
 		</Encabezado>
 		<Cuerpo>
 			<div className="mb-6">
-				<input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" value={password} onChange={(texto) => setPassword(texto.target.value)} type="password" placeholder="******************" />
-				{hayError && <p className="text-red-500 text-xs italic">Contraseña incorrecta bro.</p>}
+				<input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline" id="password" value={password} onChange={(texto) => setPassword(texto.target.value)} type="password" placeholder="******************" />
+				{hayError && <p className="text-red-500 text-sm pl-1">Contraseña incorrecta bro</p>}
 			</div>
 		</Cuerpo>
 	</>;
