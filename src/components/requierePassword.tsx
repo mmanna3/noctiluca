@@ -1,9 +1,6 @@
-import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import usarNavegacion from "../usarNavegacion";
-
-import PedirPasswordPantalla from "../Pantallas/pedirPasswordPantalla";
-import { useAppContext } from "../AppContext";
+import { ReactNode } from "react";
 import UseSeguridad from "../Pantallas/UseSeguridad";
+import PedirPasswordPantalla from "../Pantallas/pedirPasswordPantalla";
 
 interface Props {
     children: ReactNode;
@@ -11,24 +8,9 @@ interface Props {
 
 const ChequearSiRequierePassword = ({children}: Props) => {
 
-	const {carpetaId} = usarNavegacion();	
-	const [tieneAcceso, setTieneAcceso] = useState(false);
-	const {estado} = useAppContext(); 
-	const {tieneAccesoAlDiario} = UseSeguridad();
+	const {tieneAcceso} = UseSeguridad();
+	console.log("tiene acceso es:", tieneAcceso);
 
-	useMemo(() => console.log("nuevo password es", estado), [estado]);
-	useMemo(() => {
-		console.log("RequierePassword: el estado es:", estado.password);
-		console.log("RequierePassword: carpetaId es:", carpetaId);
-		console.log("Tiene acceso", tieneAcceso);
-		if ((carpetaId !== "diario" && carpetaId !== "Ξ"))
-			setTieneAcceso(true);
-		else {
-			setTieneAcceso(tieneAccesoAlDiario());
-		} 	
-			
-	}, [estado, carpetaId]);
-    
 	if (!tieneAcceso)
 		return <PedirPasswordPantalla />;
 

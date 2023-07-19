@@ -1,33 +1,41 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../AppContext";
 import { configuracion } from "../firebase";
+import usarNavegacion from "../usarNavegacion";
 import { fechaEsDeHaceMenosDe5Minutos } from "../utilidades";
 
+const CARPETAS_QUE_REQUIEREN_ACCESO = ["Ξ", "diario"]; 
+
 const UseSeguridad = ()  => {
-	const [passwordCorrecto, setPasswordCorrecto] = useState<string>();
+	const [tieneAcceso, setTieneAcceso] = useState<boolean>();
 	const {estado} = useAppContext(); 
+	const {carpetaId} = usarNavegacion();
 
 	useEffect(() => {
-		const obtenerPassword = async () => {
-			const password = await configuracion.obtenerPassword();
-			if (password != undefined)
-				setPasswordCorrecto(password);
+		const obtenerPasswordCorrecto = async () => {
+			const passwordCorrecto = await configuracion.obtenerPassword();
+
+			console.log("el password de la config es: ", passwordCorrecto);
+
+			if ((carpetaId && !CARPETAS_QUE_REQUIEREN_ACCESO.includes(carpetaId)) || (
+				estado.password == passwordCorrecto && 
+				estado.fechaHoraQueIngresoElPassword && 
+				fechaEsDeHaceMenosDe5Minutos(new Date(estado.fechaHoraQueIngresoElPassword)))) {
+				setTieneAcceso(true);
+				console.log("seteando tiene acceso en true");
+			}
+				
+			else 
+				setTieneAcceso(false);
+
 		};
           
-		obtenerPassword();
+		obtenerPasswordCorrecto();
+		console.log("useEffect useSeguridad");
           
-	}, []);
+	}, [estado]);
 
-
-	const tieneAccesoAlDiario = (): boolean => {
-    
-		if (estado.password == passwordCorrecto && estado.fechaHoraQueIngresoElPassword && fechaEsDeHaceMenosDe5Minutos(new Date(estado.fechaHoraQueIngresoElPassword)))
-			return true;
-		else 
-			return false;
-	};
-
-	return {tieneAccesoAlDiario};
+	return {tieneAcceso};
 };
 
 export default UseSeguridad;
