@@ -6,14 +6,12 @@ import { useEffect, useState } from "react";
 import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import { IEscrito } from "../Interfaces";
 import usarNavegacion from "../usarNavegacion";
-import AutenticarParaVerDiario from "../components/autenticarParaVerDiario";
-import { tieneAccesoAlDiario } from "../utilidades";
+import ChequearSiRequierePassword from "../components/requierePassword";
 
 
 const VerEscrito = () => {
 
 	const {volverAEscritosHome, carpetaId, escritoId} = usarNavegacion();
-	const [hayQueRerenderizar, setHayQueRerenderizar] = useState(false);
 	
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
@@ -42,53 +40,51 @@ const VerEscrito = () => {
 		volverAEscritosHome();
 	};
 
-
-	if (carpetaId === "diario" && !tieneAccesoAlDiario()) 
-		return <AutenticarParaVerDiario cuandoAutentica={() => setHayQueRerenderizar(true)}/>;
-
-	return <Grid
-		container
-		flexDirection="column"
-		rowGap="20px"
-		padding="1em"
-	>
-		<Grid container>
-			<Grid item xs={12}>
-				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={editarYVolver}>
-					{carpetaId}/{escritoId}
-				</Button>
-				<IconoTacho 
-					sx={{float: "right"}}
-					aria-label="agregar"
-					color="disabled"
-					onClick={() => eliminar()}>
-					<Icono style={{ height: "3rem", width: "3rem" }} />
-				</IconoTacho>
+	return <ChequearSiRequierePassword>
+		<Grid
+			container
+			flexDirection="column"
+			rowGap="20px"
+			padding="1em"
+		>
+			<Grid container>
+				<Grid item xs={12}>
+					<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={editarYVolver}>
+						{carpetaId}/{escritoId}
+					</Button>
+					<IconoTacho 
+						sx={{float: "right"}}
+						aria-label="agregar"
+						color="disabled"
+						onClick={() => eliminar()}>
+						<Icono style={{ height: "3rem", width: "3rem" }} />
+					</IconoTacho>
+				</Grid>
 			</Grid>
-		</Grid>
-		<TextField
-			id="outlined-name"
-			InputProps={{ disableUnderline: true, style: { fontSize: "1.5rem" } }}
-			variant="standard"
-			placeholder="Título"
-			value={titulo}
-			// onClick={() => setEdicionTitulo((prev) => !prev)}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
-		/>
-		<TextField			
-			id="outlined-multiline-static"
-			InputProps={{ disableUnderline: true }}
-			variant="standard"
-			placeholder="Texto"
-			multiline
-			// rows={cuerpo.split(/\r\n|\r|\n/).length + 2}
-			value={cuerpo}
-			// style={{height: "300px"}}
-			// onClick={() => setEdicionCuerpo((prev) => !prev)}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
-		/>
+			<TextField
+				id="outlined-name"
+				InputProps={{ disableUnderline: true, style: { fontSize: "1.5rem" } }}
+				variant="standard"
+				placeholder="Título"
+				value={titulo}
+				// onClick={() => setEdicionTitulo((prev) => !prev)}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
+			/>
+			<TextField			
+				id="outlined-multiline-static"
+				InputProps={{ disableUnderline: true }}
+				variant="standard"
+				placeholder="Texto"
+				multiline
+				// rows={cuerpo.split(/\r\n|\r|\n/).length + 2}
+				value={cuerpo}
+				// style={{height: "300px"}}
+				// onClick={() => setEdicionCuerpo((prev) => !prev)}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
+			/>
 
-	</Grid>;
+		</Grid>
+	</ChequearSiRequierePassword>;
 };
 
 export default VerEscrito;

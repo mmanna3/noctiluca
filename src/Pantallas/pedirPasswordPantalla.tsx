@@ -1,22 +1,23 @@
-import Encabezado from "./encabezado";
-import Cuerpo from "./cuerpo";
-import { validarPasswordYEscribirloEnLocalStorage } from "../utilidades";
-import { useMemo, useState } from "react";
+import Encabezado from "../components/encabezado";
+import Cuerpo from "../components/cuerpo";
+import { passwordEsValido } from "../utilidades";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../AppContext";
 
-interface Props {
-    cuandoAutentica: () => void;
-}
 
-const AutenticarParaVerDiario = ({cuandoAutentica}: Props) => {
+const PedirPasswordPantalla = () => {
 
 	const [hayError, setHayError] = useState(false);
 	const [password, setPassword] = useState("");
+	const {cambiarEstado} = useAppContext(); 
 
-	useMemo(() => {
+
+	useEffect(() => {
 		if (password.length === 4)
-			if (validarPasswordYEscribirloEnLocalStorage(password))
-				cuandoAutentica();
-			else
+			if (passwordEsValido(password)) {
+				console.log("el password es correcto");
+				cambiarEstado({password: password, fechaHoraQueIngresoElPassword: new Date().toString()});
+			} else
 				setHayError(true);
 	}, [password]);
 
@@ -33,4 +34,4 @@ const AutenticarParaVerDiario = ({cuandoAutentica}: Props) => {
 	</>;
 };
 
-export default AutenticarParaVerDiario;
+export default PedirPasswordPantalla;

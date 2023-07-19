@@ -136,6 +136,23 @@ export const editarEscrito = (carpetaId: string, escrito: IEscrito) => {
 	return update(dbRef, updates);
 };
 
+export const configuracion = {
+	obtenerPassword: async () => {
+		const dbRef = ref(db, "Ξ");
+		try {
+			const snapshot = await get(child(dbRef, "password"));
+			if (snapshot.exists()) {
+				console.log(snapshot.val());
+				return (snapshot.val() as IEscrito).cuerpo;
+			} else {
+				console.log("No se encontró el escrito password en la carpeta Ξ");
+			}
+		} catch(e) {
+			console.error(e);
+		}
+	}
+};
+
 export const eliminarEscrito = (carpetaId: string, id: string) => {
 	const dbRef = ref(db, `${carpetaId}/${id}`);
 	return remove(dbRef);

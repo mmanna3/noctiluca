@@ -10,6 +10,7 @@ import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
 import Matriz from "./Pantallas/Matriz";
+import { AppContextProvider } from "./AppContext";
 
 const App = () => {
 
@@ -26,22 +27,24 @@ const App = () => {
 
 	return (
 		<div className='App font-roboto'>
-			<Router>
-				<Routes>
-					{
-						!user && !localStorage.getItem("noctiluca.uid") ?
-							<Route path="/" element={<Logueo/>} /> :
-							<Route element={<Matriz/>}>
-								<Route path={rutas.RAIZ} element={<CarpetasHome/>} />
-								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
-								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
-								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
-								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta/>} />
-								<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
-							</Route>
-					}
-				</Routes>
-			</Router>
+			<AppContextProvider>
+				<Router>
+					<Routes>
+						{
+							!user && !localStorage.getItem("noctiluca.uid") ?
+								<Route path="/" element={<Logueo/>} /> :
+								<Route element={<Matriz/>}>
+									<Route path={rutas.RAIZ} element={<CarpetasHome/>} />
+									<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
+									<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
+									<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
+									<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta/>} />
+									<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
+								</Route>
+						}
+					</Routes>
+				</Router>
+			</AppContextProvider>
 		</div>
 	);
 };
