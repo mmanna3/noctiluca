@@ -1,17 +1,20 @@
-import Icono from "@mui/icons-material/ChevronLeft";
-import IconoTacho from "@mui/icons-material/DeleteOutline";
-import { Button, Grid } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import { IEscrito } from "../Interfaces";
+import { Boton } from "../components/botones";
+import Cuerpo from "../components/cuerpo";
+import Encabezado from "../components/encabezado";
+import Input from "../components/input";
+import ChequearSiRequierePassword from "../components/requierePassword";
+import Textarea from "../components/textarea";
+import { editarEscrito, eliminarEscrito, obtenerEscrito } from "../firebase";
 import usarNavegacion from "../usarNavegacion";
 
 
 const VerEscrito = () => {
 
 	const {volverAEscritosHome, carpetaId, escritoId} = usarNavegacion();
-
+	
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 
@@ -39,48 +42,37 @@ const VerEscrito = () => {
 		volverAEscritosHome();
 	};
 
-	return <Grid
-		container
-		flexDirection="column"
-		rowGap="20px"
-		padding="1em"
-	>
-		<Grid container>
-			<Grid item xs={12}>
-				<Button startIcon={<Icono />} sx={{textTransform: "none", float: "left" }} variant="outlined" onClick={editarYVolver}>
-					{carpetaId}/{escritoId}
-				</Button>
-				<IconoTacho 
-					sx={{float: "right"}}
-					aria-label="agregar"
-					color="disabled"
-					onClick={() => eliminar()}>
-					<Icono style={{ height: "3rem", width: "3rem" }} />
-				</IconoTacho>
-			</Grid>
-		</Grid>
-		<TextField
-			id="outlined-name"
-			InputProps={{ disableUnderline: true, style: { fontSize: "1.5rem" } }}
-			variant="standard"
-			placeholder="Título"
-			value={titulo}
-			// onClick={() => setEdicionTitulo((prev) => !prev)}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
-		/>
-		<TextField			
-			id="outlined-multiline-static"
-			InputProps={{ disableUnderline: true }}
-			variant="standard"
-			placeholder="Texto"
-			multiline
-			rows={cuerpo.split(/\r\n|\r|\n/).length + 2}
-			value={cuerpo}
-			// onClick={() => setEdicionCuerpo((prev) => !prev)}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
-		/>
-
-	</Grid>;
+	return <ChequearSiRequierePassword>
+		<Encabezado>
+			<Boton soloBorde className="flex justify-between items-center" onClick={editarYVolver}>
+				<ChevronLeftIcon className="w-4 h-4 mr-2" />{carpetaId}/{escritoId}
+			</Boton>
+			<Boton soloBorde className="border-none text-slate-500" onClick={eliminar}>
+				<TrashIcon className="h-5 w-5" />
+			</Boton>
+		</Encabezado><Cuerpo>
+			<Input 
+				valor={titulo}
+				sinBorde
+				autoFocus 
+				placeholder="Título"
+				textoReGrande
+				cuandoCambie={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)} 
+				// hayError={errorTitulo.length > 0} 
+				// mensajeError={errorTitulo}
+			/>
+			<div className="pt-6">
+				<Textarea 
+					valor={cuerpo}
+					sinBorde
+					placeholder="Texto"
+					cuandoCambie={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCuerpo(e.target.value)} 
+					// hayError={errorTitulo.length > 0} 
+					// mensajeError={errorTitulo}
+				/>
+			</div>
+		</Cuerpo>
+	</ChequearSiRequierePassword>;
 };
 
 export default VerEscrito;

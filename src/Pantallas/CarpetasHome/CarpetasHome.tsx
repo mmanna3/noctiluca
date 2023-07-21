@@ -1,43 +1,31 @@
-import FlechaIzquierda from "@mui/icons-material/ChevronLeft";
-import Icono from "@mui/icons-material/AddCircle";
-import IconoLogout from "@mui/icons-material/Logout";
-import IconButton from "@mui/material/IconButton";
 import { auth } from "../../firebase";
 import ListaDeCarpetas from "./ListaDeCarpetas";
 import usarNavegacion from "../../usarNavegacion";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import {Boton, BotonIcono} from "../../components/botones";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import Encabezado from "../../components/encabezado";
+import Cuerpo from "../../components/cuerpo";
 
 const CarpetasHome = () => {
 
 	const {irANuevaCarpeta} = usarNavegacion();
 
 	return (
-		<div style={{padding: "1em"}}>
-			<Grid container>
-				<Grid item xs={12}>
-					<Button sx={{textTransform: "none", float: "left", marginTop: "0.5rem" }} variant="outlined">
-						/
-					</Button>
-					<IconButton 
-						sx={{float: "right"}} 
-						aria-label="agregar"
-						color="primary"
-						onClick={irANuevaCarpeta}>
-						<Icono style={{ height: "3rem", width: "3rem" }} />
-					</IconButton>
-				</Grid>
-			</Grid>
-			<ListaDeCarpetas />
-			<Button 
-				startIcon={<IconoLogout />}
-				color="inherit"
-				sx={{textTransform: "none", float: "right" }} 
-				variant="outlined" 
-				onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
+		<>
+			<Encabezado>
+				<Boton soloBorde>/</Boton>
+				<BotonIcono onClick={irANuevaCarpeta}>
+					<PlusIcon className="h-8 w-8" />
+				</BotonIcono>
+			</Encabezado>
+			<Cuerpo>
+				<ListaDeCarpetas />
+			</Cuerpo>
+			<Boton soloBorde className="w-44 flex justify-around items-center" onClick={() => {auth.signOut(); localStorage.removeItem("noctiluca.uid");}}>
+				<XMarkIcon className="w-6"/>		
 				Cerrar sesión
-			</Button>
-		</div>
+			</Boton>
+		</>
 	);
 };
 

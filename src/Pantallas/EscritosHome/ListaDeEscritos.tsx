@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import ListaDeEscritosItem from "./ListaDeEscritosItem";
 import { escucharEscritos } from "../../firebase";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
 import { IEscrito } from "../../Interfaces";
 import { useParams } from "react-router-dom";
 
@@ -24,18 +21,11 @@ function ListaDeEscritos() {
 	}, []);
 
 	return (
-		<Grid container   
-			alignItems="center"
-			justifyContent="center">
-			<List sx={{ width: "100%", bgcolor: "background.paper" }}>
-				{escritos.map((escrito: IEscrito) => (
-					<Grid item xs={12} key={escrito.id}>
-						<ListaDeEscritosItem {...escrito} />
-						<Divider variant='inset' component='li' />
-					</Grid>
-				))}
-			</List>
-		</Grid>
+		<div>
+			{escritos.map((escrito: IEscrito) =>
+				<ListaDeEscritosItem {...escrito} key={escrito.titulo}/>
+			)}
+		</div>
 	);
 }
 

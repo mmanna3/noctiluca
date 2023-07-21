@@ -1,7 +1,10 @@
-import TextField from "@mui/material/TextField";
-import Icono from "@mui/icons-material/ChevronLeft";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { Button, Grid } from "@mui/material";
+import { Boton } from "../components/botones";
+import Cuerpo from "../components/cuerpo";
+import Encabezado from "../components/encabezado";
+import Input from "../components/input";
+import Textarea from "../components/textarea";
 import { crearEscrito } from "../firebase";
 import usarNavegacion from "../usarNavegacion";
 
@@ -29,39 +32,32 @@ const NuevoEscrito = () => {
 		setErrorTitulo("");
 	};
 
-	return <Grid
-		container
-		flexDirection="column"
-		rowGap="20px"
-		padding="1em"
-	>
-		<Grid container>
-			<Button startIcon={<Icono />} sx={{textTransform: "none" }} variant="outlined" onClick={crearYVolver}>
-				Crear en /{carpetaId}
-			</Button>
-		</Grid>
-		<TextField
-			id="outlined-name"
-			InputProps={{ disableUnderline: true, autoFocus: true, style: { fontSize: "1.5rem" } }}
-			variant="standard"
-			placeholder="Título"
-			value={titulo}
-			onChange={cuandoCambieElTitulo}
-			error={errorTitulo.length > 0}
-			helperText={errorTitulo}
-		/>
-		<TextField			
-			id="outlined-multiline-static"
-			InputProps={{ disableUnderline: true }}
-			variant="standard"
-			placeholder="Texto"
-			multiline
-			rows={15}
-			value={cuerpo}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCuerpo(e.target.value)}
-		/>
-
-	</Grid>;
+	return <>
+		<Encabezado>
+			<Boton soloBorde className="flex justify-between items-center" onClick={crearYVolver}>
+				<ChevronLeftIcon className="w-4 h-4 mr-2" />Crear en /{carpetaId}
+			</Boton>
+		</Encabezado><Cuerpo>
+			<Input 
+				valor={titulo}
+				sinBorde
+				autoFocus 
+				placeholder="Título"
+				textoReGrande
+				cuandoCambie={cuandoCambieElTitulo} 
+				hayError={errorTitulo.length > 0} 
+				mensajeError={errorTitulo}/>
+			<div className="pt-6">
+				<Textarea 
+					valor={cuerpo}
+					sinBorde
+					placeholder="Texto"
+					cuandoCambie={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCuerpo(e.target.value)} 
+					hayError={errorTitulo.length > 0} 
+					mensajeError={errorTitulo}/>
+			</div>
+		</Cuerpo>
+	</>;
 };
 
 export default NuevoEscrito;

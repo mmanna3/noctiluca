@@ -1,6 +1,3 @@
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-import List from "@mui/material/List";
 import { useEffect, useState } from "react";
 import CarpetasListaItem from "./ListaDeCarpetasItem";
 import { escucharCarpetas } from "../../firebase";
@@ -19,18 +16,11 @@ function CarpetasLista() {
 	}, []);
 
 	return (
-		<Grid container   
-			alignItems="center"
-			justifyContent="center">
-			<List sx={{ width: "100%", bgcolor: "background.paper" }}>
-				{carpetas.map((carpeta: ICarpeta) => (
-					<Grid item xs={12} key={carpeta.titulo}>
-						<CarpetasListaItem {...carpeta}/>
-						<Divider variant='inset' component='li' />
-					</Grid>
-				))}
-			</List>
-		</Grid>
+		<div>
+			{carpetas.map((carpeta: ICarpeta) =>
+				<CarpetasListaItem {...carpeta} key={carpeta.titulo}/>
+			)}
+		</div>
 	);
 }
 
