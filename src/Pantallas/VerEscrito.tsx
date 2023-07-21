@@ -47,7 +47,7 @@ const VerEscrito = () => {
 			<Boton soloBorde className="flex justify-between items-center" onClick={editarYVolver}>
 				<ChevronLeftIcon className="w-4 h-4 mr-2" />{carpetaId}/{escritoId}
 			</Boton>
-			<Boton soloBorde className="border-none text-slate-500" onClick={eliminar}>
+			<Boton soloBorde className="border-none text-slate-400" onClick={eliminar}>
 				<TrashIcon className="h-5 w-5" />
 			</Boton>
 		</Encabezado><Cuerpo>
@@ -61,7 +61,7 @@ const VerEscrito = () => {
 				// hayError={errorTitulo.length > 0} 
 				// mensajeError={errorTitulo}
 			/>
-			<div className="pt-6">
+			<div className="pt-4">
 				<Textarea 
 					valor={cuerpo}
 					sinBorde

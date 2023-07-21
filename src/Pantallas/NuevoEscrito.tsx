@@ -47,7 +47,7 @@ const NuevoEscrito = () => {
 				cuandoCambie={cuandoCambieElTitulo} 
 				hayError={errorTitulo.length > 0} 
 				mensajeError={errorTitulo}/>
-			<div className="pt-6">
+			<div className="pt-4">
 				<Textarea 
 					valor={cuerpo}
 					sinBorde
