@@ -2,8 +2,8 @@ interface Props {
     valor: string;
     cuandoCambie: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder: string;
-    hayError: boolean;
-    mensajeError: string;
+    hayError?: boolean;
+    mensajeError?: string;
     autoFocus: boolean;
 	sinBorde?: boolean;
 	textoReGrande?: boolean;
