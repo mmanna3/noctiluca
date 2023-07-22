@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/noctiluca/static/css/main.1eab4824.css",
-    "main.js": "/noctiluca/static/js/main.cc0af172.js",
+    "main.css": "/noctiluca/static/css/main.b8b11507.css",
+    "main.js": "/noctiluca/static/js/main.4d8693c6.js",
     "static/js/787.49162ce7.chunk.js": "/noctiluca/static/js/787.49162ce7.chunk.js",
     "static/media/roboto-all-500-normal.woff": "/noctiluca/static/media/roboto-all-500-normal.0ab669b7a0d19b178f57.woff",
     "static/media/roboto-all-700-normal.woff": "/noctiluca/static/media/roboto-all-700-normal.a457fde362a540fcadff.woff",
@@ -37,12 +37,12 @@
     "static/media/roboto-greek-ext-300-normal.woff2": "/noctiluca/static/media/roboto-greek-ext-300-normal.35b9d6be04b95f0f0530.woff2",
     "static/media/roboto-greek-ext-700-normal.woff2": "/noctiluca/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/noctiluca/index.html",
-    "main.1eab4824.css.map": "/noctiluca/static/css/main.1eab4824.css.map",
-    "main.cc0af172.js.map": "/noctiluca/static/js/main.cc0af172.js.map",
+    "main.b8b11507.css.map": "/noctiluca/static/css/main.b8b11507.css.map",
+    "main.4d8693c6.js.map": "/noctiluca/static/js/main.4d8693c6.js.map",
     "787.49162ce7.chunk.js.map": "/noctiluca/static/js/787.49162ce7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1eab4824.css",
-    "static/js/main.cc0af172.js"
+    "static/css/main.b8b11507.css",
+    "static/js/main.4d8693c6.js"
   ]
 }
