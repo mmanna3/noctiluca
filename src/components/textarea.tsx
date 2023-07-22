@@ -16,7 +16,7 @@ const Textarea = (props: Props) => {
 			value={props.valor} 
 			placeholder={props.placeholder} 
 			onChange={props.cuandoCambie} 
-			className={`border-b w-full text-slate-900 h-screen text-base px-2 py-2 resize-none focus:outline-none ${props.sinBorde && "border-none"}`}/>
+			className={`text-justify border-b w-full text-slate-900 h-screen text-base px-2 py-2 resize-none focus:outline-none ${props.sinBorde && "border-none"}`}/>
 		{props.hayError ? 
 			<p className="mt-2 px-2 text-red-600">{props.mensajeError}</p> : ""}
 	</>;
