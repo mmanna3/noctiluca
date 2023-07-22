@@ -6,7 +6,7 @@ interface Props {
 
 const Cuerpo = (props: Props) => {
 	
-	return <div className="mt-6 mb-8 px-2">
+	return <div className="mt-6 mb-8">
 		{props.children}
 	</div>;
 };
