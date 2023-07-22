@@ -6,7 +6,7 @@ interface Props {
 
 const Encabezado = (props: Props) => {
 	
-	return <div className="flex justify-between w-full">
+	return <div className="flex justify-between w-full px-2">
 		{props.children}
 	</div>;
 };
