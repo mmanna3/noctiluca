@@ -61,7 +61,7 @@ const VerEscrito = () => {
 				// hayError={errorTitulo.length > 0} 
 				// mensajeError={errorTitulo}
 			/>
-			<div className="pt-4">
+			<div className="pt-2">
 				<Textarea 
 					valor={cuerpo}
 					sinBorde
