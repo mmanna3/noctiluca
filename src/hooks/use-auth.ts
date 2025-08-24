@@ -1,8 +1,8 @@
-import { api } from "@/api/api";
-import { LoginDTO } from "@/api/clients";
 import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { api } from "../api/api";
+import { LoginDTO } from "../api/clients";
 
 interface AuthState {
 	token: string | null;

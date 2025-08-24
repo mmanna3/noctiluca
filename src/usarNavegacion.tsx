@@ -1,13 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 
 const usarNavegacion = () => {
-
 	const navigate = useNavigate();
 	const { carpetaId, id } = useParams();
 
 	return {
 		escritoId: id,
 		carpetaId: carpetaId,
+		irALogin: () => {
+			navigate("/login", { replace: true });
+		},
 		irACarpetasHome: () => {
 			navigate("/", { replace: true });
 		},
@@ -25,7 +27,7 @@ const usarNavegacion = () => {
 		},
 		irANuevaCarpeta: () => {
 			navigate("/nueva-carpeta", { replace: true });
-		}
+		},
 	};
 };
 

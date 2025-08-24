@@ -1,10 +1,8 @@
-import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { useAuth } from "../hooks/use-auth";
 
 export class HttpClientWrapper {
 	private publicRoutes = ["/api/Auth/login", "/api/Publico"];
-
-	constructor() {}
 
 	fetch(url: RequestInfo, init?: RequestInit): Promise<Response> {
 		const token = useAuth.getState().token;
