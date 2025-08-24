@@ -1,6 +1,6 @@
 import { IEscrito } from "../../Interfaces";
-import usarNavegacion from "../../usarNavegacion";
 import ListaItem from "../../components/listaItem";
+import usarNavegacion from "../../usarNavegacion";
 
 interface IEscritoInput extends IEscrito {
 	id: string;
@@ -12,7 +12,7 @@ const Escrito = (escrito: IEscritoInput) => {
 	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : ""); 
 
 	return <>
-		<ListaItem titulo={escrito.titulo} subtitulo={obtenerResumen(escrito.cuerpo)} onClick={() => irAVerEscrito(escrito.id)}/>
+		<ListaItem fecha={escrito.fechaHora} titulo={escrito.titulo} subtitulo={obtenerResumen(escrito.cuerpo)} onClick={() => irAVerEscrito(escrito.id)}/>
 	</>;
 };
 
