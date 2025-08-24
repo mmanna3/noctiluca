@@ -1,19 +1,22 @@
-import { ICarpeta } from "../../Interfaces";
+import { ICarpetaDTO } from "@/api/clients";
 import ListaItem from "../../components/listaItem";
 import usarNavegacion from "../../usarNavegacion";
 
-const ListaDeCarpetasItem = (carpeta: ICarpeta) => {
+const ListaDeCarpetasItem = (carpeta: ICarpetaDTO) => {
+	const { verEscritosDeLaCarpeta } = usarNavegacion();
 
-	const {verEscritosDeLaCarpeta} = usarNavegacion();
+	const texto = "cantidad de escritos";
+	// const cantidadDeEscritos = Object.keys(carpeta.escritos).length;
+	// if (cantidadDeEscritos === 1) texto = "1 escrito";
+	// else texto = `${cantidadDeEscritos} escritos`;
 
-	let texto = "";
-	const cantidadDeEscritos = Object.keys(carpeta.escritos).length;
-	if (cantidadDeEscritos === 1)
-		texto = "1 escrito";
-	else
-		texto = `${cantidadDeEscritos} escritos`;
-
-	return <ListaItem titulo={carpeta.titulo} subtitulo={texto} onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}/>;
+	return (
+		<ListaItem
+			titulo={carpeta.titulo}
+			subtitulo={texto}
+			onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}
+		/>
+	);
 };
 
 export default ListaDeCarpetasItem;

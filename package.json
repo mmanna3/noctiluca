@@ -42,9 +42,9 @@
 		"zustand": "^5.0.8"
 	},
 	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
+		"start": "craco start",
+		"build": "craco build",
+		"test": "craco test",
 		"limpiar": "rm -rf node_modules && rm -f yarn.lock && yarn",
 		"deploy": "yarn build && gh-pages -d build",
 		"lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
@@ -71,6 +71,7 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+		"@craco/craco": "^7.1.0",
 		"@typescript-eslint/eslint-plugin": "^5.39.0",
 		"@typescript-eslint/parser": "^5.39.0",
 		"eslint": "^8.24.0",

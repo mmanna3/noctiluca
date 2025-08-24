@@ -1,3 +1,5 @@
+import { api } from "@/api/api";
+import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/botones";
 import Cuerpo from "../../components/cuerpo";
@@ -10,6 +12,11 @@ const CarpetasHome = () => {
 	const { irANuevaCarpeta, irALogin } = usarNavegacion();
 
 	const { userRole, userName, logout } = useAuth();
+
+	const { data, isLoading, isError } = useApiQuery({
+		key: ["carpetas"],
+		fn: async () => await api.carpetaAll(),
+	});
 
 	const cerrarSesion = () => {
 		logout();
@@ -25,7 +32,7 @@ const CarpetasHome = () => {
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
-				<ListaDeCarpetas />
+				<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
 			<Boton soloBorde className='w-44 flex justify-around items-center' onClick={cerrarSesion}>
 				<XMarkIcon className='w-6' />

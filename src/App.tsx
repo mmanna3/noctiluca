@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { AppContextProvider } from "./AppContext";
 import { RequiereAutenticacion } from "./components/requiere-autenticacion";
@@ -10,38 +11,42 @@ import NuevoEscrito from "./Pantallas/NuevoEscrito";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
 
+const queryClient = new QueryClient();
+
 const App = () => {
 	return (
 		<div className='App font-roboto'>
-			<AppContextProvider>
-				<Router>
-					<Routes>
-						<Route path='/login' element={<Login />} />
-						<Route
-							element={
-								<RequiereAutenticacion>
-									<Matriz />
-								</RequiereAutenticacion>
-							}
-						>
-							<Route path={rutas.RAIZ} element={<CarpetasHome />} />
-							<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome />} />
-							<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome />} />
-							<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
-							<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
-							<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
-						</Route>
-						<Route
-							path='*'
-							element={
-								<RequiereAutenticacion>
-									<CarpetasHome />
-								</RequiereAutenticacion>
-							}
-						/>
-					</Routes>
-				</Router>
-			</AppContextProvider>
+			<QueryClientProvider client={queryClient}>
+				<AppContextProvider>
+					<Router>
+						<Routes>
+							<Route path='/login' element={<Login />} />
+							<Route
+								element={
+									<RequiereAutenticacion>
+										<Matriz />
+									</RequiereAutenticacion>
+								}
+							>
+								<Route path={rutas.RAIZ} element={<CarpetasHome />} />
+								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome />} />
+								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome />} />
+								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
+								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
+								<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
+							</Route>
+							<Route
+								path='*'
+								element={
+									<RequiereAutenticacion>
+										<CarpetasHome />
+									</RequiereAutenticacion>
+								}
+							/>
+						</Routes>
+					</Router>
+				</AppContextProvider>
+			</QueryClientProvider>
 		</div>
 	);
 };
