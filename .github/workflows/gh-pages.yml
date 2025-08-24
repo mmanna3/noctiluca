@@ -25,6 +25,15 @@ jobs:
       - name: Buildear
         run: yarn build
 
+      - name: Debug FTP connection
+        run: |
+          echo "Testing FTP connection to ${{ secrets.FTP_HOST }}"
+          echo "Username: ${{ secrets.FTP_USERNAME }}"
+          echo "Password: ${{ secrets.FTP_PASSWORD }}"
+          echo "Server dir: ${{ secrets.NOCTILUCA_SERVER_DIR }}"
+          # Test basic connectivity
+          nc -zv ${{ secrets.FTP_HOST }} ${{ secrets.FTP_PORT || '21' }} || echo "Connection test failed"
+
       - name: Deployar por FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -33,3 +42,16 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./build/
           server-dir: ${{ secrets.NOCTILUCA_SERVER_DIR }}
+          # Configuraciones adicionales para resolver problemas de conexión
+          port: ${{ secrets.FTP_PORT || '21' }}
+          protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
+          dangerous-clean-slate: true
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.hg*
+            **/.hg*/**
+            **/.svn/**
+            **/.DS_Store
+            **/Thumbs.db
