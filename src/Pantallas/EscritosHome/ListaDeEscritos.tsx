@@ -1,5 +1,4 @@
 import { NotaDTO } from "@/api/clients";
-import { useParams } from "react-router-dom";
 import ListaDeEscritosItem from "./ListaDeEscritosItem";
 
 interface IListaDeCarpetas {
@@ -9,8 +8,6 @@ interface IListaDeCarpetas {
 }
 
 function ListaDeEscritos(props: IListaDeCarpetas) {
-	const { carpetaId } = useParams();
-
 	return (
 		<div>
 			{props.data.map((escrito: NotaDTO) => (
