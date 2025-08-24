@@ -2,11 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const usarNavegacion = () => {
 	const navigate = useNavigate();
-	const { carpetaId, id } = useParams();
+	const { carpetaId, id, carpetaTitulo } = useParams();
 
 	return {
 		escritoId: id,
 		carpetaId: carpetaId,
+		carpetaTitulo: carpetaTitulo,
 		irALogin: () => {
 			navigate("/login", { replace: true });
 		},
@@ -22,8 +23,8 @@ const usarNavegacion = () => {
 		irAVerEscrito: (escritoId: string) => {
 			navigate(`ver/${escritoId}`);
 		},
-		irANuevoEscrito: () => {
-			navigate(`/${carpetaId}/nuevo`, { replace: true });
+		irANuevoEscrito: (carpetaTitulo: string) => {
+			navigate(`/${carpetaId}/${carpetaTitulo}/nuevo`, { replace: true });
 		},
 		irANuevaCarpeta: () => {
 			navigate("/nueva-carpeta", { replace: true });

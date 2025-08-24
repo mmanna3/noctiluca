@@ -22,7 +22,7 @@ const EscritosHome = () => {
 				<Boton soloBorde className='flex justify-between items-center' onClick={irACarpetasHome}>
 					<ChevronLeftIcon className='w-4 h-4 mr-2' />/{data?.titulo}
 				</Boton>
-				<BotonIcono onClick={irANuevoEscrito}>
+				<BotonIcono onClick={() => irANuevoEscrito(data?.titulo || "")}>
 					<PlusIcon className='h-8 w-8' />
 				</BotonIcono>
 			</Encabezado>
