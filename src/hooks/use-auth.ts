@@ -17,7 +17,7 @@ interface AuthState {
 interface DecodedToken {
 	role: string;
 	name?: string;
-	[key: string]: any;
+	[key: string]: string | number | boolean | undefined;
 }
 
 export const useAuth = create<AuthState>()(

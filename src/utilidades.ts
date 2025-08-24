@@ -41,7 +41,6 @@ export const validarPasswordYEscribirloEnLocalStorage = (password: string): bool
 
 export const fechaEsDeHaceMenosDe5Minutos = (fecha: Date): boolean => {
 	const cincoMinutos = 1000 * 60 * 5;
-	const quinceSegundosParaTest = 1000 * 15;
 	const horaHace5Minutos = Date.now() - cincoMinutos;
 
 	return fecha > new Date(horaHace5Minutos);

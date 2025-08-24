@@ -14,7 +14,7 @@ const ListaDeCarpetasItem = (carpeta: ICarpetaDTO) => {
 		<ListaItem
 			titulo={carpeta.titulo}
 			subtitulo={texto}
-			onClick={() => verEscritosDeLaCarpeta(carpeta.id!)}
+			onClick={() => carpeta.id && verEscritosDeLaCarpeta(carpeta.id)}
 		/>
 	);
 };
