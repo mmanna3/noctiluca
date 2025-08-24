@@ -2,8 +2,8 @@ import { api } from "@/api/api";
 import { NotaDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
 import { Boton } from "../components/botones";
 import Cuerpo from "../components/cuerpo";
 import Encabezado from "../components/encabezado";
@@ -20,7 +20,7 @@ const VerEscrito = () => {
 		fn: async () => await api.notaGET(Number(escritoId)),
 	});
 
-	const mutation = useApiMutation({
+	const edicion = useApiMutation({
 		fn: async (notaActualizada: NotaDTO) => {
 			if (!escritoId) return;
 			await api.notaPUT(Number(escritoId), notaActualizada);
@@ -29,25 +29,39 @@ const VerEscrito = () => {
 		mensajeDeExito: `Escrito '${data?.titulo}' actualizado correctamente`,
 	});
 
-	const [titulo, setTitulo] = useState(data?.titulo || "");
-	const [cuerpo, setCuerpo] = useState(data?.cuerpo || "");
+	const eliminacion = useApiMutation({
+		fn: async () => {
+			if (!escritoId) return;
+			await api.notaDELETE(Number(escritoId));
+		},
+		antesDeMensajeExito: () => volverAEscritosHome(),
+		mensajeDeExito: `Escrito '${data?.titulo}' eliminado`,
+	});
+
+	const [titulo, setTitulo] = useState("");
+	const [cuerpo, setCuerpo] = useState("");
+
+	useEffect(() => {
+		if (data) {
+			setTitulo(data.titulo);
+			setCuerpo(data.cuerpo ?? "");
+		}
+	}, [data]);
 
 	const editarYVolver = () => {
 		if (escritoId && titulo != "")
-			mutation.mutate(
+			edicion.mutate(
 				new NotaDTO({
 					id: Number(escritoId),
 					titulo,
 					cuerpo,
 				}),
 			);
-		volverAEscritosHome();
 	};
 
-	// const eliminar = () => {
-	// 	if (carpetaId && escritoId) eliminarEscrito(carpetaId, escritoId);
-	// 	volverAEscritosHome();
-	// };
+	const eliminarYVolver = () => {
+		if (escritoId) eliminacion.mutate(Number(escritoId));
+	};
 
 	if (isLoading) return <div>Cargando...</div>;
 	if (isError) return <div>Error al cargar el escrito</div>;
@@ -58,12 +72,11 @@ const VerEscrito = () => {
 			<Encabezado>
 				<Boton soloBorde className='flex justify-between items-center' onClick={editarYVolver}>
 					<ChevronLeftIcon className='w-4 h-4 mr-2' />
-					{data.carpetaId}/{escritoId}
-					{/* {data.carpetaTitulo}/{escritoId} */}
+					{data.carpetaTitulo}/{titulo}
 				</Boton>
-				{/* <Boton soloBorde className='border-none text-slate-400' onClick={eliminar}>
+				<Boton soloBorde className='border-none text-slate-400' onClick={eliminarYVolver}>
 					<TrashIcon className='h-5 w-5' />
-				</Boton> */}
+				</Boton>
 			</Encabezado>
 			<Cuerpo>
 				<Input

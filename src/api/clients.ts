@@ -324,6 +324,48 @@ export class Client {
 	/**
 	 * @return Success
 	 */
+	carpetaDELETE(id: number): Promise<void> {
+		let url_ = this.baseUrl + "/api/Carpeta/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "DELETE",
+			headers: {},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaDELETE(_response);
+		});
+	}
+
+	protected processCarpetaDELETE(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
 	notaAll(): Promise<NotaDTO[]> {
 		let url_ = this.baseUrl + "/api/Nota";
 		url_ = url_.replace(/[?&]$/, "");
@@ -497,6 +539,48 @@ export class Client {
 	}
 
 	protected processNotaPUT(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	notaDELETE(id: number): Promise<void> {
+		let url_ = this.baseUrl + "/api/Nota/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "DELETE",
+			headers: {},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processNotaDELETE(_response);
+		});
+	}
+
+	protected processNotaDELETE(response: Response): Promise<void> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -700,6 +784,7 @@ export class NotaDTO implements INotaDTO {
 	cuerpo?: string | undefined;
 	fechaHora?: Date;
 	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
 
 	constructor(data?: INotaDTO) {
 		if (data) {
@@ -718,6 +803,7 @@ export class NotaDTO implements INotaDTO {
 				? new Date(_data["fechaHora"].toString())
 				: <any>undefined;
 			this.carpetaId = _data["carpetaId"];
+			this.carpetaTitulo = _data["carpetaTitulo"];
 		}
 	}
 
@@ -735,6 +821,7 @@ export class NotaDTO implements INotaDTO {
 		data["cuerpo"] = this.cuerpo;
 		data["fechaHora"] = this.fechaHora ? this.fechaHora.toISOString() : <any>undefined;
 		data["carpetaId"] = this.carpetaId;
+		data["carpetaTitulo"] = this.carpetaTitulo;
 		return data;
 	}
 }
@@ -745,6 +832,7 @@ export interface INotaDTO {
 	cuerpo?: string | undefined;
 	fechaHora?: Date;
 	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
 }
 
 export class ApiException extends Error {
