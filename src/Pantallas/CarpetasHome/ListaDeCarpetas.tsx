@@ -1,6 +1,4 @@
 import { CarpetaDTO } from "@/api/clients";
-import { useState } from "react";
-import { ICarpeta } from "../../Interfaces";
 import CarpetasListaItem from "./ListaDeCarpetasItem";
 
 interface IListaDeCarpetas {
@@ -10,8 +8,6 @@ interface IListaDeCarpetas {
 }
 
 function CarpetasLista(props: IListaDeCarpetas) {
-	const [carpetas, setCarpetas] = useState<ICarpeta[]>([]);
-
 	return (
 		<div>
 			{props.data.map((carpeta: CarpetaDTO) => (

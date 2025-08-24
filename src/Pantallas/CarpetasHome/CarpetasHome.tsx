@@ -11,7 +11,7 @@ import ListaDeCarpetas from "./ListaDeCarpetas";
 const CarpetasHome = () => {
 	const { irANuevaCarpeta, irALogin } = usarNavegacion();
 
-	const { userRole, userName, logout } = useAuth();
+	const { logout } = useAuth();
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["carpetas"],
