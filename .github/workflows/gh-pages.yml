@@ -1,0 +1,35 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkoutear repo
+        uses: actions/checkout@v4
+
+      - name: Set de versión de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: yarn install
+
+      - name: Buildear
+        run: yarn build
+
+      - name: Deployar por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./build/
+          server-dir: ${{ secrets.NOCTILUCA_SERVER_DIR }}

@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
+import { CarpetaDTO } from "@/api/clients";
 import CarpetasListaItem from "./ListaDeCarpetasItem";
-import { escucharCarpetas } from "../../firebase";
-import { ICarpeta } from "../../Interfaces";
 
-function CarpetasLista() {
-	const [carpetas, setCarpetas] = useState<ICarpeta[]>([]);
+interface IListaDeCarpetas {
+	data: CarpetaDTO[];
+	isLoading: boolean;
+	isError: boolean;
+}
 
-	useEffect(() => {
-		const callbackCarpetas = (_carpetas: ICarpeta[]) => {
-			console.log(_carpetas);
-			setCarpetas(_carpetas);
-		};
-
-		escucharCarpetas(callbackCarpetas);
-	}, []);
-
+function CarpetasLista(props: IListaDeCarpetas) {
 	return (
 		<div>
-			{carpetas.map((carpeta: ICarpeta) =>
-				<CarpetasListaItem {...carpeta} key={carpeta.titulo}/>
-			)}
+			{props.data.map((carpeta: CarpetaDTO) => (
+				<CarpetasListaItem {...carpeta} key={carpeta.titulo} />
+			))}
 		</div>
 	);
 }

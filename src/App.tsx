@@ -1,50 +1,54 @@
-import { User } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import { auth } from "./firebase";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
+import { AppContextProvider } from "./AppContext";
+import { RequiereAutenticacion } from "./components/requiere-autenticacion";
 import CarpetasHome from "./Pantallas/CarpetasHome/CarpetasHome";
 import EscritosHome from "./Pantallas/EscritosHome/EscritosHome";
-import Logueo from "./Pantallas/Logueo";
-import NuevoEscrito from "./Pantallas/NuevoEscrito";
+import Login from "./Pantallas/login";
+import Matriz from "./Pantallas/Matriz";
 import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
+import NuevoEscrito from "./Pantallas/NuevoEscrito";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
-import Matriz from "./Pantallas/Matriz";
-import { AppContextProvider } from "./AppContext";
+
+const queryClient = new QueryClient();
 
 const App = () => {
-
-	const [user, setUser] = useState<User | null>(null);		
-
-	useEffect(()=>{		
-		auth.onAuthStateChanged((user)=> {
-			setUser(user);
-			if (user) {				
-				localStorage.setItem("noctiluca.uid", user.uid);
-			}			
-		});
-	}, []);
-
 	return (
 		<div className='App font-roboto'>
-			<AppContextProvider>
-				<Router>
-					<Routes>
-						{
-							!user && !localStorage.getItem("noctiluca.uid") ?
-								<Route path="/" element={<Logueo/>} /> :
-								<Route element={<Matriz/>}>
-									<Route path={rutas.RAIZ} element={<CarpetasHome/>} />
-									<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome/>} />
-									<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome/>} />
-									<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito/>} />
-									<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta/>} />
-									<Route path={rutas.VER_ESCRITO} element={<VerEscrito/>} />
-								</Route>
-						}
-					</Routes>
-				</Router>
-			</AppContextProvider>
+			<Toaster />
+			<QueryClientProvider client={queryClient}>
+				<AppContextProvider>
+					<Router>
+						<Routes>
+							<Route path='/login' element={<Login />} />
+							<Route
+								element={
+									<RequiereAutenticacion>
+										<Matriz />
+									</RequiereAutenticacion>
+								}
+							>
+								<Route path={rutas.RAIZ} element={<CarpetasHome />} />
+								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome />} />
+								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome />} />
+								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
+								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
+								<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
+							</Route>
+							<Route
+								path='*'
+								element={
+									<RequiereAutenticacion>
+										<CarpetasHome />
+									</RequiereAutenticacion>
+								}
+							/>
+						</Routes>
+					</Router>
+				</AppContextProvider>
+			</QueryClientProvider>
 		</div>
 	);
 };

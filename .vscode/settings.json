@@ -20,6 +20,7 @@
     },
     "peacock.color": "#1857a4",
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit",
         "source.organizeImports": "explicit"
