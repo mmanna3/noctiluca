@@ -12,15 +12,15 @@ import { editarEscrito, eliminarEscrito } from "../firebase";
 import usarNavegacion from "../usarNavegacion";
 
 const VerEscrito = () => {
-	const { volverAEscritosHome, carpetaId, escritoId } = usarNavegacion();
+	const { volverAEscritosHome, escritoId } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["escrito" + escritoId],
 		fn: async () => await api.notaGET(Number(escritoId)),
 	});
 
-	const [titulo, setTitulo] = useState("");
-	const [cuerpo, setCuerpo] = useState("");
+	const [titulo, setTitulo] = useState(data?.titulo || "");
+	const [cuerpo, setCuerpo] = useState(data?.cuerpo || "");
 
 	const editarYVolver = () => {
 		if (carpetaId && escritoId && titulo != "")
@@ -50,7 +50,7 @@ const VerEscrito = () => {
 			</Encabezado>
 			<Cuerpo>
 				<Input
-					valor={data.titulo}
+					valor={titulo}
 					sinBorde
 					autoFocus
 					placeholder='Título'
@@ -61,7 +61,7 @@ const VerEscrito = () => {
 				/>
 				<div className='pt-2'>
 					<Textarea
-						valor={data.cuerpo || ""}
+						valor={cuerpo}
 						sinBorde
 						placeholder='Texto'
 						cuandoCambie={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCuerpo(e.target.value)}

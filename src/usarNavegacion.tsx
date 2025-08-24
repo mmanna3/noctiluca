@@ -13,8 +13,8 @@ const usarNavegacion = () => {
 		irACarpetasHome: () => {
 			navigate("/", { replace: true });
 		},
-		verEscritosDeLaCarpeta: (_carpetaId: string) => {
-			navigate(`/${_carpetaId}/escritos`);
+		verEscritosDeLaCarpeta: (carpetaId: number) => {
+			navigate(`/${carpetaId}/escritos`);
 		},
 		volverAEscritosHome: () => {
 			navigate(`/${carpetaId}/escritos`, { replace: true });

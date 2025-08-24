@@ -5,16 +5,16 @@ import usarNavegacion from "../../usarNavegacion";
 const ListaDeCarpetasItem = (carpeta: ICarpetaDTO) => {
 	const { verEscritosDeLaCarpeta } = usarNavegacion();
 
-	const texto = "cantidad de escritos";
-	// const cantidadDeEscritos = Object.keys(carpeta.escritos).length;
-	// if (cantidadDeEscritos === 1) texto = "1 escrito";
-	// else texto = `${cantidadDeEscritos} escritos`;
+	const cantidadDeEscritos = carpeta.cantidadDeNotas;
+	let texto = "";
+	if (cantidadDeEscritos === 1) texto = "1 escrito";
+	else texto = `${cantidadDeEscritos} escritos`;
 
 	return (
 		<ListaItem
 			titulo={carpeta.titulo}
 			subtitulo={texto}
-			onClick={() => verEscritosDeLaCarpeta(carpeta.titulo)}
+			onClick={() => verEscritosDeLaCarpeta(carpeta.id!)}
 		/>
 	);
 };
