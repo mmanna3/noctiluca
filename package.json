@@ -19,6 +19,7 @@
 		"firebase": "^9.10.0",
 		"firebaseui": "^6.0.2",
 		"gh-pages": "^4.0.0",
+		"jwt-decode": "^4.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.4.2",
@@ -37,7 +38,8 @@
 		"workbox-range-requests": "^6.5.4",
 		"workbox-routing": "^6.5.4",
 		"workbox-strategies": "^6.5.4",
-		"workbox-streams": "^6.5.4"
+		"workbox-streams": "^6.5.4",
+		"zustand": "^5.0.8"
 	},
 	"scripts": {
 		"start": "react-scripts start",
@@ -68,6 +70,7 @@
 		]
 	},
 	"devDependencies": {
+		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
 		"@typescript-eslint/eslint-plugin": "^5.39.0",
 		"@typescript-eslint/parser": "^5.39.0",
 		"eslint": "^8.24.0",
