@@ -1,6 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/botones";
 import Cuerpo from "../../components/cuerpo";
 import Encabezado from "../../components/encabezado";
@@ -9,7 +9,7 @@ import usarNavegacion from "../../usarNavegacion";
 import ListaDeCarpetas from "./ListaDeCarpetas";
 
 const CarpetasHome = () => {
-	const { irANuevaCarpeta, irALogin } = usarNavegacion();
+	const { irANuevaCarpeta, irALogin, irAPapelera } = usarNavegacion();
 
 	const { logout } = useAuth();
 
@@ -34,10 +34,15 @@ const CarpetasHome = () => {
 			<Cuerpo>
 				<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
-			<Boton soloBorde className='w-44 flex justify-around items-center' onClick={cerrarSesion}>
-				<XMarkIcon className='w-6' />
-				Cerrar sesión
-			</Boton>
+			<div className='flex justify-between w-full'>
+				<Boton soloBorde className='w-44 flex justify-around items-center' onClick={cerrarSesion}>
+					<XMarkIcon className='w-6' />
+					Cerrar sesión
+				</Boton>
+				<Boton soloBorde className='w-20 flex justify-around items-center' onClick={irAPapelera}>
+					<TrashIcon className='w-6' />
+				</Boton>
+			</div>
 		</>
 	);
 };

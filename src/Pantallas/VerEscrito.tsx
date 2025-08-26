@@ -4,6 +4,7 @@ import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Boton } from "../components/botones";
 import Cuerpo from "../components/cuerpo";
 import Encabezado from "../components/encabezado";
@@ -13,7 +14,9 @@ import Textarea from "../components/textarea";
 import usarNavegacion from "../usarNavegacion";
 
 const VerEscrito = () => {
-	const { volverAEscritosHome, escritoId } = usarNavegacion();
+	const { volverAEscritosHome, volverAPapelera, escritoId } = usarNavegacion();
+	const location = useLocation();
+	const vieneDePapelera = location.pathname.includes("/papelera");
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["escrito" + escritoId],
@@ -25,17 +28,17 @@ const VerEscrito = () => {
 			if (!escritoId) return;
 			await api.escritoPUT(Number(escritoId), escritoActualizado);
 		},
-		antesDeMensajeExito: () => volverAEscritosHome(),
+		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
 		mensajeDeExito: `Escrito '${data?.titulo}' actualizado correctamente`,
 	});
 
 	const eliminacion = useApiMutation({
 		fn: async () => {
 			if (!escritoId) return;
-			await api.escritoDELETE(Number(escritoId));
+			await api.ponerEnPapelera(Number(escritoId));
 		},
-		antesDeMensajeExito: () => volverAEscritosHome(),
-		mensajeDeExito: `Escrito '${data?.titulo}' eliminado`,
+		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
+		mensajeDeExito: `Escrito '${data?.titulo}' al tacho`,
 	});
 
 	const [titulo, setTitulo] = useState("");
@@ -72,7 +75,7 @@ const VerEscrito = () => {
 			<Encabezado>
 				<Boton soloBorde className='flex justify-between items-center' onClick={editarYVolver}>
 					<ChevronLeftIcon className='w-4 h-4 mr-2' />
-					{data.carpetaTitulo}/{titulo}
+					{vieneDePapelera ? "Papelera" : data.carpetaTitulo}/{titulo}
 				</Boton>
 				<Boton soloBorde className='border-none text-slate-400' onClick={eliminarYVolver}>
 					<TrashIcon className='h-5 w-5' />

@@ -9,6 +9,7 @@ import Login from "./Pantallas/login";
 import Matriz from "./Pantallas/Matriz";
 import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
 import NuevoEscrito from "./Pantallas/NuevoEscrito";
+import Papelera from "./Pantallas/Papelera";
 import VerEscrito from "./Pantallas/VerEscrito";
 import rutas from "./rutas";
 
@@ -35,7 +36,9 @@ const App = () => {
 								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome />} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
 								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
+								<Route path={rutas.PAPELERA} element={<Papelera />} />
 								<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
+								<Route path={rutas.VER_ESCRITO_PAPELERA} element={<VerEscrito />} />
 							</Route>
 							<Route
 								path='*'

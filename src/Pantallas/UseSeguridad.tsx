@@ -12,19 +12,24 @@ const UseSeguridad = () => {
 	const { carpetaId } = usarNavegacion();
 	const { isAuthenticated } = useAuth();
 
+	// Solo hacer la consulta si hay carpetaId (no estamos en papelera)
 	const { data } = useApiQuery({
 		key: ["carpeta" + carpetaId],
 		fn: async () => await api.carpetaGET(Number(carpetaId)),
+		activado: !!carpetaId,
 	});
 
 	useEffect(() => {
 		const verificarAcceso = () => {
-			if (
-				(data && data.requiereAutenticacion === false) ||
-				(isAuthenticated &&
-					estado.fechaHoraQueIngresoElPassword &&
-					fechaEsDeHaceMenosDe5Minutos(new Date(estado.fechaHoraQueIngresoElPassword)))
-			) {
+			const tieneAutenticacionValida =
+				isAuthenticated &&
+				estado.fechaHoraQueIngresoElPassword &&
+				fechaEsDeHaceMenosDe5Minutos(new Date(estado.fechaHoraQueIngresoElPassword));
+
+			const noRequiereAutenticacion = data && data.requiereAutenticacion === false;
+			const esPapelera = !carpetaId;
+
+			if (esPapelera || noRequiereAutenticacion || tieneAutenticacionValida) {
 				setTieneAcceso(true);
 				console.log("seteando tiene acceso en true");
 			} else {
@@ -34,7 +39,7 @@ const UseSeguridad = () => {
 
 		verificarAcceso();
 		console.log("useEffect useSeguridad");
-	}, [estado, isAuthenticated, data]);
+	}, [estado, isAuthenticated, data, carpetaId]);
 
 	return { tieneAcceso };
 };
