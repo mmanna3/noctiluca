@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../AppContext";
 import { Button } from "../components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/card";
+import { Card, CardContent } from "../components/card";
 import { Input } from "../components/input-ui";
 import { LoadingSpinner } from "../components/loading-spinner";
 import { useAuth } from "../hooks/use-auth";
 
 export default function Login() {
-	const [usuario, setUsuario] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +24,7 @@ export default function Login() {
 		setIsLoading(true);
 
 		try {
-			const success = await login(usuario, password);
+			const success = await login("mana", password);
 			if (success) {
 				cambiarEstado({ fechaHoraQueIngresoElPassword: new Date().toString() });
 				navigate(from, { replace: true });
@@ -42,28 +41,9 @@ export default function Login() {
 	return (
 		<div className='flex items-center justify-center min-h-screen bg-gray-100'>
 			<Card className='w-[350px]'>
-				<CardHeader>
-					<CardTitle className='text-2xl font-bold text-center'>Iniciar Sesión</CardTitle>
-				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit} className='space-y-4'>
 						<div className='space-y-2'>
-							<label htmlFor='usuario' className='text-sm font-medium'>
-								Usuario
-							</label>
-							<Input
-								id='usuario'
-								type='text'
-								value={usuario}
-								onChange={(e) => setUsuario(e.target.value)}
-								required
-								disabled={isLoading}
-							/>
-						</div>
-						<div className='space-y-2'>
-							<label htmlFor='password' className='text-sm font-medium'>
-								Contraseña
-							</label>
 							<Input
 								id='password'
 								type='password'
