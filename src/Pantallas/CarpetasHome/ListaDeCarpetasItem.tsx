@@ -5,7 +5,7 @@ import usarNavegacion from "../../usarNavegacion";
 const ListaDeCarpetasItem = (carpeta: ICarpetaDTO) => {
 	const { verEscritosDeLaCarpeta } = usarNavegacion();
 
-	const cantidadDeEscritos = carpeta.cantidadDeNotas;
+	const cantidadDeEscritos = carpeta.cantidadDeEscritos;
 	let texto = "";
 	if (cantidadDeEscritos === 1) texto = "1 escrito";
 	else texto = `${cantidadDeEscritos} escritos`;

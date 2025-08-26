@@ -1,8 +1,8 @@
-import { NotaDTO } from "@/api/clients";
+import { EscritoDTO } from "@/api/clients";
 import ListaDeEscritosItem from "./ListaDeEscritosItem";
 
 interface IListaDeCarpetas {
-	data: NotaDTO[];
+	data: EscritoDTO[];
 	isLoading: boolean;
 	isError: boolean;
 }
@@ -10,7 +10,7 @@ interface IListaDeCarpetas {
 function ListaDeEscritos(props: IListaDeCarpetas) {
 	return (
 		<div>
-			{props.data.map((escrito: NotaDTO) => (
+			{props.data.map((escrito: EscritoDTO) => (
 				<ListaDeEscritosItem {...escrito} key={escrito.titulo} />
 			))}
 		</div>

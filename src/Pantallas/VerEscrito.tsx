@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { NotaDTO } from "@/api/clients";
+import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -17,13 +17,13 @@ const VerEscrito = () => {
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["escrito" + escritoId],
-		fn: async () => await api.notaGET(Number(escritoId)),
+		fn: async () => await api.escritoGET(Number(escritoId)),
 	});
 
 	const edicion = useApiMutation({
-		fn: async (notaActualizada: NotaDTO) => {
+		fn: async (escritoActualizado: EscritoDTO) => {
 			if (!escritoId) return;
-			await api.notaPUT(Number(escritoId), notaActualizada);
+			await api.escritoPUT(Number(escritoId), escritoActualizado);
 		},
 		antesDeMensajeExito: () => volverAEscritosHome(),
 		mensajeDeExito: `Escrito '${data?.titulo}' actualizado correctamente`,
@@ -32,7 +32,7 @@ const VerEscrito = () => {
 	const eliminacion = useApiMutation({
 		fn: async () => {
 			if (!escritoId) return;
-			await api.notaDELETE(Number(escritoId));
+			await api.escritoDELETE(Number(escritoId));
 		},
 		antesDeMensajeExito: () => volverAEscritosHome(),
 		mensajeDeExito: `Escrito '${data?.titulo}' eliminado`,
@@ -51,7 +51,7 @@ const VerEscrito = () => {
 	const editarYVolver = () => {
 		if (escritoId && titulo != "")
 			edicion.mutate(
-				new NotaDTO({
+				new EscritoDTO({
 					id: Number(escritoId),
 					titulo,
 					cuerpo,

@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { NotaDTO } from "@/api/clients";
+import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -17,8 +17,8 @@ const NuevoEscrito = () => {
 	const [errorTitulo, setErrorTitulo] = useState("");
 
 	const creacion = useApiMutation({
-		fn: async (nota: NotaDTO) => {
-			await api.notaPOST(nota);
+		fn: async (escrito: EscritoDTO) => {
+			await api.escritoPOST(escrito);
 		},
 		antesDeMensajeExito: () => volverAEscritosHome(),
 		mensajeDeExito: `Escrito '${titulo}' creado`,
@@ -29,7 +29,7 @@ const NuevoEscrito = () => {
 
 		if (carpetaId) {
 			creacion.mutate(
-				new NotaDTO({
+				new EscritoDTO({
 					titulo,
 					cuerpo,
 					carpetaId: Number(carpetaId),

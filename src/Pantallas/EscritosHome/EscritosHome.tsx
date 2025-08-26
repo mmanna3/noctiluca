@@ -27,7 +27,7 @@ const EscritosHome = () => {
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
-				<ListaDeEscritos data={data?.notas || []} isLoading={isLoading} isError={isError} />
+				<ListaDeEscritos data={data?.escritos || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
 		</ChequearSiRequierePassword>
 	);

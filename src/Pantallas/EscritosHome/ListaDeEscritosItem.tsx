@@ -1,8 +1,8 @@
-import { INotaDTO } from "@/api/clients";
+import { IEscritoDTO } from "@/api/clients";
 import ListaItem from "../../components/listaItem";
 import usarNavegacion from "../../usarNavegacion";
 
-const Escrito = (escrito: INotaDTO) => {
+const Escrito = (escrito: IEscritoDTO) => {
 	const { irAVerEscrito } = usarNavegacion();
 	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : "");
 

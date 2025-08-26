@@ -366,8 +366,8 @@ export class Client {
 	/**
 	 * @return Success
 	 */
-	notaAll(): Promise<NotaDTO[]> {
-		let url_ = this.baseUrl + "/api/Nota";
+	escritoAll(): Promise<EscritoDTO[]> {
+		let url_ = this.baseUrl + "/api/Escrito";
 		url_ = url_.replace(/[?&]$/, "");
 
 		let options_: RequestInit = {
@@ -378,11 +378,11 @@ export class Client {
 		};
 
 		return this.http.fetch(url_, options_).then((_response: Response) => {
-			return this.processNotaAll(_response);
+			return this.processEscritoAll(_response);
 		});
 	}
 
-	protected processNotaAll(response: Response): Promise<NotaDTO[]> {
+	protected processEscritoAll(response: Response): Promise<EscritoDTO[]> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -395,7 +395,7 @@ export class Client {
 					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
 				if (Array.isArray(resultData200)) {
 					result200 = [] as any;
-					for (let item of resultData200) result200!.push(NotaDTO.fromJS(item));
+					for (let item of resultData200) result200!.push(EscritoDTO.fromJS(item));
 				} else {
 					result200 = <any>null;
 				}
@@ -411,15 +411,15 @@ export class Client {
 				);
 			});
 		}
-		return Promise.resolve<NotaDTO[]>(null as any);
+		return Promise.resolve<EscritoDTO[]>(null as any);
 	}
 
 	/**
 	 * @param body (optional)
 	 * @return Success
 	 */
-	notaPOST(body: NotaDTO | undefined): Promise<NotaDTO> {
-		let url_ = this.baseUrl + "/api/Nota";
+	escritoPOST(body: EscritoDTO | undefined): Promise<EscritoDTO> {
+		let url_ = this.baseUrl + "/api/Escrito";
 		url_ = url_.replace(/[?&]$/, "");
 
 		const content_ = JSON.stringify(body);
@@ -434,11 +434,11 @@ export class Client {
 		};
 
 		return this.http.fetch(url_, options_).then((_response: Response) => {
-			return this.processNotaPOST(_response);
+			return this.processEscritoPOST(_response);
 		});
 	}
 
-	protected processNotaPOST(response: Response): Promise<NotaDTO> {
+	protected processEscritoPOST(response: Response): Promise<EscritoDTO> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -449,7 +449,7 @@ export class Client {
 				let result200: any = null;
 				let resultData200 =
 					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-				result200 = NotaDTO.fromJS(resultData200);
+				result200 = EscritoDTO.fromJS(resultData200);
 				return result200;
 			});
 		} else if (status !== 200 && status !== 204) {
@@ -462,14 +462,14 @@ export class Client {
 				);
 			});
 		}
-		return Promise.resolve<NotaDTO>(null as any);
+		return Promise.resolve<EscritoDTO>(null as any);
 	}
 
 	/**
 	 * @return Success
 	 */
-	notaGET(id: number): Promise<NotaDTO> {
-		let url_ = this.baseUrl + "/api/Nota/{id}";
+	escritoGET(id: number): Promise<EscritoDTO> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
 		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
 		url_ = url_.replace("{id}", encodeURIComponent("" + id));
 		url_ = url_.replace(/[?&]$/, "");
@@ -482,11 +482,11 @@ export class Client {
 		};
 
 		return this.http.fetch(url_, options_).then((_response: Response) => {
-			return this.processNotaGET(_response);
+			return this.processEscritoGET(_response);
 		});
 	}
 
-	protected processNotaGET(response: Response): Promise<NotaDTO> {
+	protected processEscritoGET(response: Response): Promise<EscritoDTO> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -497,7 +497,7 @@ export class Client {
 				let result200: any = null;
 				let resultData200 =
 					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-				result200 = NotaDTO.fromJS(resultData200);
+				result200 = EscritoDTO.fromJS(resultData200);
 				return result200;
 			});
 		} else if (status !== 200 && status !== 204) {
@@ -510,15 +510,15 @@ export class Client {
 				);
 			});
 		}
-		return Promise.resolve<NotaDTO>(null as any);
+		return Promise.resolve<EscritoDTO>(null as any);
 	}
 
 	/**
 	 * @param body (optional)
 	 * @return Success
 	 */
-	notaPUT(id: number, body: NotaDTO | undefined): Promise<void> {
-		let url_ = this.baseUrl + "/api/Nota/{id}";
+	escritoPUT(id: number, body: EscritoDTO | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
 		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
 		url_ = url_.replace("{id}", encodeURIComponent("" + id));
 		url_ = url_.replace(/[?&]$/, "");
@@ -534,11 +534,11 @@ export class Client {
 		};
 
 		return this.http.fetch(url_, options_).then((_response: Response) => {
-			return this.processNotaPUT(_response);
+			return this.processEscritoPUT(_response);
 		});
 	}
 
-	protected processNotaPUT(response: Response): Promise<void> {
+	protected processEscritoPUT(response: Response): Promise<void> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -564,8 +564,8 @@ export class Client {
 	/**
 	 * @return Success
 	 */
-	notaDELETE(id: number): Promise<void> {
-		let url_ = this.baseUrl + "/api/Nota/{id}";
+	escritoDELETE(id: number): Promise<void> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
 		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
 		url_ = url_.replace("{id}", encodeURIComponent("" + id));
 		url_ = url_.replace(/[?&]$/, "");
@@ -576,11 +576,11 @@ export class Client {
 		};
 
 		return this.http.fetch(url_, options_).then((_response: Response) => {
-			return this.processNotaDELETE(_response);
+			return this.processEscritoDELETE(_response);
 		});
 	}
 
-	protected processNotaDELETE(response: Response): Promise<void> {
+	protected processEscritoDELETE(response: Response): Promise<void> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && response.headers.forEach) {
@@ -646,8 +646,8 @@ export interface ICambiarPasswordDTO {
 export class CarpetaDTO implements ICarpetaDTO {
 	id?: number;
 	titulo!: string;
-	notas?: NotaDTO[] | undefined;
-	readonly cantidadDeNotas?: number;
+	escritos?: EscritoDTO[] | undefined;
+	readonly cantidadDeEscritos?: number;
 	requiereAutenticacion?: boolean;
 
 	constructor(data?: ICarpetaDTO) {
@@ -662,11 +662,11 @@ export class CarpetaDTO implements ICarpetaDTO {
 		if (_data) {
 			this.id = _data["id"];
 			this.titulo = _data["titulo"];
-			if (Array.isArray(_data["notas"])) {
-				this.notas = [] as any;
-				for (let item of _data["notas"]) this.notas!.push(NotaDTO.fromJS(item));
+			if (Array.isArray(_data["escritos"])) {
+				this.escritos = [] as any;
+				for (let item of _data["escritos"]) this.escritos!.push(EscritoDTO.fromJS(item));
 			}
-			(<any>this).cantidadDeNotas = _data["cantidadDeNotas"];
+			(<any>this).cantidadDeEscritos = _data["cantidadDeEscritos"];
 			this.requiereAutenticacion = _data["requiereAutenticacion"];
 		}
 	}
@@ -682,11 +682,11 @@ export class CarpetaDTO implements ICarpetaDTO {
 		data = typeof data === "object" ? data : {};
 		data["id"] = this.id;
 		data["titulo"] = this.titulo;
-		if (Array.isArray(this.notas)) {
-			data["notas"] = [];
-			for (let item of this.notas) data["notas"].push(item.toJSON());
+		if (Array.isArray(this.escritos)) {
+			data["escritos"] = [];
+			for (let item of this.escritos) data["escritos"].push(item.toJSON());
 		}
-		data["cantidadDeNotas"] = this.cantidadDeNotas;
+		data["cantidadDeEscritos"] = this.cantidadDeEscritos;
 		data["requiereAutenticacion"] = this.requiereAutenticacion;
 		return data;
 	}
@@ -695,9 +695,76 @@ export class CarpetaDTO implements ICarpetaDTO {
 export interface ICarpetaDTO {
 	id?: number;
 	titulo: string;
-	notas?: NotaDTO[] | undefined;
-	cantidadDeNotas?: number;
+	escritos?: EscritoDTO[] | undefined;
+	cantidadDeEscritos?: number;
 	requiereAutenticacion?: boolean;
+}
+
+export class EscritoDTO implements IEscritoDTO {
+	id?: number;
+	titulo!: string;
+	cuerpo?: string | undefined;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
+	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
+
+	constructor(data?: IEscritoDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
+
+	init(_data?: any) {
+		if (_data) {
+			this.id = _data["id"];
+			this.titulo = _data["titulo"];
+			this.cuerpo = _data["cuerpo"];
+			this.fechaHoraCreacion = _data["fechaHoraCreacion"]
+				? new Date(_data["fechaHoraCreacion"].toString())
+				: <any>undefined;
+			this.fechaHoraEdicion = _data["fechaHoraEdicion"]
+				? new Date(_data["fechaHoraEdicion"].toString())
+				: <any>undefined;
+			this.carpetaId = _data["carpetaId"];
+			this.carpetaTitulo = _data["carpetaTitulo"];
+		}
+	}
+
+	static fromJS(data: any): EscritoDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new EscritoDTO();
+		result.init(data);
+		return result;
+	}
+
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["id"] = this.id;
+		data["titulo"] = this.titulo;
+		data["cuerpo"] = this.cuerpo;
+		data["fechaHoraCreacion"] = this.fechaHoraCreacion
+			? this.fechaHoraCreacion.toISOString()
+			: <any>undefined;
+		data["fechaHoraEdicion"] = this.fechaHoraEdicion
+			? this.fechaHoraEdicion.toISOString()
+			: <any>undefined;
+		data["carpetaId"] = this.carpetaId;
+		data["carpetaTitulo"] = this.carpetaTitulo;
+		return data;
+	}
+}
+
+export interface IEscritoDTO {
+	id?: number;
+	titulo: string;
+	cuerpo?: string | undefined;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
+	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
 }
 
 export class LoginDTO implements ILoginDTO {
@@ -780,73 +847,6 @@ export interface ILoginResponseDTO {
 	exito?: boolean;
 	token?: string | undefined;
 	error?: string | undefined;
-}
-
-export class NotaDTO implements INotaDTO {
-	id?: number;
-	titulo!: string;
-	cuerpo?: string | undefined;
-	fechaHoraCreacion?: Date | undefined;
-	fechaHoraEdicion?: Date | undefined;
-	carpetaId?: number;
-	carpetaTitulo?: string | undefined;
-
-	constructor(data?: INotaDTO) {
-		if (data) {
-			for (var property in data) {
-				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
-			}
-		}
-	}
-
-	init(_data?: any) {
-		if (_data) {
-			this.id = _data["id"];
-			this.titulo = _data["titulo"];
-			this.cuerpo = _data["cuerpo"];
-			this.fechaHoraCreacion = _data["fechaHoraCreacion"]
-				? new Date(_data["fechaHoraCreacion"].toString())
-				: <any>undefined;
-			this.fechaHoraEdicion = _data["fechaHoraEdicion"]
-				? new Date(_data["fechaHoraEdicion"].toString())
-				: <any>undefined;
-			this.carpetaId = _data["carpetaId"];
-			this.carpetaTitulo = _data["carpetaTitulo"];
-		}
-	}
-
-	static fromJS(data: any): NotaDTO {
-		data = typeof data === "object" ? data : {};
-		let result = new NotaDTO();
-		result.init(data);
-		return result;
-	}
-
-	toJSON(data?: any) {
-		data = typeof data === "object" ? data : {};
-		data["id"] = this.id;
-		data["titulo"] = this.titulo;
-		data["cuerpo"] = this.cuerpo;
-		data["fechaHoraCreacion"] = this.fechaHoraCreacion
-			? this.fechaHoraCreacion.toISOString()
-			: <any>undefined;
-		data["fechaHoraEdicion"] = this.fechaHoraEdicion
-			? this.fechaHoraEdicion.toISOString()
-			: <any>undefined;
-		data["carpetaId"] = this.carpetaId;
-		data["carpetaTitulo"] = this.carpetaTitulo;
-		return data;
-	}
-}
-
-export interface INotaDTO {
-	id?: number;
-	titulo: string;
-	cuerpo?: string | undefined;
-	fechaHoraCreacion?: Date | undefined;
-	fechaHoraEdicion?: Date | undefined;
-	carpetaId?: number;
-	carpetaTitulo?: string | undefined;
 }
 
 export class ApiException extends Error {
