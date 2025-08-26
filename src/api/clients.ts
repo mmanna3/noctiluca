@@ -648,6 +648,7 @@ export class CarpetaDTO implements ICarpetaDTO {
 	titulo!: string;
 	notas?: NotaDTO[] | undefined;
 	readonly cantidadDeNotas?: number;
+	requiereAutenticacion?: boolean;
 
 	constructor(data?: ICarpetaDTO) {
 		if (data) {
@@ -666,6 +667,7 @@ export class CarpetaDTO implements ICarpetaDTO {
 				for (let item of _data["notas"]) this.notas!.push(NotaDTO.fromJS(item));
 			}
 			(<any>this).cantidadDeNotas = _data["cantidadDeNotas"];
+			this.requiereAutenticacion = _data["requiereAutenticacion"];
 		}
 	}
 
@@ -685,6 +687,7 @@ export class CarpetaDTO implements ICarpetaDTO {
 			for (let item of this.notas) data["notas"].push(item.toJSON());
 		}
 		data["cantidadDeNotas"] = this.cantidadDeNotas;
+		data["requiereAutenticacion"] = this.requiereAutenticacion;
 		return data;
 	}
 }
@@ -694,6 +697,7 @@ export interface ICarpetaDTO {
 	titulo: string;
 	notas?: NotaDTO[] | undefined;
 	cantidadDeNotas?: number;
+	requiereAutenticacion?: boolean;
 }
 
 export class LoginDTO implements ILoginDTO {
@@ -782,7 +786,8 @@ export class NotaDTO implements INotaDTO {
 	id?: number;
 	titulo!: string;
 	cuerpo?: string | undefined;
-	fechaHora?: Date;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
 	carpetaId?: number;
 	carpetaTitulo?: string | undefined;
 
@@ -799,8 +804,11 @@ export class NotaDTO implements INotaDTO {
 			this.id = _data["id"];
 			this.titulo = _data["titulo"];
 			this.cuerpo = _data["cuerpo"];
-			this.fechaHora = _data["fechaHora"]
-				? new Date(_data["fechaHora"].toString())
+			this.fechaHoraCreacion = _data["fechaHoraCreacion"]
+				? new Date(_data["fechaHoraCreacion"].toString())
+				: <any>undefined;
+			this.fechaHoraEdicion = _data["fechaHoraEdicion"]
+				? new Date(_data["fechaHoraEdicion"].toString())
 				: <any>undefined;
 			this.carpetaId = _data["carpetaId"];
 			this.carpetaTitulo = _data["carpetaTitulo"];
@@ -819,7 +827,12 @@ export class NotaDTO implements INotaDTO {
 		data["id"] = this.id;
 		data["titulo"] = this.titulo;
 		data["cuerpo"] = this.cuerpo;
-		data["fechaHora"] = this.fechaHora ? this.fechaHora.toISOString() : <any>undefined;
+		data["fechaHoraCreacion"] = this.fechaHoraCreacion
+			? this.fechaHoraCreacion.toISOString()
+			: <any>undefined;
+		data["fechaHoraEdicion"] = this.fechaHoraEdicion
+			? this.fechaHoraEdicion.toISOString()
+			: <any>undefined;
 		data["carpetaId"] = this.carpetaId;
 		data["carpetaTitulo"] = this.carpetaTitulo;
 		return data;
@@ -830,7 +843,8 @@ export interface INotaDTO {
 	id?: number;
 	titulo: string;
 	cuerpo?: string | undefined;
-	fechaHora?: Date;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
 	carpetaId?: number;
 	carpetaTitulo?: string | undefined;
 }

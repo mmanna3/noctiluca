@@ -1,25 +1,26 @@
 import * as React from "react";
 
-type Dispatch = React.Dispatch<React.SetStateAction<{
-  password: string;
-  fechaHoraQueIngresoElPassword: string;
-}>>
+type Dispatch = React.Dispatch<
+	React.SetStateAction<{
+		fechaHoraQueIngresoElPassword: string;
+	}>
+>;
 
 type State = {
-  password: string;
-  fechaHoraQueIngresoElPassword: string;
-}
+	fechaHoraQueIngresoElPassword: string;
+};
 
-const AppContext = React.createContext<{estado: State; cambiarEstado: Dispatch} | undefined>(undefined);
-
+const AppContext = React.createContext<{ estado: State; cambiarEstado: Dispatch } | undefined>(
+	undefined,
+);
 
 interface Hijo {
-    children: React.ReactNode
+	children: React.ReactNode;
 }
 
-const AppContextProvider = ({children}: Hijo) => {
-	const [estado, cambiarEstado] = React.useState({password: "", fechaHoraQueIngresoElPassword: ""});
-	const valor = {estado, cambiarEstado};
+const AppContextProvider = ({ children }: Hijo) => {
+	const [estado, cambiarEstado] = React.useState({ fechaHoraQueIngresoElPassword: "" });
+	const valor = { estado, cambiarEstado };
 	return <AppContext.Provider value={valor}>{children}</AppContext.Provider>;
 };
 
@@ -30,5 +31,5 @@ function useAppContext() {
 	}
 	return context;
 }
-  
-export {AppContextProvider, useAppContext};
+
+export { AppContextProvider, useAppContext };

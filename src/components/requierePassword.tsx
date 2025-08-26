@@ -1,22 +1,18 @@
 import { ReactNode } from "react";
 import UseSeguridad from "../Pantallas/UseSeguridad";
-import PedirPasswordPantalla from "../Pantallas/pedirPasswordPantalla";
+import Login from "../Pantallas/login";
 
 interface Props {
-    children: ReactNode;
+	children: ReactNode;
 }
 
-const ChequearSiRequierePassword = ({children}: Props) => {
-
-	const {tieneAcceso} = UseSeguridad();
+const ChequearSiRequierePassword = ({ children }: Props) => {
+	const { tieneAcceso } = UseSeguridad();
 	console.log("tiene acceso es:", tieneAcceso);
 
-	if (!tieneAcceso)
-		return <PedirPasswordPantalla />;
+	if (!tieneAcceso) return <Login />;
 
-	return <>
-		{children}
-	</>;
+	return <>{children}</>;
 };
 
 export default ChequearSiRequierePassword;

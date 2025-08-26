@@ -9,7 +9,7 @@ const Escrito = (escrito: INotaDTO) => {
 	return (
 		<>
 			<ListaItem
-				fecha={escrito.fechaHora?.toString()}
+				fecha={escrito.fechaHoraCreacion?.toString()}
 				titulo={escrito.titulo}
 				subtitulo={obtenerResumen(escrito.cuerpo || "")}
 				onClick={() => irAVerEscrito(escrito.id?.toString() || "")}

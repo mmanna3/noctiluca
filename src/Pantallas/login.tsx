@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppContext } from "../AppContext";
 import { Button } from "../components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/card";
 import { Input } from "../components/input-ui";
@@ -14,6 +15,7 @@ export default function Login() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { login } = useAuth();
+	const { cambiarEstado } = useAppContext();
 
 	const from = location.state?.from?.pathname || "/";
 
@@ -25,6 +27,7 @@ export default function Login() {
 		try {
 			const success = await login(usuario, password);
 			if (success) {
+				cambiarEstado({ fechaHoraQueIngresoElPassword: new Date().toString() });
 				navigate(from, { replace: true });
 			} else {
 				setError("Usuario o contraseña incorrectos");
