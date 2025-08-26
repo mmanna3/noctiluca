@@ -40,7 +40,7 @@ const CarpetasHome = () => {
 					Cerrar sesión
 				</Boton>
 				<Boton soloBorde className='w-20 flex justify-around items-center' onClick={irAPapelera}>
-					<TrashIcon className='w-6' />
+					<TrashIcon className='w-5 h-5' />
 				</Boton>
 			</div>
 		</>

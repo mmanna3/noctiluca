@@ -29,16 +29,20 @@ const VerEscrito = () => {
 			await api.escritoPUT(Number(escritoId), escritoActualizado);
 		},
 		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
-		mensajeDeExito: `Escrito '${data?.titulo}' actualizado correctamente`,
+		mensajeDeExito: `Escrito '${data?.titulo}' actualizado`,
 	});
 
 	const eliminacion = useApiMutation({
 		fn: async () => {
 			if (!escritoId) return;
-			await api.ponerEnPapelera(Number(escritoId));
+			if (vieneDePapelera) {
+				await api.escritoDELETE(Number(escritoId));
+			} else {
+				await api.ponerEnPapelera(Number(escritoId));
+			}
 		},
 		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
-		mensajeDeExito: `Escrito '${data?.titulo}' al tacho`,
+		mensajeDeExito: `Escrito '${data?.titulo}' ${vieneDePapelera ? "eliminado" : "al tacho"}`,
 	});
 
 	const [titulo, setTitulo] = useState("");

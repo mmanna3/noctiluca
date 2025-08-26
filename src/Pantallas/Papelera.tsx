@@ -18,7 +18,7 @@ const Papelera = () => {
 		<>
 			<Encabezado>
 				<Boton soloBorde className='flex justify-between items-center' onClick={irACarpetasHome}>
-					/Papelera
+					/basura
 				</Boton>
 			</Encabezado>
 			<Cuerpo>
