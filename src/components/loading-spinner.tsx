@@ -5,30 +5,49 @@ interface LoadingSpinnerProps {
 export const LoadingSpinner = ({ className = "" }: LoadingSpinnerProps) => {
 	return (
 		<svg
-			className={`animate-spin ${className}`}
-			width='16'
-			height='16'
+			className={className}
+			width='24'
+			height='24'
 			viewBox='0 0 24 24'
-			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
 		>
-			<circle
-				cx='12'
-				cy='12'
-				r='10'
-				stroke='currentColor'
-				strokeWidth='4'
-				strokeLinecap='round'
-				strokeDasharray='31.416'
-				strokeDashoffset='31.416'
-				className='opacity-25'
+			<style>
+				{`
+					@keyframes spinner_5GqJ {
+						12.5% { x: 13px; y: 1px }
+						25% { x: 13px; y: 1px }
+						37.5% { x: 13px; y: 13px }
+						50% { x: 13px; y: 13px }
+						62.5% { x: 1px; y: 13px }
+						75% { x: 1px; y: 13px }
+						87.5% { x: 1px; y: 1px }
+					}
+					.spinner_9Mto {
+						animation: spinner_5GqJ 1.6s linear infinite;
+						animation-delay: -1.6s;
+					}
+					.spinner_bb12 {
+						animation-delay: -1s;
+					}
+				`}
+			</style>
+			<rect
+				className='spinner_9Mto'
+				x='1'
+				y='1'
+				rx='1'
+				width='10'
+				height='10'
+				fill='currentColor'
 			/>
-			<path
-				d='M4.93 4.93L4.93 4.93A10 10 0 0 1 12 2v10'
-				stroke='currentColor'
-				strokeWidth='4'
-				strokeLinecap='round'
-				className='opacity-75'
+			<rect
+				className='spinner_9Mto spinner_bb12'
+				x='1'
+				y='1'
+				rx='1'
+				width='10'
+				height='10'
+				fill='currentColor'
 			/>
 		</svg>
 	);

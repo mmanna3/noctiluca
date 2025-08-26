@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../AppContext";
-import { Button } from "../components/button";
+
 import { Card, CardContent } from "../components/card";
 import { Input } from "../components/input-ui";
 import { LoadingSpinner } from "../components/loading-spinner";
@@ -54,7 +54,11 @@ export default function Login() {
 							/>
 						</div>
 						{error && <div className='text-sm text-red-500 text-center'>{error}</div>}
-						<Button type='submit' className='w-full' disabled={isLoading}>
+						<button
+							type='submit'
+							disabled={isLoading}
+							className='w-full hover:bg-yellow-200 text-slate-900 border-slate-900 border h-10 px-4 text-sm font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+						>
 							{isLoading ? (
 								<>
 									<LoadingSpinner className='mr-2' />
@@ -63,7 +67,7 @@ export default function Login() {
 							) : (
 								"Ingresar"
 							)}
-						</Button>
+						</button>
 					</form>
 				</CardContent>
 			</Card>
