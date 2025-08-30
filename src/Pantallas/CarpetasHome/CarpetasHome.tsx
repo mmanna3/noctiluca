@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { PlusIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/botones";
 import Cuerpo from "../../components/cuerpo";
@@ -7,11 +8,17 @@ import Encabezado from "../../components/encabezado";
 import { useAuth } from "../../hooks/use-auth";
 import usarNavegacion from "../../usarNavegacion";
 import ListaDeCarpetas from "./ListaDeCarpetas";
+import frasesInicio from "./frases-inicio";
 
 const CarpetasHome = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera } = usarNavegacion();
 
 	const { logout } = useAuth();
+
+	const obtenerFraseAleatoria = () => {
+		const indiceAleatorio = Math.floor(Math.random() * frasesInicio.length);
+		return frasesInicio[indiceAleatorio];
+	};
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["carpetas"],
@@ -22,6 +29,15 @@ const CarpetasHome = () => {
 		logout();
 		irALogin();
 	};
+
+	if (isLoading) {
+		return (
+			<div className='flex flex-col justify-center items-center h-full gap-2'>
+				<LoadingSpinner />
+				<div className='mt-6 text-sm text-gray-500'>{obtenerFraseAleatoria()}</div>
+			</div>
+		);
+	}
 
 	return (
 		<>
