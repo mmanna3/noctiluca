@@ -41,6 +41,9 @@ const usarNavegacion = () => {
 		irAPapelera: () => {
 			navigate("/papelera", { replace: true });
 		},
+		irAModoLectura: () => {
+			navigate("/modo-lectura", { replace: true });
+		},
 	};
 };
 

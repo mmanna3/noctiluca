@@ -7,4 +7,5 @@ export default {
 	VER_ESCRITO_PAPELERA: "papelera/ver/:id",
 	NUEVO_ESCRITO: ":carpetaId/:carpetaTitulo/nuevo",
 	PAPELERA: "papelera",
+	MODO_LECTURA: "modo-lectura",
 };
