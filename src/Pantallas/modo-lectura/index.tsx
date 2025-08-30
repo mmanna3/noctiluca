@@ -38,6 +38,18 @@ const ModoLectura = () => {
 	return (
 		<div>
 			<Encabezado>
+				<p className='text-md text-slate-400'>
+					{escritoActual.fechaHoraCreacion &&
+						(() => {
+							const fecha = new Date(escritoActual.fechaHoraCreacion);
+							const dia = fecha.getDate().toString().padStart(2, "0");
+							const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+							const año = fecha.getFullYear().toString().slice(-2);
+							const hora = fecha.getHours().toString().padStart(2, "0");
+							const minutos = fecha.getMinutes().toString().padStart(2, "0");
+							return `${dia}-${mes}-${año} ${hora}:${minutos}`;
+						})()}
+				</p>
 				<Boton
 					soloBorde
 					color='gris'
@@ -47,6 +59,7 @@ const ModoLectura = () => {
 					{">"}
 				</Boton>
 			</Encabezado>
+
 			<Cuerpo>
 				<Input valor={escritoActual.titulo} sinBorde autoFocus textoReGrande soloLectura />
 				<div className='pt-2'>
