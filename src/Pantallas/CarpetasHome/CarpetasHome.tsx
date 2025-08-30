@@ -59,12 +59,12 @@ const CarpetasHome = () => {
 				<div className='flex justify-around items-center gap-1'>
 					<Boton
 						soloBorde
-						className='w-20 flex justify-around items-center'
+						className='w-14 flex justify-around items-center'
 						onClick={irAModoLectura}
 					>
 						<BookOpenIcon className='w-5 h-5' />
 					</Boton>
-					<Boton soloBorde className='w-20 flex justify-around items-center' onClick={irAPapelera}>
+					<Boton soloBorde className='w-14 flex justify-around items-center' onClick={irAPapelera}>
 						<TrashIcon className='w-5 h-5' />
 					</Boton>
 				</div>
