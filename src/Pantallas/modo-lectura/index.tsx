@@ -63,7 +63,7 @@ const ModoLectura = () => {
 			<Cuerpo>
 				<Input valor={escritoActual.titulo} sinBorde autoFocus textoReGrande soloLectura />
 				<div className='pt-2'>
-					<Textarea valor={escritoActual.cuerpo!} sinBorde soloLectura />
+					<Textarea valor={escritoActual.cuerpo || ""} sinBorde soloLectura />
 				</div>
 			</Cuerpo>
 			<Boton
