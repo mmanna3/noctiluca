@@ -61,11 +61,10 @@ export default function Login() {
 						>
 							{isLoading ? (
 								<>
-									<LoadingSpinner className='mr-2' />
-									Ingresando...
+									<LoadingSpinner className='' />
 								</>
 							) : (
-								"Ingresar"
+								"!"
 							)}
 						</button>
 					</form>
