@@ -1,4 +1,5 @@
 import { api } from "@/api/api";
+import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/botones";
@@ -16,6 +17,12 @@ const EscritosHome = () => {
 		fn: async () => await api.carpetaGET(Number(carpetaId)),
 	});
 
+	const eliminacion = useApiMutation({
+		fn: async () => await api.carpetaDELETE(Number(carpetaId)),
+		antesDeMensajeExito: () => irACarpetasHome(),
+		mensajeDeExito: `Carpeta '${data?.titulo}' eliminada`,
+	});
+
 	return (
 		<ChequearSiRequierePassword>
 			<Encabezado>
@@ -27,6 +34,21 @@ const EscritosHome = () => {
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
+				{data?.cantidadDeEscritos && data?.cantidadDeEscritos > 0 ? (
+					<ListaDeEscritos data={data?.escritos || []} isLoading={isLoading} isError={isError} />
+				) : (
+					<div className='flex flex-col justify-center items-center h-full g-2'>
+						<div className='text-sm text-gray-500'>No hay escritos en esta carpeta.</div>
+						<Boton
+							soloBorde
+							className='flex justify-between items-center mt-4'
+							onClick={() => eliminacion.mutate(Number(carpetaId))}
+						>
+							¿Eliminar carpeta?
+						</Boton>
+					</div>
+				)}
+
 				<ListaDeEscritos data={data?.escritos || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
 		</ChequearSiRequierePassword>
