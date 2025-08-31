@@ -5,6 +5,7 @@ interface IProps<T> {
 	fn: (args: T) => Promise<unknown>;
 	mensajeDeExito?: string;
 	antesDeMensajeExito?: () => void;
+	despuesDeExito?: () => void;
 	mensajeDeError?: string;
 }
 
@@ -12,6 +13,7 @@ const useApiMutation = <T,>({
 	fn,
 	mensajeDeExito = "Operación exitosa",
 	antesDeMensajeExito = () => console.log("antes de mensaje exito"),
+	despuesDeExito = () => console.log("despues de exito"),
 	mensajeDeError = "Ocurrió un error inesperado",
 }: IProps<T>) => {
 	const mutation = useMutation({
@@ -32,6 +34,7 @@ const useApiMutation = <T,>({
 		onSuccess: () => {
 			antesDeMensajeExito();
 			toast.success(mensajeDeExito);
+			despuesDeExito();
 		},
 	});
 
