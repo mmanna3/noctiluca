@@ -9,7 +9,7 @@ import { LoadingSpinner } from "../components/ui/loading-spinner";
 import { useAuth } from "../hooks/use-auth";
 import usarNavegacion from "../usar-navegacion";
 import frasesInicio from "../utils/frases-inicio";
-import ListaDeCarpetas from "./carpetas/lista-de-carpetas";
+import ListaDeCarpetas from "./carpetas/lista";
 
 const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();

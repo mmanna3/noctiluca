@@ -7,9 +7,9 @@ import { Boton, BotonIcono } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
 import usarNavegacion from "../../usar-navegacion";
-import ListaDeEscritos from "../escritos/lista-de-escritos";
+import ListaDeEscritos from "../escritos/lista";
 
-const CarpetasHome = () => {
+const VerCarpeta = () => {
 	const { irAlInicio, irANuevoEscrito, carpetaId } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
@@ -53,4 +53,4 @@ const CarpetasHome = () => {
 	);
 };
 
-export default CarpetasHome;
+export default VerCarpeta;
