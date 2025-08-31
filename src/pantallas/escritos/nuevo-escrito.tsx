@@ -3,12 +3,12 @@ import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { Boton } from "../components/botones";
-import Cuerpo from "../components/cuerpo";
-import Encabezado from "../components/encabezado";
-import Input from "../components/input";
-import Textarea from "../components/textarea";
-import usarNavegacion from "../usar-navegacion";
+import { Boton } from "../../components/ui/botones";
+import Cuerpo from "../../components/ui/cuerpo";
+import Encabezado from "../../components/ui/encabezado";
+import Input from "../../components/ui/input";
+import Textarea from "../../components/ui/textarea";
+import usarNavegacion from "../../usar-navegacion";
 
 const NuevoEscrito = () => {
 	const { volverAEscritosHome, carpetaId, carpetaTitulo } = usarNavegacion();

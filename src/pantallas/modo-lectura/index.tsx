@@ -1,13 +1,13 @@
 import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { Boton } from "@/components/botones";
-import Cuerpo from "@/components/cuerpo";
-import Encabezado from "@/components/encabezado";
-import Input from "@/components/input";
-import Textarea from "@/components/textarea";
 import usarNavegacion from "@/usar-navegacion";
 import { useState } from "react";
+import { Boton } from "../../components/ui/botones";
+import Cuerpo from "../../components/ui/cuerpo";
+import Encabezado from "../../components/ui/encabezado";
+import Input from "../../components/ui/input";
+import Textarea from "../../components/ui/textarea";
 
 const indiceAleatorio = (cantidad: number) => Math.floor(Math.random() * cantidad);
 

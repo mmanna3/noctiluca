@@ -2,10 +2,10 @@ import { api } from "@/api/api";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { Boton, BotonIcono } from "../../components/botones";
-import Cuerpo from "../../components/cuerpo";
-import Encabezado from "../../components/encabezado";
 import ChequearSiRequierePassword from "../../components/requiere-password";
+import { Boton, BotonIcono } from "../../components/ui/botones";
+import Cuerpo from "../../components/ui/cuerpo";
+import Encabezado from "../../components/ui/encabezado";
 import usarNavegacion from "../../usar-navegacion";
 import ListaDeEscritos from "./lista-de-escritos";
 

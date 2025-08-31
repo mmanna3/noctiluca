@@ -3,15 +3,15 @@ import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AppContextProvider } from "./app-context";
 import { RequiereAutenticacion } from "./components/requiere-autenticacion";
-import CarpetasHome from "./pantallas/carpetas-home/carpetas-home";
-import EscritosHome from "./pantallas/escritos-home/escritos-home";
-import Login from "./pantallas/login";
+import NuevaCarpeta from "./pantallas/carpetas/nueva-carpeta";
+import EscritosHome from "./pantallas/escritos/escritos-home";
+import NuevoEscrito from "./pantallas/escritos/nuevo-escrito";
+import VerEscrito from "./pantallas/escritos/ver-escrito";
+import Inicio from "./pantallas/inicio";
+import Login from "./pantallas/login/login";
 import Matriz from "./pantallas/matriz";
 import ModoLectura from "./pantallas/modo-lectura";
-import NuevaCarpeta from "./pantallas/nueva-carpeta";
-import NuevoEscrito from "./pantallas/nuevo-escrito";
-import Papelera from "./pantallas/papelera";
-import VerEscrito from "./pantallas/ver-escrito";
+import Papelera from "./pantallas/tacho/papelera";
 import rutas from "./rutas";
 
 const queryClient = new QueryClient();
@@ -32,8 +32,8 @@ const App = () => {
 									</RequiereAutenticacion>
 								}
 							>
-								<Route path={rutas.RAIZ} element={<CarpetasHome />} />
-								<Route path={rutas.CARPETAS_HOME} element={<CarpetasHome />} />
+								<Route path={rutas.RAIZ} element={<Inicio />} />
+								<Route path={rutas.CARPETAS_HOME} element={<Inicio />} />
 								<Route path={rutas.ESCRITOS_HOME} element={<EscritosHome />} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
 								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
@@ -46,7 +46,7 @@ const App = () => {
 								path='*'
 								element={
 									<RequiereAutenticacion>
-										<CarpetasHome />
+										<Inicio />
 									</RequiereAutenticacion>
 								}
 							/>

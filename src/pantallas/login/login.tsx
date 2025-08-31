@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppContext } from "../app-context";
+import { useAppContext } from "../../app-context";
 
-import { Card, CardContent } from "../components/card";
-import { Input } from "../components/input-ui";
-import { LoadingSpinner } from "../components/loading-spinner";
-import { useAuth } from "../hooks/use-auth";
+import { Card, CardContent } from "../../components/ui/card";
+import { Input } from "../../components/ui/input-ui";
+import { LoadingSpinner } from "../../components/ui/loading-spinner";
+import { useAuth } from "../../hooks/use-auth";
 
 export default function Login() {
 	const [password, setPassword] = useState("");

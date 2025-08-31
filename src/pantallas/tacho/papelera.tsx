@@ -1,10 +1,10 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { Boton } from "../components/botones";
-import Cuerpo from "../components/cuerpo";
-import Encabezado from "../components/encabezado";
-import usarNavegacion from "../usar-navegacion";
-import ListaDeEscritos from "./escritos-home/lista-de-escritos";
+import { Boton } from "../../components/ui/botones";
+import Cuerpo from "../../components/ui/cuerpo";
+import Encabezado from "../../components/ui/encabezado";
+import usarNavegacion from "../../usar-navegacion";
+import ListaDeEscritos from "../escritos/lista-de-escritos";
 
 const Papelera = () => {
 	const { irACarpetasHome } = usarNavegacion();
@@ -18,7 +18,7 @@ const Papelera = () => {
 		<>
 			<Encabezado>
 				<Boton soloBorde className='flex justify-between items-center' onClick={irACarpetasHome}>
-					/basura
+					/tacho
 				</Boton>
 			</Encabezado>
 			<Cuerpo>

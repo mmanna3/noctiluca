@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import UseSeguridad from "../pantallas/use-seguridad";
-import Login from "../pantallas/login";
+import UseSeguridad from "../hooks/use-seguridad";
+import Login from "../pantallas/login/login";
 
 interface Props {
 	children: ReactNode;

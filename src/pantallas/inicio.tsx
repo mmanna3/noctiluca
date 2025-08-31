@@ -1,17 +1,17 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { BookOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { Boton, BotonIcono } from "../../components/botones";
-import Cuerpo from "../../components/cuerpo";
-import Encabezado from "../../components/encabezado";
-import { useAuth } from "../../hooks/use-auth";
-import usarNavegacion from "../../usar-navegacion";
-import ListaDeCarpetas from "./lista-de-carpetas";
-import frasesInicio from "./frases-inicio";
+import { Boton, BotonIcono } from "../components/ui/botones";
+import Cuerpo from "../components/ui/cuerpo";
+import Encabezado from "../components/ui/encabezado";
+import { LoadingSpinner } from "../components/ui/loading-spinner";
+import { useAuth } from "../hooks/use-auth";
+import usarNavegacion from "../usar-navegacion";
+import frasesInicio from "../utils/frases-inicio";
+import ListaDeCarpetas from "./carpetas/lista-de-carpetas";
 
-const CarpetasHome = () => {
+const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();
 
 	const { logout } = useAuth();
@@ -73,4 +73,4 @@ const CarpetasHome = () => {
 	);
 };
 
-export default CarpetasHome;
+export default Inicio;

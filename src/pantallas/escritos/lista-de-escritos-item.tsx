@@ -1,5 +1,5 @@
 import { IEscritoDTO } from "@/api/clients";
-import ListaItem from "../../components/lista-item";
+import ListaItem from "../../components/ui/lista-item";
 import usarNavegacion from "../../usar-navegacion";
 
 const Escrito = (escrito: IEscritoDTO) => {
