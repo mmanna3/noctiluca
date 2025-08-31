@@ -2,7 +2,8 @@ import { api } from "@/api/api";
 import { CriterioDeOrdenEnum } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { AdjustmentsHorizontalIcon, ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
 import ChequearSiRequierePassword from "../../components/requiere-password";
 import { Boton, BotonIcono } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
@@ -13,6 +14,7 @@ import ListaDeEscritos from "../escritos/lista";
 
 const VerCarpeta = () => {
 	const { irAlInicio, irANuevoEscrito, carpetaId } = usarNavegacion();
+	const [mostrarHerramientas, setMostrarHerramientas] = useState(false);
 
 	const { data, isLoading, isError, refetch } = useApiQuery({
 		key: ["carpeta" + carpetaId],
@@ -48,13 +50,20 @@ const VerCarpeta = () => {
 					</BotonIcono>
 				</div>
 			</Encabezado>
-			<div className='flex items-center gap-2'>
-				{data?.cantidadDeEscritos && data?.cantidadDeEscritos > 0 && (
-					<SelectorCriterioOrden
-						valor={data.criterioDeOrden || CriterioDeOrdenEnum._1}
-						onChange={handleCriterioChange}
-						disabled={actualizarCriterio.isPending}
-					/>
+			<div className='flex items-center gap-2 mt-1 ml-[-12px]'>
+				<Boton sinBorde onClick={() => setMostrarHerramientas(!mostrarHerramientas)}>
+					<AdjustmentsHorizontalIcon className='h-4 w-4' />
+				</Boton>
+				{mostrarHerramientas && (
+					<div className='flex items-center gap-2'>
+						{data?.cantidadDeEscritos && data?.cantidadDeEscritos > 0 && (
+							<SelectorCriterioOrden
+								valor={data.criterioDeOrden || CriterioDeOrdenEnum._1}
+								onChange={handleCriterioChange}
+								disabled={actualizarCriterio.isPending}
+							/>
+						)}
+					</div>
 				)}
 			</div>
 			<Cuerpo>

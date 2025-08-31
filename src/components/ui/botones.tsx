@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 interface Props {
 	soloBorde?: boolean;
+	sinBorde?: boolean;
 	chiquito?: boolean;
 	color?: "default" | "gris";
 	children: ReactNode;
@@ -15,7 +16,18 @@ export const Boton = (props: Props) => {
 			? "text-gray-400 border-gray-400 hover:bg-gray-100"
 			: "text-slate-900 border-slate-900 hover:bg-yellow-200";
 
-	if (props.soloBorde)
+	if (props.sinBorde)
+		return (
+			<button
+				onClick={props.onClick}
+				className={`text-slate-900 hover:bg-gray-100 ${
+					props.chiquito ? "h-6 px-2 text-xs" : "h-10 px-4 text-sm"
+				} font-medium rounded ${props.className}`}
+			>
+				{props.children}
+			</button>
+		);
+	else if (props.soloBorde)
 		return (
 			<button
 				onClick={props.onClick}
