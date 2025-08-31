@@ -45,7 +45,10 @@ const ModoLectura = () => {
 							const dia = fecha.getDate().toString().padStart(2, "0");
 							const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
 							const año = fecha.getFullYear().toString().slice(-2);
-							const hora = fecha.getHours().toString().padStart(2, "0");
+							const horaAjustada = fecha.getHours() - 3;
+							const hora = (horaAjustada < 0 ? horaAjustada + 24 : horaAjustada)
+								.toString()
+								.padStart(2, "0");
 							const minutos = fecha.getMinutes().toString().padStart(2, "0");
 							return `${dia}-${mes}-${año} ${hora}:${minutos}`;
 						})()}
@@ -62,6 +65,7 @@ const ModoLectura = () => {
 
 			<Cuerpo>
 				<Input valor={escritoActual.titulo} sinBorde autoFocus textoReGrande soloLectura />
+				<p className='text-sm text-slate-400 ml-2 mt-[-10px]'>{escritoActual.carpetaTitulo}</p>
 				<div className='pt-2'>
 					<Textarea valor={escritoActual.cuerpo || ""} sinBorde soloLectura />
 				</div>
