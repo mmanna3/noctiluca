@@ -9,9 +9,9 @@ import { Boton } from "../components/botones";
 import Cuerpo from "../components/cuerpo";
 import Encabezado from "../components/encabezado";
 import Input from "../components/input";
-import ChequearSiRequierePassword from "../components/requierePassword";
+import ChequearSiRequierePassword from "../components/requiere-password";
 import Textarea from "../components/textarea";
-import usarNavegacion from "../usarNavegacion";
+import usarNavegacion from "../usar-navegacion";
 
 const VerEscrito = () => {
 	const { volverAEscritosHome, volverAPapelera, escritoId } = usarNavegacion();

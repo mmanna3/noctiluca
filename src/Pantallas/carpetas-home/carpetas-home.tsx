@@ -7,8 +7,8 @@ import { Boton, BotonIcono } from "../../components/botones";
 import Cuerpo from "../../components/cuerpo";
 import Encabezado from "../../components/encabezado";
 import { useAuth } from "../../hooks/use-auth";
-import usarNavegacion from "../../usarNavegacion";
-import ListaDeCarpetas from "./ListaDeCarpetas";
+import usarNavegacion from "../../usar-navegacion";
+import ListaDeCarpetas from "./lista-de-carpetas";
 import frasesInicio from "./frases-inicio";
 
 const CarpetasHome = () => {

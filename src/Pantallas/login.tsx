@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../app-context";
 
 import { Card, CardContent } from "../components/card";
 import { Input } from "../components/input-ui";

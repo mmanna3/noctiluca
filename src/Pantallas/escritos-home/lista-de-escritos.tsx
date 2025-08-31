@@ -1,5 +1,5 @@
 import { EscritoDTO } from "@/api/clients";
-import ListaDeEscritosItem from "./ListaDeEscritosItem";
+import ListaDeEscritosItem from "./lista-de-escritos-item";
 
 interface IListaDeCarpetas {
 	data: EscritoDTO[];

@@ -4,9 +4,9 @@ import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/botones";
 import Cuerpo from "../../components/cuerpo";
 import Encabezado from "../../components/encabezado";
-import ChequearSiRequierePassword from "../../components/requierePassword";
-import usarNavegacion from "../../usarNavegacion";
-import ListaDeEscritos from "./ListaDeEscritos";
+import ChequearSiRequierePassword from "../../components/requiere-password";
+import usarNavegacion from "../../usar-navegacion";
+import ListaDeEscritos from "./lista-de-escritos";
 
 const EscritosHome = () => {
 	const { irACarpetasHome, irANuevoEscrito, carpetaId } = usarNavegacion();

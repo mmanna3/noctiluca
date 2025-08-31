@@ -1,6 +1,6 @@
 import { IEscritoDTO } from "@/api/clients";
-import ListaItem from "../../components/listaItem";
-import usarNavegacion from "../../usarNavegacion";
+import ListaItem from "../../components/lista-item";
+import usarNavegacion from "../../usar-navegacion";
 
 const Escrito = (escrito: IEscritoDTO) => {
 	const { irAVerEscrito } = usarNavegacion();

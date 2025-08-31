@@ -8,7 +8,7 @@ import Cuerpo from "../components/cuerpo";
 import Encabezado from "../components/encabezado";
 import Input from "../components/input";
 import Textarea from "../components/textarea";
-import usarNavegacion from "../usarNavegacion";
+import usarNavegacion from "../usar-navegacion";
 
 const NuevoEscrito = () => {
 	const { volverAEscritosHome, carpetaId, carpetaTitulo } = usarNavegacion();

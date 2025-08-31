@@ -1,9 +1,9 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { useEffect, useState } from "react";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../app-context";
 import { useAuth } from "../hooks/use-auth";
-import usarNavegacion from "../usarNavegacion";
+import usarNavegacion from "../usar-navegacion";
 import { fechaEsDeHaceMenosDe5Minutos } from "../utilidades";
 
 const UseSeguridad = () => {

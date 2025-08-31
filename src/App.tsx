@@ -1,17 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import { AppContextProvider } from "./AppContext";
+import { AppContextProvider } from "./app-context";
 import { RequiereAutenticacion } from "./components/requiere-autenticacion";
-import CarpetasHome from "./Pantallas/CarpetasHome/CarpetasHome";
-import EscritosHome from "./Pantallas/EscritosHome/EscritosHome";
-import Login from "./Pantallas/login";
-import Matriz from "./Pantallas/Matriz";
-import ModoLectura from "./Pantallas/modo-lectura";
-import NuevaCarpeta from "./Pantallas/NuevaCarpeta";
-import NuevoEscrito from "./Pantallas/NuevoEscrito";
-import Papelera from "./Pantallas/Papelera";
-import VerEscrito from "./Pantallas/VerEscrito";
+import CarpetasHome from "./pantallas/carpetas-home/carpetas-home";
+import EscritosHome from "./pantallas/escritos-home/escritos-home";
+import Login from "./pantallas/login";
+import Matriz from "./pantallas/matriz";
+import ModoLectura from "./pantallas/modo-lectura";
+import NuevaCarpeta from "./pantallas/nueva-carpeta";
+import NuevoEscrito from "./pantallas/nuevo-escrito";
+import Papelera from "./pantallas/papelera";
+import VerEscrito from "./pantallas/ver-escrito";
 import rutas from "./rutas";
 
 const queryClient = new QueryClient();

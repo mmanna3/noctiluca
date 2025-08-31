@@ -3,8 +3,8 @@ import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { Boton } from "../components/botones";
 import Cuerpo from "../components/cuerpo";
 import Encabezado from "../components/encabezado";
-import usarNavegacion from "../usarNavegacion";
-import ListaDeEscritos from "./EscritosHome/ListaDeEscritos";
+import usarNavegacion from "../usar-navegacion";
+import ListaDeEscritos from "./escritos-home/lista-de-escritos";
 
 const Papelera = () => {
 	const { irACarpetasHome } = usarNavegacion();

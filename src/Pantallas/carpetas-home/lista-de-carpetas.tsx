@@ -1,5 +1,5 @@
 import { CarpetaDTO } from "@/api/clients";
-import CarpetasListaItem from "./ListaDeCarpetasItem";
+import CarpetasListaItem from "./lista-de-carpetas-item";
 
 interface IListaDeCarpetas {
 	data: CarpetaDTO[];

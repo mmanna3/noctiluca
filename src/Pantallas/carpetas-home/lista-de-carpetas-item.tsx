@@ -1,6 +1,6 @@
 import { ICarpetaDTO } from "@/api/clients";
-import ListaItem from "../../components/listaItem";
-import usarNavegacion from "../../usarNavegacion";
+import ListaItem from "../../components/lista-item";
+import usarNavegacion from "../../usar-navegacion";
 
 const ListaDeCarpetasItem = (carpeta: ICarpetaDTO) => {
 	const { verEscritosDeLaCarpeta } = usarNavegacion();
