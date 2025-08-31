@@ -12,7 +12,7 @@ const usarNavegacion = () => {
 		irALogin: () => {
 			navigate("/login", { replace: true });
 		},
-		irACarpetasHome: () => {
+		irAlInicio: () => {
 			navigate("/", { replace: true });
 		},
 		verEscritosDeLaCarpeta: (carpetaId: number) => {

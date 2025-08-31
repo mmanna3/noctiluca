@@ -7,10 +7,10 @@ import { Boton, BotonIcono } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
 import usarNavegacion from "../../usar-navegacion";
-import ListaDeEscritos from "./lista-de-escritos";
+import ListaDeEscritos from "../escritos/lista-de-escritos";
 
-const EscritosHome = () => {
-	const { irACarpetasHome, irANuevoEscrito, carpetaId } = usarNavegacion();
+const CarpetasHome = () => {
+	const { irAlInicio, irANuevoEscrito, carpetaId } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["carpeta" + carpetaId],
@@ -19,14 +19,14 @@ const EscritosHome = () => {
 
 	const eliminacion = useApiMutation({
 		fn: async () => await api.carpetaDELETE(Number(carpetaId)),
-		antesDeMensajeExito: () => irACarpetasHome(),
+		antesDeMensajeExito: () => irAlInicio(),
 		mensajeDeExito: `Carpeta '${data?.titulo}' eliminada`,
 	});
 
 	return (
 		<ChequearSiRequierePassword>
 			<Encabezado>
-				<Boton soloBorde className='flex justify-between items-center' onClick={irACarpetasHome}>
+				<Boton soloBorde className='flex justify-between items-center' onClick={irAlInicio}>
 					<ChevronLeftIcon className='w-4 h-4 mr-2' />/{data?.titulo}
 				</Boton>
 				<BotonIcono onClick={() => irANuevoEscrito(data?.titulo || "")}>
@@ -48,11 +48,9 @@ const EscritosHome = () => {
 						</Boton>
 					</div>
 				)}
-
-				<ListaDeEscritos data={data?.escritos || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
 		</ChequearSiRequierePassword>
 	);
 };
 
-export default EscritosHome;
+export default CarpetasHome;

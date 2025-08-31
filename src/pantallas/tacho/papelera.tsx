@@ -7,7 +7,7 @@ import usarNavegacion from "../../usar-navegacion";
 import ListaDeEscritos from "../escritos/lista-de-escritos";
 
 const Papelera = () => {
-	const { irACarpetasHome } = usarNavegacion();
+	const { irAlInicio } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["papelera"],
@@ -17,7 +17,7 @@ const Papelera = () => {
 	return (
 		<>
 			<Encabezado>
-				<Boton soloBorde className='flex justify-between items-center' onClick={irACarpetasHome}>
+				<Boton soloBorde className='flex justify-between items-center' onClick={irAlInicio}>
 					/tacho
 				</Boton>
 			</Encabezado>

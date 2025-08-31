@@ -10,7 +10,7 @@ import Input from "../../components/ui/input";
 import usarNavegacion from "../../usar-navegacion";
 
 const NuevaCarpeta = () => {
-	const { irACarpetasHome } = usarNavegacion();
+	const { irAlInicio } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [errorTitulo, setErrorTitulo] = useState("");
 
@@ -18,12 +18,12 @@ const NuevaCarpeta = () => {
 		fn: async (carpeta: CarpetaDTO) => {
 			await api.carpetaPOST(carpeta);
 		},
-		antesDeMensajeExito: () => irACarpetasHome(),
+		antesDeMensajeExito: () => irAlInicio(),
 		mensajeDeExito: `Carpeta '${titulo}' creada`,
 	});
 
 	const crearYVolver = async () => {
-		if (titulo === "") irACarpetasHome();
+		if (titulo === "") irAlInicio();
 
 		creacion.mutate(
 			new CarpetaDTO({

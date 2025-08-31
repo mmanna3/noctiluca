@@ -12,7 +12,8 @@ import Textarea from "../../components/ui/textarea";
 const indiceAleatorio = (cantidad: number) => Math.floor(Math.random() * cantidad);
 
 const ModoLectura = () => {
-	const { irACarpetasHome } = usarNavegacion();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { irAlInicio } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["escritos"],
@@ -75,7 +76,7 @@ const ModoLectura = () => {
 				chiquito
 				color='gris'
 				className='flex justify-between items-center'
-				onClick={irACarpetasHome}
+				onClick={irAlInicio}
 			>
 				{"<"}
 			</Boton>
