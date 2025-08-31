@@ -1,5 +1,5 @@
 import { CarpetaDTO } from "@/api/clients";
-import CarpetasListaItem from "./lista-de-carpetas-item";
+import ListaDeCarpetasItem from "./lista-de-carpetas-item";
 
 interface IListaDeCarpetas {
 	data: CarpetaDTO[];
@@ -11,7 +11,7 @@ function CarpetasLista(props: IListaDeCarpetas) {
 	return (
 		<div>
 			{props.data.map((carpeta: CarpetaDTO) => (
-				<CarpetasListaItem {...carpeta} key={carpeta.titulo} />
+				<ListaDeCarpetasItem {...carpeta} key={carpeta.titulo} />
 			))}
 		</div>
 	);
