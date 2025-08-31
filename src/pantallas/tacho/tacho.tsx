@@ -6,7 +6,7 @@ import Encabezado from "../../components/ui/encabezado";
 import usarNavegacion from "../../usar-navegacion";
 import ListaDeEscritos from "../escritos/lista";
 
-const Papelera = () => {
+const Tacho = () => {
 	const { irAlInicio } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
@@ -28,4 +28,4 @@ const Papelera = () => {
 	);
 };
 
-export default Papelera;
+export default Tacho;

@@ -5,13 +5,13 @@ import { AppContextProvider } from "./app-context";
 import { RequiereAutenticacion } from "./components/requiere-autenticacion";
 import NuevaCarpeta from "./pantallas/carpetas/nueva-carpeta";
 import VerCarpeta from "./pantallas/carpetas/ver-carpeta";
+import Encuadre from "./pantallas/encuadre";
 import NuevoEscrito from "./pantallas/escritos/nuevo-escrito";
 import VerEscrito from "./pantallas/escritos/ver-escrito";
 import Inicio from "./pantallas/inicio";
 import Login from "./pantallas/login/login";
-import Matriz from "./pantallas/matriz";
 import ModoLectura from "./pantallas/modo-lectura/modo-lectura";
-import Papelera from "./pantallas/tacho/papelera";
+import Tacho from "./pantallas/tacho/tacho";
 import rutas from "./rutas";
 
 const queryClient = new QueryClient();
@@ -28,7 +28,7 @@ const App = () => {
 							<Route
 								element={
 									<RequiereAutenticacion>
-										<Matriz />
+										<Encuadre />
 									</RequiereAutenticacion>
 								}
 							>
@@ -37,7 +37,7 @@ const App = () => {
 								<Route path={rutas.ESCRITOS_HOME} element={<VerCarpeta />} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
 								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
-								<Route path={rutas.PAPELERA} element={<Papelera />} />
+								<Route path={rutas.PAPELERA} element={<Tacho />} />
 								<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
 								<Route path={rutas.VER_ESCRITO_PAPELERA} element={<VerEscrito />} />
 								<Route path={rutas.MODO_LECTURA} element={<ModoLectura />} />
