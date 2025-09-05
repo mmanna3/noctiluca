@@ -9,913 +9,1172 @@
 // ReSharper disable InconsistentNaming
 
 export class Client {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "";
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    login(body: LoginDTO | undefined): Promise<LoginResponseDTO> {
-        let url_ = this.baseUrl + "/api/Auth/login";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processLogin(_response);
-        });
-    }
-
-    protected processLogin(response: Response): Promise<LoginResponseDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoginResponseDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoginResponseDTO>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    cambiarPassword(body: CambiarPasswordDTO | undefined): Promise<LoginResponseDTO> {
-        let url_ = this.baseUrl + "/api/Auth/cambiar-password";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCambiarPassword(_response);
-        });
-    }
-
-    protected processCambiarPassword(response: Response): Promise<LoginResponseDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoginResponseDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoginResponseDTO>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    criterioOrden(id: number, body: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Carpeta/{id}/criterio-orden";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCriterioOrden(_response);
-        });
-    }
-
-    protected processCriterioOrden(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    carpetaAll(): Promise<CarpetaDTO[]> {
-        let url_ = this.baseUrl + "/api/Carpeta";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCarpetaAll(_response);
-        });
-    }
-
-    protected processCarpetaAll(response: Response): Promise<CarpetaDTO[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CarpetaDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CarpetaDTO[]>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    carpetaPOST(body: CarpetaDTO | undefined): Promise<CarpetaDTO> {
-        let url_ = this.baseUrl + "/api/Carpeta";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCarpetaPOST(_response);
-        });
-    }
-
-    protected processCarpetaPOST(response: Response): Promise<CarpetaDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CarpetaDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CarpetaDTO>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    carpetaGET(id: number): Promise<CarpetaDTO> {
-        let url_ = this.baseUrl + "/api/Carpeta/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCarpetaGET(_response);
-        });
-    }
-
-    protected processCarpetaGET(response: Response): Promise<CarpetaDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CarpetaDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CarpetaDTO>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    carpetaPUT(id: number, body: CarpetaDTO | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Carpeta/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCarpetaPUT(_response);
-        });
-    }
-
-    protected processCarpetaPUT(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    carpetaDELETE(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/Carpeta/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCarpetaDELETE(_response);
-        });
-    }
-
-    protected processCarpetaDELETE(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    escritoAll(): Promise<EscritoDTO[]> {
-        let url_ = this.baseUrl + "/api/Escrito";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEscritoAll(_response);
-        });
-    }
-
-    protected processEscritoAll(response: Response): Promise<EscritoDTO[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(EscritoDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EscritoDTO[]>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    escritoPOST(body: EscritoDTO | undefined): Promise<EscritoDTO> {
-        let url_ = this.baseUrl + "/api/Escrito";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEscritoPOST(_response);
-        });
-    }
-
-    protected processEscritoPOST(response: Response): Promise<EscritoDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EscritoDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EscritoDTO>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    escritoGET(id: number): Promise<EscritoDTO> {
-        let url_ = this.baseUrl + "/api/Escrito/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEscritoGET(_response);
-        });
-    }
-
-    protected processEscritoGET(response: Response): Promise<EscritoDTO> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EscritoDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EscritoDTO>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    escritoPUT(id: number, body: EscritoDTO | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Escrito/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEscritoPUT(_response);
-        });
-    }
-
-    protected processEscritoPUT(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    escritoDELETE(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/Escrito/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEscritoDELETE(_response);
-        });
-    }
-
-    protected processEscritoDELETE(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    papelera(): Promise<EscritoDTO[]> {
-        let url_ = this.baseUrl + "/api/Papelera";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPapelera(_response);
-        });
-    }
-
-    protected processPapelera(response: Response): Promise<EscritoDTO[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(EscritoDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EscritoDTO[]>(null as any);
-    }
-
-    /**
-     * @param id (optional) 
-     * @return Success
-     */
-    ponerEnPapelera(id: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Papelera/poner-en-papelera?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPonerEnPapelera(_response);
-        });
-    }
-
-    protected processPonerEnPapelera(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
+	private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+	private baseUrl: string;
+	protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+	constructor(
+		baseUrl?: string,
+		http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> },
+	) {
+		this.http = http ? http : (window as any);
+		this.baseUrl = baseUrl ?? "";
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	login(body: LoginDTO | undefined): Promise<LoginResponseDTO> {
+		let url_ = this.baseUrl + "/api/Auth/login";
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processLogin(_response);
+		});
+	}
+
+	protected processLogin(response: Response): Promise<LoginResponseDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = LoginResponseDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<LoginResponseDTO>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	cambiarPassword(body: CambiarPasswordDTO | undefined): Promise<LoginResponseDTO> {
+		let url_ = this.baseUrl + "/api/Auth/cambiar-password";
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCambiarPassword(_response);
+		});
+	}
+
+	protected processCambiarPassword(response: Response): Promise<LoginResponseDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = LoginResponseDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<LoginResponseDTO>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	criterioOrden(id: number, body: number | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Carpeta/{id}/criterio-orden";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCriterioOrden(_response);
+		});
+	}
+
+	protected processCriterioOrden(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	actualizarPosiciones(body: ActualizarPosicionesDTO | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Carpeta/actualizar-posiciones";
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processActualizarPosiciones(_response);
+		});
+	}
+
+	protected processActualizarPosiciones(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	carpetaAll(): Promise<CarpetaDTO[]> {
+		let url_ = this.baseUrl + "/api/Carpeta";
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "GET",
+			headers: {
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaAll(_response);
+		});
+	}
+
+	protected processCarpetaAll(response: Response): Promise<CarpetaDTO[]> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				if (Array.isArray(resultData200)) {
+					result200 = [] as any;
+					for (let item of resultData200) result200!.push(CarpetaDTO.fromJS(item));
+				} else {
+					result200 = <any>null;
+				}
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<CarpetaDTO[]>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	carpetaPOST(body: CarpetaDTO | undefined): Promise<CarpetaDTO> {
+		let url_ = this.baseUrl + "/api/Carpeta";
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaPOST(_response);
+		});
+	}
+
+	protected processCarpetaPOST(response: Response): Promise<CarpetaDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = CarpetaDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<CarpetaDTO>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	carpetaGET(id: number): Promise<CarpetaDTO> {
+		let url_ = this.baseUrl + "/api/Carpeta/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "GET",
+			headers: {
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaGET(_response);
+		});
+	}
+
+	protected processCarpetaGET(response: Response): Promise<CarpetaDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = CarpetaDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<CarpetaDTO>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	carpetaPUT(id: number, body: CarpetaDTO | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Carpeta/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaPUT(_response);
+		});
+	}
+
+	protected processCarpetaPUT(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	carpetaDELETE(id: number): Promise<void> {
+		let url_ = this.baseUrl + "/api/Carpeta/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "DELETE",
+			headers: {},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processCarpetaDELETE(_response);
+		});
+	}
+
+	protected processCarpetaDELETE(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	escritoAll(): Promise<EscritoDTO[]> {
+		let url_ = this.baseUrl + "/api/Escrito";
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "GET",
+			headers: {
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processEscritoAll(_response);
+		});
+	}
+
+	protected processEscritoAll(response: Response): Promise<EscritoDTO[]> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				if (Array.isArray(resultData200)) {
+					result200 = [] as any;
+					for (let item of resultData200) result200!.push(EscritoDTO.fromJS(item));
+				} else {
+					result200 = <any>null;
+				}
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<EscritoDTO[]>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	escritoPOST(body: EscritoDTO | undefined): Promise<EscritoDTO> {
+		let url_ = this.baseUrl + "/api/Escrito";
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processEscritoPOST(_response);
+		});
+	}
+
+	protected processEscritoPOST(response: Response): Promise<EscritoDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = EscritoDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<EscritoDTO>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	escritoGET(id: number): Promise<EscritoDTO> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "GET",
+			headers: {
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processEscritoGET(_response);
+		});
+	}
+
+	protected processEscritoGET(response: Response): Promise<EscritoDTO> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				result200 = EscritoDTO.fromJS(resultData200);
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<EscritoDTO>(null as any);
+	}
+
+	/**
+	 * @param body (optional)
+	 * @return Success
+	 */
+	escritoPUT(id: number, body: EscritoDTO | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(body);
+
+		let options_: RequestInit = {
+			body: content_,
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processEscritoPUT(_response);
+		});
+	}
+
+	protected processEscritoPUT(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	escritoDELETE(id: number): Promise<void> {
+		let url_ = this.baseUrl + "/api/Escrito/{id}";
+		if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+		url_ = url_.replace("{id}", encodeURIComponent("" + id));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "DELETE",
+			headers: {},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processEscritoDELETE(_response);
+		});
+	}
+
+	protected processEscritoDELETE(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
+	/**
+	 * @return Success
+	 */
+	papelera(): Promise<EscritoDTO[]> {
+		let url_ = this.baseUrl + "/api/Papelera";
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "GET",
+			headers: {
+				Accept: "text/plain",
+			},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processPapelera(_response);
+		});
+	}
+
+	protected processPapelera(response: Response): Promise<EscritoDTO[]> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				let result200: any = null;
+				let resultData200 =
+					_responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+				if (Array.isArray(resultData200)) {
+					result200 = [] as any;
+					for (let item of resultData200) result200!.push(EscritoDTO.fromJS(item));
+				} else {
+					result200 = <any>null;
+				}
+				return result200;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<EscritoDTO[]>(null as any);
+	}
+
+	/**
+	 * @param id (optional)
+	 * @return Success
+	 */
+	ponerEnPapelera(id: number | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/Papelera/poner-en-papelera?";
+		if (id === null) throw new Error("The parameter 'id' cannot be null.");
+		else if (id !== undefined) url_ += "id=" + encodeURIComponent("" + id) + "&";
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: RequestInit = {
+			method: "POST",
+			headers: {},
+		};
+
+		return this.http.fetch(url_, options_).then((_response: Response) => {
+			return this.processPonerEnPapelera(_response);
+		});
+	}
+
+	protected processPonerEnPapelera(response: Response): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && response.headers.forEach) {
+			response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+		}
+		if (status === 200) {
+			return response.text().then((_responseText) => {
+				return;
+			});
+		} else if (status !== 200 && status !== 204) {
+			return response.text().then((_responseText) => {
+				return throwException(
+					"An unexpected server error occurred.",
+					status,
+					_responseText,
+					_headers,
+				);
+			});
+		}
+		return Promise.resolve<void>(null as any);
+	}
+}
+
+export class ActualizarPosicionesDTO implements IActualizarPosicionesDTO {
+	posiciones!: PosicionCarpetaDTO[];
+
+	constructor(data?: IActualizarPosicionesDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+		if (!data) {
+			this.posiciones = [];
+		}
+	}
+
+	init(_data?: any) {
+		if (_data) {
+			if (Array.isArray(_data["posiciones"])) {
+				this.posiciones = [] as any;
+				for (let item of _data["posiciones"])
+					this.posiciones!.push(PosicionCarpetaDTO.fromJS(item));
+			}
+		}
+	}
+
+	static fromJS(data: any): ActualizarPosicionesDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new ActualizarPosicionesDTO();
+		result.init(data);
+		return result;
+	}
+
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		if (Array.isArray(this.posiciones)) {
+			data["posiciones"] = [];
+			for (let item of this.posiciones) data["posiciones"].push(item.toJSON());
+		}
+		return data;
+	}
+}
+
+export interface IActualizarPosicionesDTO {
+	posiciones: PosicionCarpetaDTO[];
 }
 
 export class CambiarPasswordDTO implements ICambiarPasswordDTO {
-    usuario!: string;
-    passwordNuevo!: string;
+	usuario!: string;
+	passwordNuevo!: string;
 
-    constructor(data?: ICambiarPasswordDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
+	constructor(data?: ICambiarPasswordDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
 
-    init(_data?: any) {
-        if (_data) {
-            this.usuario = _data["usuario"];
-            this.passwordNuevo = _data["passwordNuevo"];
-        }
-    }
+	init(_data?: any) {
+		if (_data) {
+			this.usuario = _data["usuario"];
+			this.passwordNuevo = _data["passwordNuevo"];
+		}
+	}
 
-    static fromJS(data: any): CambiarPasswordDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new CambiarPasswordDTO();
-        result.init(data);
-        return result;
-    }
+	static fromJS(data: any): CambiarPasswordDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new CambiarPasswordDTO();
+		result.init(data);
+		return result;
+	}
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["usuario"] = this.usuario;
-        data["passwordNuevo"] = this.passwordNuevo;
-        return data;
-    }
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["usuario"] = this.usuario;
+		data["passwordNuevo"] = this.passwordNuevo;
+		return data;
+	}
 }
 
 export interface ICambiarPasswordDTO {
-    usuario: string;
-    passwordNuevo: string;
+	usuario: string;
+	passwordNuevo: string;
 }
 
 export class CarpetaDTO implements ICarpetaDTO {
-    id?: number;
-    titulo!: string;
-    escritos?: EscritoDTO[] | undefined;
-    readonly cantidadDeEscritos?: number;
-    requiereAutenticacion?: boolean;
-    criterioDeOrden?: CriterioDeOrdenEnum;
+	id?: number;
+	titulo!: string;
+	escritos?: EscritoDTO[] | undefined;
+	readonly cantidadDeEscritos?: number;
+	requiereAutenticacion?: boolean;
+	posicion?: number;
+	criterioDeOrden?: CriterioDeOrdenEnum;
 
-    constructor(data?: ICarpetaDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
+	constructor(data?: ICarpetaDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
 
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.titulo = _data["titulo"];
-            if (Array.isArray(_data["escritos"])) {
-                this.escritos = [] as any;
-                for (let item of _data["escritos"])
-                    this.escritos!.push(EscritoDTO.fromJS(item));
-            }
-            (<any>this).cantidadDeEscritos = _data["cantidadDeEscritos"];
-            this.requiereAutenticacion = _data["requiereAutenticacion"];
-            this.criterioDeOrden = _data["criterioDeOrden"];
-        }
-    }
+	init(_data?: any) {
+		if (_data) {
+			this.id = _data["id"];
+			this.titulo = _data["titulo"];
+			if (Array.isArray(_data["escritos"])) {
+				this.escritos = [] as any;
+				for (let item of _data["escritos"]) this.escritos!.push(EscritoDTO.fromJS(item));
+			}
+			(<any>this).cantidadDeEscritos = _data["cantidadDeEscritos"];
+			this.requiereAutenticacion = _data["requiereAutenticacion"];
+			this.posicion = _data["posicion"];
+			this.criterioDeOrden = _data["criterioDeOrden"];
+		}
+	}
 
-    static fromJS(data: any): CarpetaDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new CarpetaDTO();
-        result.init(data);
-        return result;
-    }
+	static fromJS(data: any): CarpetaDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new CarpetaDTO();
+		result.init(data);
+		return result;
+	}
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["titulo"] = this.titulo;
-        if (Array.isArray(this.escritos)) {
-            data["escritos"] = [];
-            for (let item of this.escritos)
-                data["escritos"].push(item.toJSON());
-        }
-        data["cantidadDeEscritos"] = this.cantidadDeEscritos;
-        data["requiereAutenticacion"] = this.requiereAutenticacion;
-        data["criterioDeOrden"] = this.criterioDeOrden;
-        return data;
-    }
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["id"] = this.id;
+		data["titulo"] = this.titulo;
+		if (Array.isArray(this.escritos)) {
+			data["escritos"] = [];
+			for (let item of this.escritos) data["escritos"].push(item.toJSON());
+		}
+		data["cantidadDeEscritos"] = this.cantidadDeEscritos;
+		data["requiereAutenticacion"] = this.requiereAutenticacion;
+		data["posicion"] = this.posicion;
+		data["criterioDeOrden"] = this.criterioDeOrden;
+		return data;
+	}
 }
 
 export interface ICarpetaDTO {
-    id?: number;
-    titulo: string;
-    escritos?: EscritoDTO[] | undefined;
-    cantidadDeEscritos?: number;
-    requiereAutenticacion?: boolean;
-    criterioDeOrden?: CriterioDeOrdenEnum;
+	id?: number;
+	titulo: string;
+	escritos?: EscritoDTO[] | undefined;
+	cantidadDeEscritos?: number;
+	requiereAutenticacion?: boolean;
+	posicion?: number;
+	criterioDeOrden?: CriterioDeOrdenEnum;
 }
 
 export enum CriterioDeOrdenEnum {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
+	_1 = 1,
+	_2 = 2,
+	_3 = 3,
+	_4 = 4,
+	_5 = 5,
+	_6 = 6,
 }
 
 export class EscritoDTO implements IEscritoDTO {
-    id?: number;
-    titulo!: string;
-    cuerpo?: string | undefined;
-    fechaHoraCreacion?: Date | undefined;
-    fechaHoraEdicion?: Date | undefined;
-    carpetaId?: number;
-    carpetaTitulo?: string | undefined;
+	id?: number;
+	titulo!: string;
+	cuerpo?: string | undefined;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
+	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
 
-    constructor(data?: IEscritoDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
+	constructor(data?: IEscritoDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
 
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.titulo = _data["titulo"];
-            this.cuerpo = _data["cuerpo"];
-            this.fechaHoraCreacion = _data["fechaHoraCreacion"] ? new Date(_data["fechaHoraCreacion"].toString()) : <any>undefined;
-            this.fechaHoraEdicion = _data["fechaHoraEdicion"] ? new Date(_data["fechaHoraEdicion"].toString()) : <any>undefined;
-            this.carpetaId = _data["carpetaId"];
-            this.carpetaTitulo = _data["carpetaTitulo"];
-        }
-    }
+	init(_data?: any) {
+		if (_data) {
+			this.id = _data["id"];
+			this.titulo = _data["titulo"];
+			this.cuerpo = _data["cuerpo"];
+			this.fechaHoraCreacion = _data["fechaHoraCreacion"]
+				? new Date(_data["fechaHoraCreacion"].toString())
+				: <any>undefined;
+			this.fechaHoraEdicion = _data["fechaHoraEdicion"]
+				? new Date(_data["fechaHoraEdicion"].toString())
+				: <any>undefined;
+			this.carpetaId = _data["carpetaId"];
+			this.carpetaTitulo = _data["carpetaTitulo"];
+		}
+	}
 
-    static fromJS(data: any): EscritoDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new EscritoDTO();
-        result.init(data);
-        return result;
-    }
+	static fromJS(data: any): EscritoDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new EscritoDTO();
+		result.init(data);
+		return result;
+	}
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["titulo"] = this.titulo;
-        data["cuerpo"] = this.cuerpo;
-        data["fechaHoraCreacion"] = this.fechaHoraCreacion ? this.fechaHoraCreacion.toISOString() : <any>undefined;
-        data["fechaHoraEdicion"] = this.fechaHoraEdicion ? this.fechaHoraEdicion.toISOString() : <any>undefined;
-        data["carpetaId"] = this.carpetaId;
-        data["carpetaTitulo"] = this.carpetaTitulo;
-        return data;
-    }
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["id"] = this.id;
+		data["titulo"] = this.titulo;
+		data["cuerpo"] = this.cuerpo;
+		data["fechaHoraCreacion"] = this.fechaHoraCreacion
+			? this.fechaHoraCreacion.toISOString()
+			: <any>undefined;
+		data["fechaHoraEdicion"] = this.fechaHoraEdicion
+			? this.fechaHoraEdicion.toISOString()
+			: <any>undefined;
+		data["carpetaId"] = this.carpetaId;
+		data["carpetaTitulo"] = this.carpetaTitulo;
+		return data;
+	}
 }
 
 export interface IEscritoDTO {
-    id?: number;
-    titulo: string;
-    cuerpo?: string | undefined;
-    fechaHoraCreacion?: Date | undefined;
-    fechaHoraEdicion?: Date | undefined;
-    carpetaId?: number;
-    carpetaTitulo?: string | undefined;
+	id?: number;
+	titulo: string;
+	cuerpo?: string | undefined;
+	fechaHoraCreacion?: Date | undefined;
+	fechaHoraEdicion?: Date | undefined;
+	carpetaId?: number;
+	carpetaTitulo?: string | undefined;
 }
 
 export class LoginDTO implements ILoginDTO {
-    usuario!: string;
-    password!: string;
+	usuario!: string;
+	password!: string;
 
-    constructor(data?: ILoginDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
+	constructor(data?: ILoginDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
 
-    init(_data?: any) {
-        if (_data) {
-            this.usuario = _data["usuario"];
-            this.password = _data["password"];
-        }
-    }
+	init(_data?: any) {
+		if (_data) {
+			this.usuario = _data["usuario"];
+			this.password = _data["password"];
+		}
+	}
 
-    static fromJS(data: any): LoginDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginDTO();
-        result.init(data);
-        return result;
-    }
+	static fromJS(data: any): LoginDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new LoginDTO();
+		result.init(data);
+		return result;
+	}
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["usuario"] = this.usuario;
-        data["password"] = this.password;
-        return data;
-    }
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["usuario"] = this.usuario;
+		data["password"] = this.password;
+		return data;
+	}
 }
 
 export interface ILoginDTO {
-    usuario: string;
-    password: string;
+	usuario: string;
+	password: string;
 }
 
 export class LoginResponseDTO implements ILoginResponseDTO {
-    exito?: boolean;
-    token?: string | undefined;
-    error?: string | undefined;
+	exito?: boolean;
+	token?: string | undefined;
+	error?: string | undefined;
 
-    constructor(data?: ILoginResponseDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
+	constructor(data?: ILoginResponseDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
 
-    init(_data?: any) {
-        if (_data) {
-            this.exito = _data["exito"];
-            this.token = _data["token"];
-            this.error = _data["error"];
-        }
-    }
+	init(_data?: any) {
+		if (_data) {
+			this.exito = _data["exito"];
+			this.token = _data["token"];
+			this.error = _data["error"];
+		}
+	}
 
-    static fromJS(data: any): LoginResponseDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginResponseDTO();
-        result.init(data);
-        return result;
-    }
+	static fromJS(data: any): LoginResponseDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new LoginResponseDTO();
+		result.init(data);
+		return result;
+	}
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["exito"] = this.exito;
-        data["token"] = this.token;
-        data["error"] = this.error;
-        return data;
-    }
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["exito"] = this.exito;
+		data["token"] = this.token;
+		data["error"] = this.error;
+		return data;
+	}
 }
 
 export interface ILoginResponseDTO {
-    exito?: boolean;
-    token?: string | undefined;
-    error?: string | undefined;
+	exito?: boolean;
+	token?: string | undefined;
+	error?: string | undefined;
+}
+
+export class PosicionCarpetaDTO implements IPosicionCarpetaDTO {
+	idDeCarpeta!: number;
+	posicion!: number;
+
+	constructor(data?: IPosicionCarpetaDTO) {
+		if (data) {
+			for (var property in data) {
+				if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+			}
+		}
+	}
+
+	init(_data?: any) {
+		if (_data) {
+			this.idDeCarpeta = _data["idDeCarpeta"];
+			this.posicion = _data["posicion"];
+		}
+	}
+
+	static fromJS(data: any): PosicionCarpetaDTO {
+		data = typeof data === "object" ? data : {};
+		let result = new PosicionCarpetaDTO();
+		result.init(data);
+		return result;
+	}
+
+	toJSON(data?: any) {
+		data = typeof data === "object" ? data : {};
+		data["idDeCarpeta"] = this.idDeCarpeta;
+		data["posicion"] = this.posicion;
+		return data;
+	}
+}
+
+export interface IPosicionCarpetaDTO {
+	idDeCarpeta: number;
+	posicion: number;
 }
 
 export class ApiException extends Error {
-    message: string;
-    status: number;
-    response: string;
-    headers: { [key: string]: any; };
-    result: any;
+	message: string;
+	status: number;
+	response: string;
+	headers: { [key: string]: any };
+	result: any;
 
-    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
-        super();
+	constructor(
+		message: string,
+		status: number,
+		response: string,
+		headers: { [key: string]: any },
+		result: any,
+	) {
+		super();
 
-        this.message = message;
-        this.status = status;
-        this.response = response;
-        this.headers = headers;
-        this.result = result;
-    }
+		this.message = message;
+		this.status = status;
+		this.response = response;
+		this.headers = headers;
+		this.result = result;
+	}
 
-    protected isApiException = true;
+	protected isApiException = true;
 
-    static isApiException(obj: any): obj is ApiException {
-        return obj.isApiException === true;
-    }
+	static isApiException(obj: any): obj is ApiException {
+		return obj.isApiException === true;
+	}
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
-    if (result !== null && result !== undefined)
-        throw result;
-    else
-        throw new ApiException(message, status, response, headers, null);
+function throwException(
+	message: string,
+	status: number,
+	response: string,
+	headers: { [key: string]: any },
+	result?: any,
+): any {
+	if (result !== null && result !== undefined) throw result;
+	else throw new ApiException(message, status, response, headers, null);
 }

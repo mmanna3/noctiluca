@@ -23,7 +23,14 @@ const Inicio = () => {
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["carpetas"],
-		fn: async () => await api.carpetaAll(),
+		fn: async () => {
+			const carpetas = await api.carpetaAll();
+			return carpetas.sort((a, b) => {
+				const posA = a.posicion ?? 0;
+				const posB = b.posicion ?? 0;
+				return posA - posB;
+			});
+		},
 	});
 
 	const cerrarSesion = () => {
