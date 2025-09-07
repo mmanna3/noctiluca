@@ -7,6 +7,7 @@ import { Boton } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
 import Input from "../../components/ui/input";
+import { LoadingSpinner } from "../../components/ui/loading-spinner";
 import Textarea from "../../components/ui/textarea";
 import usarNavegacion from "../../usar-navegacion";
 
@@ -44,8 +45,17 @@ const NuevoEscrito = () => {
 	return (
 		<>
 			<Encabezado>
-				<Boton soloBorde className='flex justify-between items-center' onClick={crearYVolver}>
-					<ChevronLeftIcon className='w-4 h-4 mr-2' />
+				<Boton
+					soloBorde
+					className='flex justify-between items-center'
+					onClick={crearYVolver}
+					disabled={creacion.isPending}
+				>
+					{creacion.isPending ? (
+						<LoadingSpinner className='w-4 h-4 mr-2' />
+					) : (
+						<ChevronLeftIcon className='w-4 h-4 mr-2' />
+					)}
 					Crear en /{carpetaTitulo}
 				</Boton>
 			</Encabezado>

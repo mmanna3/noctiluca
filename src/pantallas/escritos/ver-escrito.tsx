@@ -10,6 +10,7 @@ import { Boton } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
 import Input from "../../components/ui/input";
+import { LoadingSpinner } from "../../components/ui/loading-spinner";
 import Textarea from "../../components/ui/textarea";
 import usarNavegacion from "../../usar-navegacion";
 
@@ -77,12 +78,30 @@ const VerEscrito = () => {
 	return (
 		<ChequearSiRequierePassword>
 			<Encabezado>
-				<Boton soloBorde className='flex justify-between items-center' onClick={editarYVolver}>
-					<ChevronLeftIcon className='w-4 h-4 mr-2' />
+				<Boton
+					soloBorde
+					className='flex justify-between items-center'
+					onClick={editarYVolver}
+					disabled={edicion.isPending}
+				>
+					{edicion.isPending ? (
+						<LoadingSpinner className='w-4 h-4 mr-2' />
+					) : (
+						<ChevronLeftIcon className='w-4 h-4 mr-2' />
+					)}
 					{vieneDePapelera ? "Papelera" : data.carpetaTitulo}/{titulo}
 				</Boton>
-				<Boton soloBorde className='border-none text-slate-400' onClick={eliminarYVolver}>
-					<TrashIcon className='h-5 w-5' />
+				<Boton
+					soloBorde
+					className='border-none text-slate-400'
+					onClick={eliminarYVolver}
+					disabled={eliminacion.isPending}
+				>
+					{eliminacion.isPending ? (
+						<LoadingSpinner className='h-5 w-5' />
+					) : (
+						<TrashIcon className='h-5 w-5' />
+					)}
 				</Boton>
 			</Encabezado>
 			<Cuerpo>
