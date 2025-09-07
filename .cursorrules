@@ -1,0 +1,345 @@
+# Noctiluca Frontend - React PWA
+
+## Descripción del Proyecto
+Frontend de Noctiluca, una PWA (Progressive Web App) para gestión de documentos y escritos organizados en carpetas. Aplicación React moderna con TypeScript, optimizada para dispositivos móviles y desktop.
+
+## Stack Tecnológico
+
+### Core Framework
+- **React**: 18.2.0 con TypeScript
+- **Routing**: React Router DOM v6 con HashRouter
+- **Estado Global**: Zustand para manejo de estado
+- **HTTP Client**: TanStack React Query v5 para manejo de datos
+- **Build Tool**: CRACO (Create React App Configuration Override)
+
+### UI y Styling
+- **CSS Framework**: Tailwind CSS
+- **Iconos**: Heroicons
+- **CSS-in-JS**: Emotion para estilos dinámicos
+- **Notificaciones**: Sonner para toasts
+
+### Funcionalidades Avanzadas
+- **Drag & Drop**: @dnd-kit para funcionalidad de arrastrar y soltar
+- **PWA**: Workbox para service workers y funcionalidad offline
+- **Autenticación**: JWT con jwt-decode
+- **Linting**: ESLint + Prettier
+
+## Estructura del Proyecto
+
+```
+src/
+├── api/                 # Cliente API y hooks
+│   ├── clients.ts      # Cliente generado automáticamente
+│   ├── api.ts          # Configuración de API
+│   └── custom-hooks/   # Hooks personalizados para API
+├── components/         # Componentes reutilizables
+│   ├── ui/            # Componentes de UI base
+│   ├── requiere-autenticacion.tsx
+│   └── requiere-password.tsx
+├── hooks/             # Custom hooks
+│   ├── use-auth.ts
+│   └── use-seguridad.tsx
+├── pantallas/         # Páginas/componentes principales
+│   ├── carpetas/      # Gestión de carpetas
+│   ├── escritos/      # Gestión de escritos
+│   ├── login/         # Autenticación
+│   ├── modo-lectura/  # Vista de lectura
+│   └── tacho/         # Papelera de reciclaje
+├── utils/             # Utilidades y helpers
+├── app-context.tsx    # Contexto global de la app
+├── rutas.ts          # Configuración de rutas
+└── usar-navegacion.tsx # Hook de navegación
+```
+
+## Configuración de Desarrollo
+
+### Puertos y URLs
+- **Puerto de desarrollo**: 3000
+- **URL local**: `http://localhost:3000`
+- **API Base URL**: Configurada en `REACT_APP_API_BASE_URL`
+
+### Scripts Disponibles
+```bash
+# Desarrollo
+yarn start
+
+# Build para producción
+yarn build
+
+# Deploy a GitHub Pages
+yarn deploy
+
+# Limpiar y reinstalar dependencias
+yarn limpiar
+
+# Tests
+yarn test
+
+# Linting
+yarn lint
+```
+
+### Alias de Importación
+- `@` apunta a `src/`
+- Configurado en `craco.config.js`
+
+## Componentes Principales
+
+### Autenticación
+- **RequiereAutenticacion**: Wrapper para rutas protegidas
+- **RequierePassword**: Componente para validación de contraseña
+- **Login**: Pantalla de inicio de sesión
+
+### Gestión de Carpetas
+- Lista de carpetas con drag & drop
+- Crear/editar/eliminar carpetas
+- Configuración de criterios de ordenamiento
+- Reordenamiento visual
+
+### Gestión de Escritos
+- Editor de escritos con modo de lectura
+- Lista de escritos por carpeta
+- Búsqueda y filtrado
+- Operaciones CRUD completas
+
+### Papelera de Reciclaje
+- Lista de elementos eliminados
+- Restaurar elementos
+- Eliminación permanente
+
+## Estado Global y Gestión de Datos
+
+### Zustand Store
+- Estado de autenticación
+- Estado de la aplicación
+- Configuración de usuario
+
+### React Query
+- Cache de datos de API
+- Mutaciones optimistas
+- Refetch automático
+- Estados de loading/error
+
+### Custom Hooks
+- `useAuth`: Manejo de autenticación
+- `useSeguridad`: Validación de seguridad
+- `useApiQuery`: Queries de API
+- `useApiMutation`: Mutaciones de API
+
+## PWA y Funcionalidad Offline
+
+### Service Workers
+- Configurado con Workbox
+- Cache de recursos estáticos
+- Funcionalidad offline básica
+- Actualizaciones automáticas
+
+### Manifest
+- Configurado en `public/manifest.json`
+- Iconos para diferentes tamaños
+- Configuración de tema y colores
+
+## Routing y Navegación
+
+### React Router DOM
+- HashRouter para compatibilidad con hosting estático
+- Rutas protegidas con autenticación
+- Navegación programática
+
+### Rutas Definidas
+```typescript
+// Configuración en rutas.ts
+- / - Pantalla de inicio
+- /carpetas - Lista de carpetas
+- /carpetas/:id - Detalle de carpeta
+- /escritos/:id - Editor de escrito
+- /modo-lectura/:id - Vista de lectura
+- /tacho - Papelera de reciclaje
+- /login - Autenticación
+```
+
+## API y Comunicación
+
+### Cliente API Generado
+- Generado automáticamente desde OpenAPI/Swagger
+- Tipado completo con TypeScript
+- Configurado en `src/api/clients.ts`
+
+### HTTP Client Wrapper
+- Interceptores para autenticación
+- Manejo de errores global
+- Configuración de headers
+
+## UI/UX y Diseño
+
+### Tailwind CSS
+- Utility-first CSS framework
+- Responsive design
+- Dark mode support
+- Componentes personalizados
+
+### Componentes UI Base
+- Botones, inputs, modales
+- Cards y layouts
+- Iconos con Heroicons
+- Loading states
+
+## Testing y Calidad
+
+### Testing Setup
+- Jest + React Testing Library
+- Setup en `setup-tests.ts`
+- Tests de utilidades
+
+### Linting y Formato
+- ESLint para linting
+- Prettier para formateo
+- Configuración en package.json
+
+## Build y Deploy
+
+### Build de Producción
+- Optimización automática
+- Minificación de código
+- Generación de service workers
+- Output en carpeta `build/`
+
+### Deploy Local
+```bash
+# Script de deploy local
+./scripts/deploy-local.sh
+# Copia archivos build/ al wwwroot del backend
+```
+
+### GitHub Pages
+```bash
+# Deploy a GitHub Pages
+yarn deploy
+```
+
+## Convenciones de Código
+
+### Naming Conventions
+- **Componentes**: PascalCase para archivos y nombres
+- **Hooks**: Prefijo `use-` para custom hooks
+- **Funciones**: camelCase
+- **Constantes**: UPPER_SNAKE_CASE
+- **Archivos**: kebab-case para archivos de configuración
+
+### Estructura de Componentes
+```typescript
+// Estructura recomendada para componentes
+import React from 'react';
+import { ComponentProps } from './types';
+
+const ComponentName: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
+  // Hooks al inicio
+  const [state, setState] = useState();
+  
+  // Handlers
+  const handleClick = () => {};
+  
+  // Render
+  return (
+    <div>
+      {/* JSX */}
+    </div>
+  );
+};
+
+export default ComponentName;
+```
+
+### Imports
+- Imports de React primero
+- Imports de terceros
+- Imports locales (relativos)
+- Imports de tipos al final
+
+## Configuración de Archivos
+
+### TypeScript
+- Configuración en `tsconfig.json`
+- Tipos estrictos habilitados
+- Path mapping para alias
+
+### Tailwind
+- Configuración en `tailwind.config.js`
+- Purge de CSS no utilizado
+- Plugins personalizados
+
+### CRACO
+- Configuración en `craco.config.js`
+- Override de configuración de CRA
+- Path aliases
+
+## Variables de Entorno
+
+### Desarrollo
+```bash
+REACT_APP_API_BASE_URL=http://localhost:5072/api
+```
+
+### Producción
+```bash
+REACT_APP_API_BASE_URL=https://tu-dominio.com/api
+```
+
+## Dependencias Principales
+
+### Core
+- `react` y `react-dom`
+- `typescript`
+- `react-router-dom`
+
+### Estado y Datos
+- `zustand`
+- `@tanstack/react-query`
+- `axios`
+
+### UI y Styling
+- `tailwindcss`
+- `@heroicons/react`
+- `@emotion/react`
+- `sonner`
+
+### Funcionalidades
+- `@dnd-kit/core`
+- `@dnd-kit/sortable`
+- `jwt-decode`
+- `workbox-webpack-plugin`
+
+## Notas Importantes
+
+1. **PWA**: La aplicación funciona offline con service workers
+2. **Autenticación**: JWT con refresh token
+3. **Responsive**: Diseño mobile-first
+4. **Performance**: Lazy loading y code splitting
+5. **Accesibilidad**: ARIA labels y navegación por teclado
+6. **SEO**: Meta tags y estructura semántica
+7. **Browser Support**: ES6+ con polyfills necesarios
+
+## Comandos Útiles
+
+```bash
+# Desarrollo completo
+yarn start
+
+# Build para producción
+yarn build
+
+# Generar cliente API desde backend
+../scripts/generar-contrato-be-en-fe.sh
+
+# Deploy local al backend
+../scripts/deploy-local.sh
+
+# Limpiar dependencias
+yarn limpiar
+
+# Verificar tipos TypeScript
+yarn tsc --noEmit
+
+# Ejecutar tests
+yarn test --watchAll=false
+```
