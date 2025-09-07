@@ -10,7 +10,7 @@ const Escrito = (escrito: IEscritoDTO) => {
 		<>
 			<ListaItem
 				fecha={escrito.fechaHoraCreacion?.toString()}
-				titulo={escrito.titulo}
+				titulo={escrito.titulo ?? ""}
 				subtitulo={obtenerResumen(escrito.cuerpo || "")}
 				onClick={() => irAVerEscrito(escrito.id?.toString() || "")}
 			/>

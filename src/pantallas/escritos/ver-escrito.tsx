@@ -50,7 +50,7 @@ const VerEscrito = () => {
 
 	useEffect(() => {
 		if (data) {
-			setTitulo(data.titulo);
+			setTitulo(data.titulo ?? "");
 			setCuerpo(data.cuerpo ?? "");
 		}
 	}, [data]);

@@ -21,16 +21,14 @@ const NuevoEscrito = () => {
 			await api.escritoPOST(escrito);
 		},
 		antesDeMensajeExito: () => volverAEscritosHome(),
-		mensajeDeExito: `Escrito '${titulo}' creado`,
+		mensajeDeExito: `Escrito ${titulo.trim() ? `'${titulo}'` : "sin título"} creado`,
 	});
 
 	const crearYVolver = async () => {
-		if (titulo === "") volverAEscritosHome();
-
 		if (carpetaId) {
 			creacion.mutate(
 				new EscritoDTO({
-					titulo,
+					titulo: titulo.trim() || "", // Permitir título vacío
 					cuerpo,
 					carpetaId: Number(carpetaId),
 				}),
