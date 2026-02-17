@@ -2,7 +2,7 @@ import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { ChevronLeftIcon, PaperAirplaneIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChequearSiRequierePassword from "../../components/requiere-password";
@@ -11,13 +11,16 @@ import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
 import Input from "../../components/ui/input";
 import { LoadingSpinner } from "../../components/ui/loading-spinner";
+import ModalSeleccionarCarpeta from "../../components/ui/modal-seleccionar-carpeta";
 import Textarea from "../../components/ui/textarea";
 import usarNavegacion from "../../usar-navegacion";
 
 const VerEscrito = () => {
-	const { volverAEscritosHome, volverAPapelera, escritoId } = usarNavegacion();
+	const { volverAEscritosHome, volverAPapelera, escritoId, carpetaId } = usarNavegacion();
 	const location = useLocation();
 	const vieneDePapelera = location.pathname.includes("/papelera");
+
+	const [mostrarModalMover, setMostrarModalMover] = useState(false);
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: ["escrito" + escritoId],
@@ -91,18 +94,29 @@ const VerEscrito = () => {
 					)}
 					{vieneDePapelera ? "Papelera" : data.carpetaTitulo}/{titulo}
 				</Boton>
-				<Boton
-					soloBorde
-					className='border-none text-slate-400'
-					onClick={eliminarYVolver}
-					disabled={eliminacion.isPending}
-				>
-					{eliminacion.isPending ? (
-						<LoadingSpinner className='h-5 w-5' />
-					) : (
-						<TrashIcon className='h-5 w-5' />
+				<div className='flex items-center gap-1'>
+					{!vieneDePapelera && (
+						<Boton
+							sinBorde
+							className='text-slate-400 hover:bg-yellow-200'
+							onClick={() => setMostrarModalMover(true)}
+						>
+							<PaperAirplaneIcon className='h-5 w-5' />
+						</Boton>
 					)}
-				</Boton>
+					<Boton
+						soloBorde
+						className='border-none text-slate-400'
+						onClick={eliminarYVolver}
+						disabled={eliminacion.isPending}
+					>
+						{eliminacion.isPending ? (
+							<LoadingSpinner className='h-5 w-5' />
+						) : (
+							<TrashIcon className='h-5 w-5' />
+						)}
+					</Boton>
+				</div>
 			</Encabezado>
 			<Cuerpo>
 				<Input
@@ -112,8 +126,6 @@ const VerEscrito = () => {
 					placeholder='Título'
 					textoReGrande
 					cuandoCambie={(e: React.ChangeEvent<HTMLInputElement>) => setTitulo(e.target.value)}
-					// hayError={errorTitulo.length > 0}
-					// mensajeError={errorTitulo}
 				/>
 				<div className='pt-2'>
 					<Textarea
@@ -121,11 +133,20 @@ const VerEscrito = () => {
 						sinBorde
 						placeholder='Texto'
 						cuandoCambie={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCuerpo(e.target.value)}
-						// hayError={errorTitulo.length > 0}
-						// mensajeError={errorTitulo}
 					/>
 				</div>
 			</Cuerpo>
+			{mostrarModalMover && escritoId && carpetaId && (
+				<ModalSeleccionarCarpeta
+					escritoIds={[Number(escritoId)]}
+					carpetaActualId={Number(carpetaId)}
+					onCerrar={() => setMostrarModalMover(false)}
+					onMovido={() => {
+						setMostrarModalMover(false);
+						volverAEscritosHome();
+					}}
+				/>
+			)}
 		</ChequearSiRequierePassword>
 	);
 };
