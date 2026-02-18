@@ -2,22 +2,16 @@ import { api } from "@/api/api";
 import { CriterioDeOrdenEnum } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import {
-	AdjustmentsHorizontalIcon,
-	ChevronLeftIcon,
-	PaperAirplaneIcon,
-	PlusIcon,
-	XMarkIcon,
-} from "@heroicons/react/24/solid";
 import { useState } from "react";
 import ChequearSiRequierePassword from "../../components/requiere-password";
-import { Boton, BotonIcono } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
-import Encabezado from "../../components/ui/encabezado";
 import ModalSeleccionarCarpeta from "../../components/ui/modal-seleccionar-carpeta";
-import SelectorCriterioOrden from "../../components/ui/selector-criterio-orden";
 import usarNavegacion from "../../usar-navegacion";
 import ListaDeEscritos from "../escritos/lista";
+import BarraDeHerramientas from "./barra-de-herramientas";
+import EncabezadoNormal from "./encabezado-normal";
+import EncabezadoSeleccion from "./encabezado-seleccion";
+import EstadoVacio from "./estado-vacio";
 
 const VerCarpeta = () => {
 	const { irAlInicio, irANuevoEscrito, carpetaId } = usarNavegacion();
@@ -43,10 +37,6 @@ const VerCarpeta = () => {
 		despuesDeExito: () => refetch(),
 		mensajeDeExito: "Criterio de orden actualizado",
 	});
-
-	const handleCriterioChange = (nuevoCriterio: CriterioDeOrdenEnum) => {
-		actualizarCriterio.mutate(nuevoCriterio);
-	};
 
 	const handleLongPress = (escritoId: number) => {
 		setModoSeleccion(true);
@@ -77,69 +67,37 @@ const VerCarpeta = () => {
 		setEscritosSeleccionados(new Set());
 	};
 
+	const tieneEscritos = !!(data?.cantidadDeEscritos && data.cantidadDeEscritos > 0);
+
 	return (
 		<ChequearSiRequierePassword>
 			{modoSeleccion ? (
-				<Encabezado>
-					<div className='flex items-center gap-2'>
-						<span className='text-sm font-medium'>
-							{escritosSeleccionados.size} seleccionado
-							{escritosSeleccionados.size !== 1 ? "s" : ""}
-						</span>
-						<Boton className='hover:bg-yellow-200' sinBorde chiquito onClick={seleccionarTodos}>
-							Todos
-						</Boton>
-					</div>
-					<div className='flex items-center gap-1'>
-						<Boton
-							sinBorde
-							className='text-slate-600 hover:bg-yellow-200'
-							onClick={() => setMostrarModalMover(true)}
-							disabled={escritosSeleccionados.size === 0}
-						>
-							<PaperAirplaneIcon className='h-5 w-5' />
-						</Boton>
-						<Boton
-							sinBorde
-							className='text-slate-400 hover:bg-yellow-200'
-							onClick={cancelarSeleccion}
-						>
-							<XMarkIcon className='h-5 w-5' />
-						</Boton>
-					</div>
-				</Encabezado>
+				<EncabezadoSeleccion
+					cantidadSeleccionados={escritosSeleccionados.size}
+					onSeleccionarTodos={seleccionarTodos}
+					onMover={() => setMostrarModalMover(true)}
+					onCancelar={cancelarSeleccion}
+					puedeMover={escritosSeleccionados.size > 0}
+				/>
 			) : (
-				<Encabezado>
-					<Boton soloBorde className='flex justify-between items-center' onClick={irAlInicio}>
-						<ChevronLeftIcon className='w-4 h-4 mr-2' />/{data?.titulo}
-					</Boton>
-					<div className='flex items-center gap-2'>
-						<BotonIcono onClick={() => irANuevoEscrito(data?.titulo || "")}>
-							<PlusIcon className='h-8 w-8' />
-						</BotonIcono>
-					</div>
-				</Encabezado>
+				<EncabezadoNormal
+					titulo={data?.titulo || ""}
+					onVolver={irAlInicio}
+					onNuevoEscrito={() => irANuevoEscrito(data?.titulo || "")}
+				/>
 			)}
 			{!modoSeleccion && (
-				<div className='flex items-center gap-2 mt-1 ml-[-12px]'>
-					<Boton sinBorde onClick={() => setMostrarHerramientas(!mostrarHerramientas)}>
-						<AdjustmentsHorizontalIcon className='h-4 w-4' />
-					</Boton>
-					{mostrarHerramientas && (
-						<div className='flex items-center gap-2'>
-							{data?.cantidadDeEscritos && data?.cantidadDeEscritos > 0 && (
-								<SelectorCriterioOrden
-									valor={data.criterioDeOrden || CriterioDeOrdenEnum._1}
-									onChange={handleCriterioChange}
-									disabled={actualizarCriterio.isPending}
-								/>
-							)}
-						</div>
-					)}
-				</div>
+				<BarraDeHerramientas
+					mostrar={mostrarHerramientas}
+					onToggle={() => setMostrarHerramientas(!mostrarHerramientas)}
+					criterioActual={data?.criterioDeOrden || CriterioDeOrdenEnum._1}
+					tieneEscritos={tieneEscritos}
+					actualizandoCriterio={actualizarCriterio.isPending}
+					onCambiarCriterio={(criterio) => actualizarCriterio.mutate(criterio)}
+				/>
 			)}
 			<Cuerpo>
-				{data?.cantidadDeEscritos && data?.cantidadDeEscritos > 0 ? (
+				{tieneEscritos ? (
 					<ListaDeEscritos
 						data={data?.escritos || []}
 						isLoading={isLoading}
@@ -150,16 +108,7 @@ const VerCarpeta = () => {
 						onLongPress={handleLongPress}
 					/>
 				) : (
-					<div className='flex flex-col justify-center items-center h-full g-2'>
-						<div className='text-sm text-gray-500'>No hay escritos en esta carpeta.</div>
-						<Boton
-							soloBorde
-							className='flex justify-between items-center mt-4'
-							onClick={() => eliminacion.mutate(Number(carpetaId))}
-						>
-							¿Eliminar carpeta?
-						</Boton>
-					</div>
+					<EstadoVacio onEliminar={() => eliminacion.mutate(Number(carpetaId))} />
 				)}
 			</Cuerpo>
 			{mostrarModalMover && carpetaId && (
