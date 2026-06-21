@@ -3,23 +3,25 @@ import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
 import NuevaCarpeta from "./nueva-carpeta";
 
-const mockIrAlInicio = jest.fn();
-const mockIrACarpeta = jest.fn();
-const mockMutateCreacion = jest.fn();
+const mockIrAlInicio = vi.fn();
+const mockIrACarpeta = vi.fn();
+const mockMutateCreacion = vi.fn();
 
 let mockCarpetaId: string | undefined = undefined;
 
-jest.mock("../../usar-navegacion", () => () => ({
-	irAlInicio: mockIrAlInicio,
-	irACarpeta: mockIrACarpeta,
-	carpetaId: mockCarpetaId,
+vi.mock("../../usar-navegacion", () => ({
+	default: () => ({
+		irAlInicio: mockIrAlInicio,
+		irACarpeta: mockIrACarpeta,
+		carpetaId: mockCarpetaId,
+	}),
 }));
 
-jest.mock("@/api/api", () => ({
+vi.mock("@/api/api", () => ({
 	api: {},
 }));
 
-jest.mock("@/api/clients", () => ({
+vi.mock("@/api/clients", () => ({
 	CarpetaDTO: class {
 		titulo: string;
 		carpetaPadreId: number | undefined;
@@ -30,9 +32,11 @@ jest.mock("@/api/clients", () => ({
 	},
 }));
 
-jest.mock("@/api/custom-hooks/use-api-mutation", () => () => ({
-	mutate: mockMutateCreacion,
-	isPending: false,
+vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
+	default: () => ({
+		mutate: mockMutateCreacion,
+		isPending: false,
+	}),
 }));
 
 const renderComponent = () =>
@@ -43,7 +47,7 @@ const renderComponent = () =>
 	);
 
 beforeEach(() => {
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 	mockCarpetaId = undefined;
 });
 

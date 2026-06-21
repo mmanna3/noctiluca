@@ -4,27 +4,29 @@ import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import VerCarpeta from "./ver-carpeta";
 
-const mockIrAlInicio = jest.fn();
-const mockIrANuevoEscrito = jest.fn();
-const mockIrACarpeta = jest.fn();
-const mockIrANuevaSubcarpeta = jest.fn();
-const mockMutateEliminacion = jest.fn();
-const mockMutateActualizarCriterio = jest.fn();
-const mockRefetch = jest.fn();
+const mockIrAlInicio = vi.fn();
+const mockIrANuevoEscrito = vi.fn();
+const mockIrACarpeta = vi.fn();
+const mockIrANuevaSubcarpeta = vi.fn();
+const mockMutateEliminacion = vi.fn();
+const mockMutateActualizarCriterio = vi.fn();
+const mockRefetch = vi.fn();
 
-jest.mock("../../usar-navegacion", () => () => ({
-	irAlInicio: mockIrAlInicio,
-	irANuevoEscrito: mockIrANuevoEscrito,
-	irACarpeta: mockIrACarpeta,
-	irANuevaSubcarpeta: mockIrANuevaSubcarpeta,
-	carpetaId: "1",
+vi.mock("../../usar-navegacion", () => ({
+	default: () => ({
+		irAlInicio: mockIrAlInicio,
+		irANuevoEscrito: mockIrANuevoEscrito,
+		irACarpeta: mockIrACarpeta,
+		irANuevaSubcarpeta: mockIrANuevaSubcarpeta,
+		carpetaId: "1",
+	}),
 }));
 
-jest.mock("@/api/api", () => ({
+vi.mock("@/api/api", () => ({
 	api: {},
 }));
 
-jest.mock("@/api/clients", () => ({
+vi.mock("@/api/clients", () => ({
 	CriterioDeOrdenEnum: { _1: 1, _2: 2, _3: 3, _4: 4, _5: 5, _6: 6 },
 }));
 
@@ -32,82 +34,71 @@ let mockQueryData: any = null;
 let mockQueryIsLoading = false;
 let mockQueryIsError = false;
 
-jest.mock("@/api/custom-hooks/use-api-query", () => () => ({
-	data: mockQueryData,
-	isLoading: mockQueryIsLoading,
-	isError: mockQueryIsError,
-	refetch: mockRefetch,
+vi.mock("@/api/custom-hooks/use-api-query", () => ({
+	default: () => ({
+		data: mockQueryData,
+		isLoading: mockQueryIsLoading,
+		isError: mockQueryIsError,
+		refetch: mockRefetch,
+	}),
 }));
 
-jest.mock("@/api/custom-hooks/use-api-mutation", () => (props: { mensajeDeExito?: string }) => {
-	if (props.mensajeDeExito?.includes("eliminada")) {
-		return { mutate: mockMutateEliminacion, isPending: false };
-	}
-	if (props.mensajeDeExito?.includes("Criterio")) {
-		return { mutate: mockMutateActualizarCriterio, isPending: false };
-	}
-	return { mutate: jest.fn(), isPending: false };
-});
+vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
+	default: (props: { mensajeDeExito?: string }) => {
+		if (props.mensajeDeExito?.includes("eliminada")) {
+			return { mutate: mockMutateEliminacion, isPending: false };
+		}
+		if (props.mensajeDeExito?.includes("Criterio")) {
+			return { mutate: mockMutateActualizarCriterio, isPending: false };
+		}
+		return { mutate: vi.fn(), isPending: false };
+	},
+}));
 
-jest.mock("../../components/requiere-password", () => {
-	function MockRequierePassword({ children }: { children: React.ReactNode }) {
-		return <>{children}</>;
-	}
-	return MockRequierePassword;
-});
+vi.mock("../../components/requiere-password", () => ({
+	default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 
-jest.mock("../../components/ui/modal-seleccionar-carpeta", () => {
-	function MockModalSeleccionarCarpeta() {
-		return <div data-testid="modal-mover">Modal Mover</div>;
-	}
-	return MockModalSeleccionarCarpeta;
-});
+vi.mock("../../components/ui/modal-seleccionar-carpeta", () => ({
+	default: () => <div data-testid="modal-mover">Modal Mover</div>,
+}));
 
-jest.mock("../../components/ui/selector-criterio-orden", () => {
-	function MockSelectorCriterioOrden() {
-		return <div data-testid="selector-criterio-orden">SelectorCriterioOrden</div>;
-	}
-	return MockSelectorCriterioOrden;
-});
+vi.mock("../../components/ui/selector-criterio-orden", () => ({
+	default: () => <div data-testid="selector-criterio-orden">SelectorCriterioOrden</div>,
+}));
 
-jest.mock("./lista", () => {
-	function MockListaSubcarpetas(props: { data?: { id: number; titulo: string }[] }) {
-		return (
-			<div data-testid="lista-subcarpetas">
-				{(props.data || []).map((c) => (
-					<div key={c.id} data-testid={`subcarpeta-${c.id}`}>
-						{c.titulo}
-					</div>
-				))}
-			</div>
-		);
-	}
-	return MockListaSubcarpetas;
-});
+vi.mock("./lista", () => ({
+	default: (props: { data?: { id: number; titulo: string }[] }) => (
+		<div data-testid="lista-subcarpetas">
+			{(props.data || []).map((c) => (
+				<div key={c.id} data-testid={`subcarpeta-${c.id}`}>
+					{c.titulo}
+				</div>
+			))}
+		</div>
+	),
+}));
 
-jest.mock("../escritos/lista", () => {
-	function MockListaEscritos(props: {
+vi.mock("../escritos/lista", () => ({
+	default: (props: {
 		data?: { id: number; titulo: string }[];
 		onToggleSeleccion?: (id: number) => void;
 		onLongPress?: (id: number) => void;
-	}) {
-		return (
-			<div data-testid="lista-escritos">
-				{(props.data || []).map((e) => (
-					<button
-						key={e.id}
-						data-testid={`escrito-${e.id}`}
-						onClick={() => props.onToggleSeleccion?.(e.id)}
-						onContextMenu={() => props.onLongPress?.(e.id)}
-					>
-						{e.titulo}
-					</button>
-				))}
-			</div>
-		);
-	}
-	return MockListaEscritos;
-});
+	}) => (
+		<div data-testid="lista-escritos">
+			{(props.data || []).map((e) => (
+				<button
+					key={e.id}
+					data-testid={`escrito-${e.id}`}
+					onClick={() => props.onToggleSeleccion?.(e.id)}
+					onContextMenu={() => props.onLongPress?.(e.id)}
+				>
+					{e.titulo}
+				</button>
+			))}
+		</div>
+	),
+}));
 
 const renderComponent = () =>
 	render(
@@ -117,7 +108,7 @@ const renderComponent = () =>
 	);
 
 beforeEach(() => {
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 	mockQueryData = {
 		id: 1,
 		titulo: "Mi Carpeta",
@@ -171,8 +162,6 @@ describe("VerCarpeta", () => {
 
 	test("boton + llama irANuevoEscrito", () => {
 		renderComponent();
-		// El botón de nuevo escrito (PlusIcon) es el último rounded-full
-		// (el primero es el de nueva subcarpeta para carpetas raíz)
 		const botonesIcono = screen.getAllByRole("button");
 		const botonesRoundedFull = botonesIcono.filter((b) => b.className.includes("rounded-full"));
 		const botonPlus = botonesRoundedFull[botonesRoundedFull.length - 1];
@@ -189,11 +178,7 @@ describe("VerCarpeta", () => {
 
 	test("boton herramientas muestra selector", () => {
 		renderComponent();
-		// El boton de herramientas es el que tiene AdjustmentsHorizontalIcon
-		// Buscar todos los botones y encontrar el de herramientas
 		const botones = screen.getAllByRole("button");
-		// El boton de herramientas no tiene texto, es un icono SVG
-		// Es el tercer boton (despues del de volver y el de nuevo)
 		const botonHerramientas = botones.find(
 			(b) => !b.className.includes("rounded-full") && !b.className.includes("soloBorde") && b.textContent === "",
 		);
@@ -212,12 +197,10 @@ describe("VerCarpeta", () => {
 
 	test("boton cancelar vuelve a modo normal", () => {
 		renderComponent();
-		// Activar modo seleccion
 		const escrito1 = screen.getByTestId("escrito-10");
 		fireEvent.contextMenu(escrito1);
 		expect(screen.getByText(/seleccionado/)).toBeInTheDocument();
 
-		// Buscar el boton X (cancelar)
 		const botones = screen.getAllByRole("button");
 		const botonCancelar = botones.find(
 			(b) => b.className.includes("text-slate-400"),
@@ -230,7 +213,6 @@ describe("VerCarpeta", () => {
 
 	test("boton Todos selecciona todos", () => {
 		renderComponent();
-		// Activar modo seleccion
 		fireEvent.contextMenu(screen.getByTestId("escrito-10"));
 		expect(screen.getByText("1 seleccionado")).toBeInTheDocument();
 
@@ -259,15 +241,12 @@ describe("VerCarpeta", () => {
 			carpetaPadreId: 5,
 		};
 		renderComponent();
-		// Para subcarpetas, onNuevaSubcarpeta es undefined → botón no se renderiza
-		// Solo hay un boton rounded-full: el de nuevo escrito
 		const botonesIcono = screen.getAllByRole("button");
 		const botonesRoundedFull = botonesIcono.filter((b) => b.className.includes("rounded-full"));
 		expect(botonesRoundedFull).toHaveLength(1);
 	});
 
 	test("muestra boton nueva subcarpeta cuando es carpeta raiz", () => {
-		// carpetaPadreId: null → carpeta raiz → se muestran dos botones round (subcarpeta + escrito)
 		renderComponent();
 		const botonesIcono = screen.getAllByRole("button");
 		const botonesRoundedFull = botonesIcono.filter((b) => b.className.includes("rounded-full"));

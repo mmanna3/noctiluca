@@ -4,26 +4,31 @@ import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import VerEscrito from "./ver-escrito";
 
-const mockVolverAEscritosHome = jest.fn();
-const mockVolverAPapelera = jest.fn();
+const mockVolverAEscritosHome = vi.fn();
+const mockVolverAPapelera = vi.fn();
 
-jest.mock("../../usar-navegacion", () => () => ({
-	volverAEscritosHome: mockVolverAEscritosHome,
-	volverAPapelera: mockVolverAPapelera,
-	escritoId: "5",
-	carpetaId: "1",
+vi.mock("../../usar-navegacion", () => ({
+	default: () => ({
+		volverAEscritosHome: mockVolverAEscritosHome,
+		volverAPapelera: mockVolverAPapelera,
+		escritoId: "5",
+		carpetaId: "1",
+	}),
 }));
 
 let mockLocationPathname = "/1/escritos/ver/5";
 
-jest.mock("react-router-dom", () => ({
-	...jest.requireActual("react-router-dom"),
-	useLocation: () => ({
-		pathname: mockLocationPathname,
-	}),
-}));
+vi.mock("react-router-dom", async () => {
+	const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
+	return {
+		...actual,
+		useLocation: () => ({
+			pathname: mockLocationPathname,
+		}),
+	};
+});
 
-jest.mock("@/api/api", () => ({
+vi.mock("@/api/api", () => ({
 	api: {},
 }));
 
@@ -31,41 +36,39 @@ let mockQueryData: any = null;
 let mockQueryIsLoading = false;
 let mockQueryIsError = false;
 
-jest.mock("@/api/custom-hooks/use-api-query", () => () => ({
-	data: mockQueryData,
-	isLoading: mockQueryIsLoading,
-	isError: mockQueryIsError,
-	refetch: jest.fn(),
+vi.mock("@/api/custom-hooks/use-api-query", () => ({
+	default: () => ({
+		data: mockQueryData,
+		isLoading: mockQueryIsLoading,
+		isError: mockQueryIsError,
+		refetch: vi.fn(),
+	}),
 }));
 
-const mockMutateEdicion = jest.fn();
-const mockMutateEliminacion = jest.fn();
+const mockMutateEdicion = vi.fn();
+const mockMutateEliminacion = vi.fn();
 
-jest.mock("@/api/custom-hooks/use-api-mutation", () => (props: { mensajeDeExito?: string }) => {
-	if (props.mensajeDeExito?.includes("actualizado")) {
-		return { mutate: mockMutateEdicion, isPending: false };
-	}
-	if (props.mensajeDeExito?.includes("eliminado") || props.mensajeDeExito?.includes("tacho")) {
-		return { mutate: mockMutateEliminacion, isPending: false };
-	}
-	return { mutate: jest.fn(), isPending: false };
-});
+vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
+	default: (props: { mensajeDeExito?: string }) => {
+		if (props.mensajeDeExito?.includes("actualizado")) {
+			return { mutate: mockMutateEdicion, isPending: false };
+		}
+		if (props.mensajeDeExito?.includes("eliminado") || props.mensajeDeExito?.includes("tacho")) {
+			return { mutate: mockMutateEliminacion, isPending: false };
+		}
+		return { mutate: vi.fn(), isPending: false };
+	},
+}));
 
-jest.mock("../../components/requiere-password", () => {
-	function MockRequierePassword({ children }: { children: React.ReactNode }) {
-		return <>{children}</>;
-	}
-	return MockRequierePassword;
-});
+vi.mock("../../components/requiere-password", () => ({
+	default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 
-jest.mock("../../components/ui/modal-seleccionar-carpeta", () => {
-	function MockModalSeleccionarCarpeta() {
-		return <div data-testid="modal-mover">Modal Mover</div>;
-	}
-	return MockModalSeleccionarCarpeta;
-});
+vi.mock("../../components/ui/modal-seleccionar-carpeta", () => ({
+	default: () => <div data-testid="modal-mover">Modal Mover</div>,
+}));
 
-jest.mock("@/api/clients", () => ({
+vi.mock("@/api/clients", () => ({
 	EscritoDTO: class {
 		id: any;
 		titulo: any;
@@ -86,7 +89,7 @@ const renderComponent = () =>
 	);
 
 beforeEach(() => {
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 	mockLocationPathname = "/1/escritos/ver/5";
 	mockQueryData = {
 		id: 5,
