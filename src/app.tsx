@@ -14,7 +14,15 @@ import ModoLectura from "./pantallas/modo-lectura/modo-lectura";
 import Tacho from "./pantallas/tacho/tacho";
 import rutas from "./rutas";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000,
+			gcTime: 10 * 60 * 1000,
+			retry: 1,
+		},
+	},
+});
 
 const App = () => {
 	return (
