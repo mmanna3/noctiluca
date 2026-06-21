@@ -37,6 +37,7 @@ const App = () => {
 								<Route path={rutas.ESCRITOS_HOME} element={<VerCarpeta />} />
 								<Route path={rutas.NUEVO_ESCRITO} element={<NuevoEscrito />} />
 								<Route path={rutas.NUEVA_CARPETA} element={<NuevaCarpeta />} />
+								<Route path={rutas.NUEVA_SUBCARPETA} element={<NuevaCarpeta />} />
 								<Route path={rutas.PAPELERA} element={<Tacho />} />
 								<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
 								<Route path={rutas.VER_ESCRITO_PAPELERA} element={<VerEscrito />} />

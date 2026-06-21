@@ -10,24 +10,37 @@ import Input from "../../components/ui/input";
 import usarNavegacion from "../../usar-navegacion";
 
 const NuevaCarpeta = () => {
-	const { irAlInicio } = usarNavegacion();
+	const { irAlInicio, irACarpeta, carpetaId } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [errorTitulo, setErrorTitulo] = useState("");
+
+	// Si hay carpetaId en la URL, estamos creando una subcarpeta
+	const carpetaPadreId = carpetaId ? Number(carpetaId) : undefined;
+	const esSubcarpeta = carpetaPadreId !== undefined;
+
+	const volverAlOrigen = () => {
+		if (esSubcarpeta && carpetaPadreId !== undefined) irACarpeta(carpetaPadreId);
+		else irAlInicio();
+	};
 
 	const creacion = useApiMutation({
 		fn: async (carpeta: CarpetaDTO) => {
 			await api.carpetaPOST(carpeta);
 		},
-		antesDeMensajeExito: () => irAlInicio(),
-		mensajeDeExito: `Carpeta '${titulo}' creada`,
+		antesDeMensajeExito: volverAlOrigen,
+		mensajeDeExito: esSubcarpeta ? `Subcarpeta '${titulo}' creada` : `Carpeta '${titulo}' creada`,
 	});
 
 	const crearYVolver = async () => {
-		if (titulo === "") irAlInicio();
+		if (titulo === "") {
+			volverAlOrigen();
+			return;
+		}
 
 		creacion.mutate(
 			new CarpetaDTO({
 				titulo,
+				carpetaPadreId,
 			}),
 		);
 	};
@@ -42,7 +55,7 @@ const NuevaCarpeta = () => {
 			<Encabezado>
 				<Boton soloBorde className='flex justify-between items-center' onClick={crearYVolver}>
 					<ChevronLeftIcon className='w-4 h-4 mr-2' />
-					Crear carpeta
+					{esSubcarpeta ? "Crear subcarpeta" : "Crear carpeta"}
 				</Boton>
 			</Encabezado>
 			<Cuerpo>

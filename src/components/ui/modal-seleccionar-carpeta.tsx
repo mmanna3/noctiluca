@@ -14,6 +14,32 @@ interface Props {
 	onMovido: () => void;
 }
 
+interface CarpetaDestino {
+	carpeta: CarpetaDTO;
+	esSubcarpeta: boolean;
+}
+
+const obtenerCarpetasDestino = (
+	carpetas: CarpetaDTO[],
+	carpetaActualId: number,
+): CarpetaDestino[] => {
+	const destinos: CarpetaDestino[] = [];
+
+	for (const carpeta of carpetas) {
+		if (carpeta.id !== undefined && carpeta.id !== carpetaActualId) {
+			destinos.push({ carpeta, esSubcarpeta: false });
+		}
+
+		for (const subcarpeta of carpeta.subCarpetas || []) {
+			if (subcarpeta.id !== undefined && subcarpeta.id !== carpetaActualId) {
+				destinos.push({ carpeta: subcarpeta, esSubcarpeta: true });
+			}
+		}
+	}
+
+	return destinos;
+};
+
 const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovido }: Props) => {
 	const [moviendo, setMoviendo] = useState(false);
 
@@ -22,9 +48,7 @@ const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovi
 		fn: async () => await api.carpetaAll(),
 	});
 
-	const carpetasFiltradas = (carpetas || []).filter(
-		(c: CarpetaDTO) => c.id !== carpetaActualId,
-	);
+	const carpetasDestino = obtenerCarpetasDestino(carpetas || [], carpetaActualId);
 
 	const moverACarpeta = async (carpetaDestinoId: number) => {
 		setMoviendo(true);
@@ -68,17 +92,19 @@ const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovi
 					</div>
 				) : (
 					<div className='space-y-1'>
-						{carpetasFiltradas.map((carpeta: CarpetaDTO) => (
+						{carpetasDestino.map(({ carpeta, esSubcarpeta }) => (
 							<button
 								key={carpeta.id}
-								className='w-full text-left px-3 py-2 rounded hover:bg-yellow-200 text-sm disabled:opacity-50'
+								className={`w-full text-left px-3 py-2 rounded hover:bg-yellow-200 text-sm disabled:opacity-50 ${
+									esSubcarpeta ? "pl-6 text-gray-700" : ""
+								}`}
 								onClick={() => carpeta.id && moverACarpeta(carpeta.id)}
 								disabled={moviendo}
 							>
 								{carpeta.titulo}
 							</button>
 						))}
-						{carpetasFiltradas.length === 0 && (
+						{carpetasDestino.length === 0 && (
 							<p className='text-sm text-gray-500 text-center py-2'>
 								No hay otras carpetas disponibles
 							</p>

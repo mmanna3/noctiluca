@@ -930,6 +930,9 @@ export class CarpetaDTO implements ICarpetaDTO {
 	requiereAutenticacion?: boolean;
 	posicion?: number;
 	criterioDeOrden?: CriterioDeOrdenEnum;
+	carpetaPadreId?: number | undefined;
+	subCarpetas?: CarpetaDTO[] | undefined;
+	readonly cantidadDeSubCarpetas?: number;
 
 	constructor(data?: ICarpetaDTO) {
 		if (data) {
@@ -951,6 +954,12 @@ export class CarpetaDTO implements ICarpetaDTO {
 			this.requiereAutenticacion = _data["requiereAutenticacion"];
 			this.posicion = _data["posicion"];
 			this.criterioDeOrden = _data["criterioDeOrden"];
+			this.carpetaPadreId = _data["carpetaPadreId"];
+			if (Array.isArray(_data["subCarpetas"])) {
+				this.subCarpetas = [] as any;
+				for (let item of _data["subCarpetas"]) this.subCarpetas!.push(CarpetaDTO.fromJS(item));
+			}
+			(<any>this).cantidadDeSubCarpetas = _data["cantidadDeSubCarpetas"];
 		}
 	}
 
@@ -973,6 +982,12 @@ export class CarpetaDTO implements ICarpetaDTO {
 		data["requiereAutenticacion"] = this.requiereAutenticacion;
 		data["posicion"] = this.posicion;
 		data["criterioDeOrden"] = this.criterioDeOrden;
+		data["carpetaPadreId"] = this.carpetaPadreId;
+		if (Array.isArray(this.subCarpetas)) {
+			data["subCarpetas"] = [];
+			for (let item of this.subCarpetas) data["subCarpetas"].push(item.toJSON());
+		}
+		data["cantidadDeSubCarpetas"] = this.cantidadDeSubCarpetas;
 		return data;
 	}
 }
@@ -985,6 +1000,9 @@ export interface ICarpetaDTO {
 	requiereAutenticacion?: boolean;
 	posicion?: number;
 	criterioDeOrden?: CriterioDeOrdenEnum;
+	carpetaPadreId?: number | undefined;
+	subCarpetas?: CarpetaDTO[] | undefined;
+	cantidadDeSubCarpetas?: number;
 }
 
 export enum CriterioDeOrdenEnum {

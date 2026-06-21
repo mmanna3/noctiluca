@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { CriterioDeOrdenEnum } from "@/api/clients";
+import { CarpetaDTO, CriterioDeOrdenEnum } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { useState } from "react";
@@ -12,9 +12,11 @@ import BarraDeHerramientas from "./barra-de-herramientas";
 import EncabezadoNormal from "./encabezado-normal";
 import EncabezadoSeleccion from "./encabezado-seleccion";
 import EstadoVacio from "./estado-vacio";
+import ListaDeCarpetas from "./lista";
 
 const VerCarpeta = () => {
-	const { irAlInicio, irANuevoEscrito, carpetaId } = usarNavegacion();
+	const { irAlInicio, irACarpeta, irANuevoEscrito, irANuevaSubcarpeta, carpetaId } =
+		usarNavegacion();
 	const [mostrarHerramientas, setMostrarHerramientas] = useState(false);
 	const [modoSeleccion, setModoSeleccion] = useState(false);
 	const [escritosSeleccionados, setEscritosSeleccionados] = useState<Set<number>>(new Set());
@@ -25,9 +27,17 @@ const VerCarpeta = () => {
 		fn: async () => await api.carpetaGET(Number(carpetaId)),
 	});
 
+	const esSubcarpeta = data?.carpetaPadreId !== undefined && data?.carpetaPadreId !== null;
+	const tieneSubcarpetas = !!(data?.cantidadDeSubCarpetas && data.cantidadDeSubCarpetas > 0);
+
+	const volver = () => {
+		if (esSubcarpeta && data?.carpetaPadreId) irACarpeta(data.carpetaPadreId);
+		else irAlInicio();
+	};
+
 	const eliminacion = useApiMutation({
 		fn: async () => await api.carpetaDELETE(Number(carpetaId)),
-		antesDeMensajeExito: () => irAlInicio(),
+		antesDeMensajeExito: volver,
 		mensajeDeExito: `Carpeta '${data?.titulo}' eliminada`,
 	});
 
@@ -68,6 +78,7 @@ const VerCarpeta = () => {
 	};
 
 	const tieneEscritos = !!(data?.cantidadDeEscritos && data.cantidadDeEscritos > 0);
+	const estaVacia = !tieneEscritos && !tieneSubcarpetas;
 
 	return (
 		<ChequearSiRequierePassword>
@@ -82,8 +93,9 @@ const VerCarpeta = () => {
 			) : (
 				<EncabezadoNormal
 					titulo={data?.titulo || ""}
-					onVolver={irAlInicio}
+					onVolver={volver}
 					onNuevoEscrito={() => irANuevoEscrito(data?.titulo || "")}
+					onNuevaSubcarpeta={esSubcarpeta ? undefined : irANuevaSubcarpeta}
 				/>
 			)}
 			{!modoSeleccion && (
@@ -97,18 +109,29 @@ const VerCarpeta = () => {
 				/>
 			)}
 			<Cuerpo>
-				{tieneEscritos ? (
-					<ListaDeEscritos
-						data={data?.escritos || []}
-						isLoading={isLoading}
-						isError={isError}
-						modoSeleccion={modoSeleccion}
-						escritosSeleccionados={escritosSeleccionados}
-						onToggleSeleccion={handleToggleSeleccion}
-						onLongPress={handleLongPress}
-					/>
-				) : (
+				{estaVacia ? (
 					<EstadoVacio onEliminar={() => eliminacion.mutate(Number(carpetaId))} />
+				) : (
+					<>
+						{tieneSubcarpetas && (
+							<ListaDeCarpetas
+								data={(data?.subCarpetas || []) as CarpetaDTO[]}
+								isLoading={isLoading}
+								isError={isError}
+							/>
+						)}
+						{tieneEscritos && (
+							<ListaDeEscritos
+								data={data?.escritos || []}
+								isLoading={isLoading}
+								isError={isError}
+								modoSeleccion={modoSeleccion}
+								escritosSeleccionados={escritosSeleccionados}
+								onToggleSeleccion={handleToggleSeleccion}
+								onLongPress={handleLongPress}
+							/>
+						)}
+					</>
 				)}
 			</Cuerpo>
 			{mostrarModalMover && carpetaId && (

@@ -35,8 +35,14 @@ const usarNavegacion = () => {
 		irANuevoEscrito: (carpetaTitulo: string) => {
 			navigate(`/${carpetaId}/${carpetaTitulo}/nuevo`, { replace: true });
 		},
+		irACarpeta: (carpetaId: number) => {
+			navigate(`/${carpetaId}/escritos`);
+		},
 		irANuevaCarpeta: () => {
 			navigate("/nueva-carpeta", { replace: true });
+		},
+		irANuevaSubcarpeta: () => {
+			navigate(`/${carpetaId}/nueva-subcarpeta`, { replace: true });
 		},
 		irAPapelera: () => {
 			navigate("/papelera", { replace: true });

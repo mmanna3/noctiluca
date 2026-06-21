@@ -1,3 +1,4 @@
+import { FolderPlusIcon } from "@heroicons/react/24/outline";
 import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../../components/ui/botones";
 import Encabezado from "../../components/ui/encabezado";
@@ -6,14 +7,20 @@ interface Props {
 	titulo: string;
 	onVolver: () => void;
 	onNuevoEscrito: () => void;
+	onNuevaSubcarpeta?: () => void;
 }
 
-const EncabezadoNormal = ({ titulo, onVolver, onNuevoEscrito }: Props) => (
+const EncabezadoNormal = ({ titulo, onVolver, onNuevoEscrito, onNuevaSubcarpeta }: Props) => (
 	<Encabezado>
 		<Boton soloBorde className='flex justify-between items-center' onClick={onVolver}>
 			<ChevronLeftIcon className='w-4 h-4 mr-2' />/{titulo}
 		</Boton>
 		<div className='flex items-center gap-2'>
+			{onNuevaSubcarpeta && (
+				<BotonIcono onClick={onNuevaSubcarpeta}>
+					<FolderPlusIcon className='h-6 w-6' />
+				</BotonIcono>
+			)}
 			<BotonIcono onClick={onNuevoEscrito}>
 				<PlusIcon className='h-8 w-8' />
 			</BotonIcono>

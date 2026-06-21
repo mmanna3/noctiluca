@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
+import React from "react";
 import VerEscrito from "./ver-escrito";
 
 const mockVolverAEscritosHome = jest.fn();
@@ -30,7 +31,7 @@ let mockQueryData: any = null;
 let mockQueryIsLoading = false;
 let mockQueryIsError = false;
 
-jest.mock("@/api/custom-hooks/use-api-query", () => (props: any) => ({
+jest.mock("@/api/custom-hooks/use-api-query", () => () => ({
 	data: mockQueryData,
 	isLoading: mockQueryIsLoading,
 	isError: mockQueryIsError,
@@ -40,7 +41,7 @@ jest.mock("@/api/custom-hooks/use-api-query", () => (props: any) => ({
 const mockMutateEdicion = jest.fn();
 const mockMutateEliminacion = jest.fn();
 
-jest.mock("@/api/custom-hooks/use-api-mutation", () => (props: any) => {
+jest.mock("@/api/custom-hooks/use-api-mutation", () => (props: { mensajeDeExito?: string }) => {
 	if (props.mensajeDeExito?.includes("actualizado")) {
 		return { mutate: mockMutateEdicion, isPending: false };
 	}
@@ -50,11 +51,19 @@ jest.mock("@/api/custom-hooks/use-api-mutation", () => (props: any) => {
 	return { mutate: jest.fn(), isPending: false };
 });
 
-jest.mock("../../components/requiere-password", () => ({ children }: any) => <>{children}</>);
+jest.mock("../../components/requiere-password", () => {
+	function MockRequierePassword({ children }: { children: React.ReactNode }) {
+		return <>{children}</>;
+	}
+	return MockRequierePassword;
+});
 
-jest.mock("../../components/ui/modal-seleccionar-carpeta", () => (props: any) => (
-	<div data-testid="modal-mover">Modal Mover</div>
-));
+jest.mock("../../components/ui/modal-seleccionar-carpeta", () => {
+	function MockModalSeleccionarCarpeta() {
+		return <div data-testid="modal-mover">Modal Mover</div>;
+	}
+	return MockModalSeleccionarCarpeta;
+});
 
 jest.mock("@/api/clients", () => ({
 	EscritoDTO: class {
@@ -125,7 +134,8 @@ describe("VerEscrito", () => {
 		const botones = screen.getAllByRole("button");
 		const botonVolver = botones.find((b) => b.textContent?.includes("Mi Carpeta"));
 		expect(botonVolver).toBeDefined();
-		fireEvent.click(botonVolver!);
+		if (!botonVolver) return;
+		fireEvent.click(botonVolver);
 		expect(mockMutateEdicion).toHaveBeenCalledWith(
 			expect.objectContaining({
 				id: 5,
@@ -140,7 +150,8 @@ describe("VerEscrito", () => {
 		const botones = screen.getAllByRole("button");
 		const botonEliminar = botones.find((b) => b.className.includes("border-none"));
 		expect(botonEliminar).toBeDefined();
-		fireEvent.click(botonEliminar!);
+		if (!botonEliminar) return;
+		fireEvent.click(botonEliminar);
 		expect(mockMutateEliminacion).toHaveBeenCalledWith(5);
 	});
 
@@ -158,7 +169,8 @@ describe("VerEscrito", () => {
 			(b) => b.className.includes("text-slate-400") && b.className.includes("hover:bg-yellow-200"),
 		);
 		expect(botonMover).toBeDefined();
-		fireEvent.click(botonMover!);
+		if (!botonMover) return;
+		fireEvent.click(botonMover);
 		expect(screen.getByTestId("modal-mover")).toBeInTheDocument();
 	});
 
