@@ -16,7 +16,7 @@ jobs:
       - name: Set de versión de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: "npm"
 
       - name: Instalar dependencias
@@ -24,15 +24,8 @@ jobs:
 
       - name: Buildear
         run: yarn build
-
-      - name: Debug FTP connection
-        run: |
-          echo "Testing FTP connection to ${{ secrets.FTP_HOST }}"
-          echo "Username: ${{ secrets.FTP_USERNAME }}"
-          echo "Password: ${{ secrets.FTP_PASSWORD }}"
-          echo "Server dir: ${{ secrets.NOCTILUCA_SERVER_DIR }}"
-          # Test basic connectivity
-          nc -zv ${{ secrets.FTP_HOST }} ${{ secrets.FTP_PORT || '21' }} || echo "Connection test failed"
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
       - name: Deployar por FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -40,9 +33,8 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./build/
+          local-dir: ./dist/
           server-dir: ${{ secrets.NOCTILUCA_SERVER_DIR }}
-          # Configuraciones adicionales para resolver problemas de conexión
           port: ${{ secrets.FTP_PORT || '21' }}
           protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
           dangerous-clean-slate: true
