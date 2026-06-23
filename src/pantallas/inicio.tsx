@@ -1,7 +1,7 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { queryKeys } from "@/api/query-keys";
-import { BookOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Boton, BotonIcono } from "../components/ui/botones";
@@ -15,6 +15,7 @@ import frasesInicio from "../utils/frases-inicio";
 import ListaDeCarpetas from "./carpetas/lista";
 import HabitTracker from "./habitos/habit-tracker";
 import MenuHabitos from "./habitos/menu-habitos";
+import BuscarEscritos from "./inicio/buscar-escritos";
 
 const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();
@@ -22,6 +23,7 @@ const Inicio = () => {
 	const { logout } = useAuth();
 	const { ocultarSemanaActual } = usePreferenciasHabitos();
 	const [menuHabitosAbierto, setMenuHabitosAbierto] = useState(false);
+	const [busquedaAbierta, setBusquedaAbierta] = useState(false);
 
 	const obtenerFraseAleatoria = () => {
 		const indiceAleatorio = Math.floor(Math.random() * frasesInicio.length);
@@ -57,17 +59,31 @@ const Inicio = () => {
 	return (
 		<>
 			<Encabezado>
-				<Boton soloBorde onClick={() => setMenuHabitosAbierto((abierto) => !abierto)}>
-					/
-				</Boton>
+				<div className='flex items-center gap-1'>
+					<Boton soloBorde onClick={() => setMenuHabitosAbierto((abierto) => !abierto)}>
+						/
+					</Boton>
+					<Boton
+						sinBorde
+						className='flex justify-center items-center'
+						onClick={() => setBusquedaAbierta((abierto) => !abierto)}
+					>
+						<MagnifyingGlassIcon className='h-5 w-5' />
+					</Boton>
+				</div>
 				<BotonIcono onClick={irANuevaCarpeta}>
 					<PlusIcon className='h-8 w-8' />
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
 				{menuHabitosAbierto && <MenuHabitos onCerrar={() => setMenuHabitosAbierto(false)} />}
-				<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
-				<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
+				<BuscarEscritos abierto={busquedaAbierta} />
+				{!busquedaAbierta && (
+					<>
+						<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
+						<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
+					</>
+				)}
 			</Cuerpo>
 			<div className='flex justify-between w-full'>
 				<Boton soloBorde className='w-14 flex justify-around items-center' onClick={cerrarSesion}>

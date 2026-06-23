@@ -12,6 +12,7 @@ export const queryKeys = {
 	habitos: ["habitos"] as const,
 	habitosTracker: ["habitos-tracker"] as const,
 	habitosResumenSemanal: ["habitos-resumen-semanal"] as const,
+	buscarEscritos: (texto: string) => ["buscar-escritos", texto] as const,
 };
 
 export const clavesCarpetas: QueryKey[] = [

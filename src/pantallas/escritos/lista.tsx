@@ -6,6 +6,7 @@ interface Props {
 	isLoading: boolean;
 	isError: boolean;
 	modoSeleccion?: boolean;
+	mostrarCarpeta?: boolean;
 	escritosSeleccionados?: Set<number>;
 	onToggleSeleccion?: (id: number) => void;
 	onLongPress?: (id: number) => void;
@@ -19,6 +20,7 @@ function ListaDeEscritos(props: Props) {
 					{...escrito}
 					key={escrito.id ?? escrito.titulo}
 					modoSeleccion={props.modoSeleccion}
+					mostrarCarpeta={props.mostrarCarpeta}
 					seleccionado={escrito.id ? props.escritosSeleccionados?.has(escrito.id) : false}
 					onToggleSeleccion={props.onToggleSeleccion}
 					onLongPress={props.onLongPress}

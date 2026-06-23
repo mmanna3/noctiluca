@@ -21,12 +21,12 @@ const usarNavegacion = () => {
 		volverAEscritosHome: () => {
 			navigate(`/${carpetaId}/escritos`, { replace: true });
 		},
-		irAVerEscrito: (escritoId: string) => {
-			// Detectar si estamos en la papelera
+		irAVerEscrito: (escritoId: string, carpetaIdOverride?: string | number) => {
+			const idCarpeta = carpetaIdOverride ?? carpetaId;
 			if (location.pathname.includes("/papelera")) {
 				navigate(`/papelera/ver/${escritoId}`);
 			} else {
-				navigate(`/${carpetaId}/escritos/ver/${escritoId}`);
+				navigate(`/${idCarpeta}/escritos/ver/${escritoId}`);
 			}
 		},
 		volverAPapelera: () => {

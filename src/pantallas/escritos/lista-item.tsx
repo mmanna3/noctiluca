@@ -6,6 +6,7 @@ import usarNavegacion from "../../usar-navegacion";
 interface Props extends IEscritoDTO {
 	modoSeleccion?: boolean;
 	seleccionado?: boolean;
+	mostrarCarpeta?: boolean;
 	onToggleSeleccion?: (id: number) => void;
 	onLongPress?: (id: number) => void;
 }
@@ -13,6 +14,11 @@ interface Props extends IEscritoDTO {
 const Escrito = (props: Props) => {
 	const { irAVerEscrito } = usarNavegacion();
 	const obtenerResumen = (texto: string) => texto.slice(0, 80) + (texto.length > 80 ? "..." : "");
+	const resumenCuerpo = obtenerResumen(props.cuerpo || "");
+	const subtitulo =
+		props.mostrarCarpeta && props.carpetaTitulo
+			? `${props.carpetaTitulo} · ${resumenCuerpo}`
+			: resumenCuerpo;
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const longPressTriggered = useRef(false);
 
@@ -40,7 +46,7 @@ const Escrito = (props: Props) => {
 				props.onToggleSeleccion(props.id);
 			}
 		} else {
-			irAVerEscrito(props.id?.toString() || "");
+			irAVerEscrito(props.id?.toString() || "", props.carpetaId);
 		}
 	};
 
@@ -72,7 +78,7 @@ const Escrito = (props: Props) => {
 				<ListaItem
 					fecha={props.fechaHoraCreacion?.toString()}
 					titulo={props.titulo ?? ""}
-					subtitulo={obtenerResumen(props.cuerpo || "")}
+					subtitulo={subtitulo}
 					onClick={handleClick}
 				/>
 			</div>
