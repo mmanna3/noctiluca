@@ -50,6 +50,12 @@ const usarNavegacion = () => {
 		irAModoLectura: () => {
 			navigate("/modo-lectura", { replace: true });
 		},
+		irAHabitos: () => {
+			navigate("/habitos", { replace: true });
+		},
+		irAResumenHabitos: () => {
+			navigate("/resumen-habitos", { replace: true });
+		},
 	};
 };
 

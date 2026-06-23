@@ -16,6 +16,8 @@ const NuevoEscrito = React.lazy(() => import("./pantallas/escritos/nuevo-escrito
 const VerEscrito = React.lazy(() => import("./pantallas/escritos/ver-escrito"));
 const ModoLectura = React.lazy(() => import("./pantallas/modo-lectura/modo-lectura"));
 const Tacho = React.lazy(() => import("./pantallas/tacho/tacho"));
+const AdministrarHabitos = React.lazy(() => import("./pantallas/habitos/administrar-habitos"));
+const ResumenSemanal = React.lazy(() => import("./pantallas/habitos/resumen-semanal"));
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -60,6 +62,8 @@ const App = () => {
 									<Route path={rutas.VER_ESCRITO} element={<VerEscrito />} />
 									<Route path={rutas.VER_ESCRITO_PAPELERA} element={<VerEscrito />} />
 									<Route path={rutas.MODO_LECTURA} element={<ModoLectura />} />
+									<Route path={rutas.HABITOS} element={<AdministrarHabitos />} />
+									<Route path={rutas.RESUMEN_HABITOS} element={<ResumenSemanal />} />
 								</Route>
 								<Route
 									path='*'

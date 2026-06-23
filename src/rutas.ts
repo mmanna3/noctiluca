@@ -9,4 +9,6 @@ export default {
 	NUEVO_ESCRITO: ":carpetaId/:carpetaTitulo/nuevo",
 	PAPELERA: "papelera",
 	MODO_LECTURA: "modo-lectura",
+	HABITOS: "habitos",
+	RESUMEN_HABITOS: "resumen-habitos",
 };

@@ -10,6 +10,7 @@ import { useAuth } from "../hooks/use-auth";
 import usarNavegacion from "../usar-navegacion";
 import frasesInicio from "../utils/frases-inicio";
 import ListaDeCarpetas from "./carpetas/lista";
+import HabitTracker from "./habitos/habit-tracker";
 
 const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();
@@ -56,6 +57,7 @@ const Inicio = () => {
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
+				<HabitTracker />
 				<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
 			</Cuerpo>
 			<div className='flex justify-between w-full'>
