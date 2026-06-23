@@ -76,7 +76,7 @@ const HabitTrackerCelda = ({ habito, fecha, onGuardado, guardarRegistro }: Props
 				type='button'
 				onClick={alternarSiNo}
 				disabled={mutation.isPending}
-				className='flex items-center justify-center min-h-[44px] w-full text-2xl rounded-md border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors'
+				className='flex items-center justify-center min-h-[44px] w-full text-3xl'
 				aria-label={habito.valorBooleano ? "Cumplido" : "No cumplido"}
 			>
 				{habito.valorBooleano === true ? "☑" : "☐"}

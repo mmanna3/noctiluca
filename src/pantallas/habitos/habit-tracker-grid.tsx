@@ -12,7 +12,7 @@ const HabitTrackerGrid = ({ habitos, fecha, onGuardado, guardarRegistro }: Props
 	if (habitos.length === 0) {
 		return (
 			<p className='text-sm text-gray-500 text-center py-4'>
-				No hay hábitos activos. Configuralos desde el engranaje.
+				No hay hábitos activos. Configuralos desde el menú /.
 			</p>
 		);
 	}

@@ -2,9 +2,7 @@ import { api } from "@/api/api";
 import { ResumenSemanalDTO, UpsertRegistroHabitoDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { queryKeys } from "@/api/query-keys";
-import { useAuth } from "@/hooks/use-auth";
-import usarNavegacion from "@/usar-navegacion";
-import { ChevronLeftIcon, ChevronRightIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import HabitTrackerGrid from "./habit-tracker-grid";
@@ -44,16 +42,19 @@ const ResumenDomingo = ({ resumen }: { resumen: ResumenSemanalDTO }) => {
 	);
 };
 
-const HabitTracker = () => {
-	const { esAdmin } = useAuth();
-	const { irAHabitos, irAResumenHabitos } = usarNavegacion();
+interface Props {
+	ocultarSemanaActual: boolean;
+}
+
+const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 	const queryClient = useQueryClient();
 
 	const [semanaReferencia, setSemanaReferencia] = useState(() => inicioDeSemana(new Date()));
 	const [diaSeleccionado, setDiaSeleccionado] = useState(() => new Date());
 
 	const diasSemana = useMemo(() => diasDeSemana(semanaReferencia), [semanaReferencia]);
-	const fechaConsulta = diaSeleccionado;
+	const hoy = new Date();
+	const fechaConsulta = ocultarSemanaActual ? hoy : diaSeleccionado;
 
 	const { data, isLoading } = useApiQuery({
 		key: [...queryKeys.habitosTracker, formatearFechaClave(fechaConsulta)],
@@ -63,7 +64,7 @@ const HabitTracker = () => {
 	const { data: resumenSemanal } = useApiQuery({
 		key: [...queryKeys.habitosResumenSemanal, formatearFechaClave(new Date())],
 		fn: () => api.resumenSemanal(new Date()),
-		activado: esDomingo(),
+		activado: !ocultarSemanaActual && esDomingo(),
 	});
 
 	const refetchTracker = useCallback(() => {
@@ -95,30 +96,21 @@ const HabitTracker = () => {
 
 	const habitos = data?.habitos ?? [];
 
+	if (ocultarSemanaActual) {
+		return (
+			<div className='mb-4'>
+				<HabitTrackerGrid
+					habitos={habitos}
+					fecha={fechaConsulta}
+					onGuardado={refetchTracker}
+					guardarRegistro={guardarRegistro}
+				/>
+			</div>
+		);
+	}
+
 	return (
 		<div className='mb-6 pb-4 border-b border-gray-200'>
-			<div className='flex items-center justify-between mb-3'>
-				<div className='flex items-center gap-2'>
-					<button
-						type='button'
-						onClick={irAResumenHabitos}
-						className='text-xs text-gray-500 hover:text-gray-700 underline'
-					>
-						Ver resumen
-					</button>
-					{esAdmin() && (
-						<button
-							type='button'
-							onClick={irAHabitos}
-							className='p-1 rounded hover:bg-gray-100'
-							aria-label='Administrar hábitos'
-						>
-							<Cog6ToothIcon className='w-5 h-5 text-gray-500' />
-						</button>
-					)}
-				</div>
-			</div>
-
 			<div className='flex items-center justify-between mb-2'>
 				<button type='button' onClick={semanaAnterior} className='p-1 rounded hover:bg-gray-100'>
 					<ChevronLeftIcon className='w-4 h-4' />
@@ -134,7 +126,7 @@ const HabitTracker = () => {
 			<div className='flex gap-1 mb-3 overflow-x-auto'>
 				{diasSemana.map((dia) => {
 					const seleccionado = esMismaFecha(dia, diaSeleccionado);
-					const esHoy = esMismaFecha(dia, new Date());
+					const esHoy = esMismaFecha(dia, hoy);
 					return (
 						<button
 							key={formatearFechaClave(dia)}
@@ -144,8 +136,8 @@ const HabitTracker = () => {
 								seleccionado
 									? "bg-gray-800 text-white"
 									: esHoy
-									? "bg-gray-100 text-gray-800 font-medium"
-									: "text-gray-500 hover:bg-gray-50"
+										? "bg-gray-100 text-gray-800 font-medium"
+										: "text-gray-500 hover:bg-gray-50"
 							}`}
 						>
 							{nombreDiaCorto(dia)} {dia.getDate()}
