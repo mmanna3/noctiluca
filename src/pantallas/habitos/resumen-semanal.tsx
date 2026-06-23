@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import { HabitoResumenDTO } from "@/api/clients";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useMemo, useState } from "react";
@@ -90,7 +91,7 @@ const ResumenSemanal = () => {
 	const [semanaReferencia, setSemanaReferencia] = useState(() => new Date());
 
 	const { data, isLoading } = useApiQuery({
-		key: ["habitos-resumen-semanal", formatearFechaClave(semanaReferencia)],
+		key: [...queryKeys.habitosResumenSemanal, formatearFechaClave(semanaReferencia)],
 		fn: () => api.resumenSemanal(semanaReferencia),
 	});
 

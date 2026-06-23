@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import { Boton } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
@@ -10,7 +11,7 @@ const Tacho = () => {
 	const { irAlInicio } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
-		key: ["papelera"],
+		key: queryKeys.papelera,
 		fn: async () => await api.papelera(),
 	});
 

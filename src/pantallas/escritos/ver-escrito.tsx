@@ -2,6 +2,7 @@ import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { clavesEscritos, queryKeys } from "@/api/query-keys";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChequearSiRequierePassword from "../../components/requiere-password";
@@ -19,7 +20,7 @@ const VerEscrito = () => {
 	const [mostrarModalMover, setMostrarModalMover] = useState(false);
 
 	const { data, isLoading, isError } = useApiQuery({
-		key: ["escrito" + escritoId],
+		key: queryKeys.escrito(escritoId),
 		fn: async () => await api.escritoGET(Number(escritoId)),
 	});
 
@@ -30,6 +31,12 @@ const VerEscrito = () => {
 		},
 		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
 		mensajeDeExito: `Escrito '${data?.titulo}' actualizado`,
+		invalidarQueries: [
+			queryKeys.escrito(escritoId),
+			queryKeys.carpeta(carpetaId),
+			...clavesEscritos,
+			queryKeys.carpetas,
+		],
 	});
 
 	const eliminacion = useApiMutation({
@@ -43,6 +50,12 @@ const VerEscrito = () => {
 		},
 		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
 		mensajeDeExito: `Escrito '${data?.titulo}' ${vieneDePapelera ? "eliminado" : "al tacho"}`,
+		invalidarQueries: [
+			queryKeys.escrito(escritoId),
+			queryKeys.carpeta(carpetaId),
+			...clavesEscritos,
+			queryKeys.carpetas,
+		],
 	});
 
 	const [titulo, setTitulo] = useState("");

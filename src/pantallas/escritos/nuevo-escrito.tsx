@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
+import { clavesEscritos, queryKeys } from "@/api/query-keys";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Boton } from "../../components/ui/botones";
@@ -23,6 +24,7 @@ const NuevoEscrito = () => {
 		},
 		antesDeMensajeExito: () => volverAEscritosHome(),
 		mensajeDeExito: `Escrito ${titulo.trim() ? `'${titulo}'` : "sin título"} creado`,
+		invalidarQueries: [...clavesEscritos, queryKeys.carpetas, queryKeys.carpeta(carpetaId)],
 	});
 
 	const crearYVolver = async () => {

@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import { BookOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Boton, BotonIcono } from "../components/ui/botones";
@@ -23,7 +24,7 @@ const Inicio = () => {
 	};
 
 	const { data, isLoading, isError } = useApiQuery({
-		key: ["carpetas"],
+		key: queryKeys.carpetas,
 		fn: async () => {
 			const carpetas = await api.carpetaAll();
 			return carpetas.sort((a, b) => {

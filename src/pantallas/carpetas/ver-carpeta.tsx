@@ -2,6 +2,7 @@ import { api } from "@/api/api";
 import { CarpetaDTO, CriterioDeOrdenEnum } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { clavesCarpetas, clavesEscritos, queryKeys } from "@/api/query-keys";
 import { useState } from "react";
 import ChequearSiRequierePassword from "../../components/requiere-password";
 import Cuerpo from "../../components/ui/cuerpo";
@@ -22,8 +23,8 @@ const VerCarpeta = () => {
 	const [escritosSeleccionados, setEscritosSeleccionados] = useState<Set<number>>(new Set());
 	const [mostrarModalMover, setMostrarModalMover] = useState(false);
 
-	const { data, isLoading, isError, refetch } = useApiQuery({
-		key: ["carpeta" + carpetaId],
+	const { data, isLoading, isError } = useApiQuery({
+		key: queryKeys.carpeta(carpetaId),
 		fn: async () => await api.carpetaGET(Number(carpetaId)),
 	});
 
@@ -39,13 +40,14 @@ const VerCarpeta = () => {
 		fn: async () => await api.carpetaDELETE(Number(carpetaId)),
 		antesDeMensajeExito: volver,
 		mensajeDeExito: `Carpeta '${data?.titulo}' eliminada`,
+		invalidarQueries: clavesCarpetas,
 	});
 
 	const actualizarCriterio = useApiMutation({
 		fn: async (criterio: CriterioDeOrdenEnum) =>
 			await api.criterioOrden(Number(carpetaId), criterio),
-		despuesDeExito: () => refetch(),
 		mensajeDeExito: "Criterio de orden actualizado",
+		invalidarQueries: [queryKeys.carpeta(carpetaId)],
 	});
 
 	const handleLongPress = (escritoId: number) => {
@@ -142,7 +144,6 @@ const VerCarpeta = () => {
 					onMovido={() => {
 						setMostrarModalMover(false);
 						cancelarSeleccion();
-						refetch();
 					}}
 				/>
 			)}

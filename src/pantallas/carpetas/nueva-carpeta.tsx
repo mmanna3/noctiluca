@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { CarpetaDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
+import { clavesCarpetas } from "@/api/query-keys";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Boton } from "../../components/ui/botones";
@@ -29,6 +30,7 @@ const NuevaCarpeta = () => {
 		},
 		antesDeMensajeExito: volverAlOrigen,
 		mensajeDeExito: esSubcarpeta ? `Subcarpeta '${titulo}' creada` : `Carpeta '${titulo}' creada`,
+		invalidarQueries: clavesCarpetas,
 	});
 
 	const crearYVolver = async () => {

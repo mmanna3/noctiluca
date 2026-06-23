@@ -1,7 +1,9 @@
 import { api } from "@/api/api";
 import { CarpetaDTO, MoverEscritosDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { clavesCarpetas, clavesEscritos, queryKeys } from "@/api/query-keys";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Boton } from "./botones";
@@ -42,9 +44,10 @@ const obtenerCarpetasDestino = (
 
 const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovido }: Props) => {
 	const [moviendo, setMoviendo] = useState(false);
+	const queryClient = useQueryClient();
 
 	const { data: carpetas, isLoading } = useApiQuery({
-		key: ["carpetas-para-mover"],
+		key: queryKeys.carpetasParaMover,
 		fn: async () => await api.carpetaAll(),
 	});
 
@@ -58,6 +61,11 @@ const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovi
 					escritoIds,
 					carpetaDestinoId,
 				}),
+			);
+			await Promise.all(
+				[...clavesCarpetas, ...clavesEscritos].map((queryKey) =>
+					queryClient.invalidateQueries({ queryKey }),
+				),
 			);
 			const cantidad = escritoIds.length;
 			toast.success(

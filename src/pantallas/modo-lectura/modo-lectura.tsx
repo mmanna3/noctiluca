@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import usarNavegacion from "@/usar-navegacion";
 import { useState } from "react";
 import { Boton } from "../../components/ui/botones";
@@ -16,7 +17,7 @@ const ModoLectura = () => {
 	const { irAlInicio } = usarNavegacion();
 
 	const { data, isLoading, isError } = useApiQuery({
-		key: ["escritos"],
+		key: queryKeys.escritos,
 		fn: async () => await api.escritoAll(),
 	});
 

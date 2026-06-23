@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../app-context";
 import usarNavegacion from "../usar-navegacion";
@@ -14,7 +15,7 @@ const UseSeguridad = () => {
 
 	// Solo hacer la consulta si hay carpetaId (no estamos en papelera)
 	const { data } = useApiQuery({
-		key: ["carpeta" + carpetaId],
+		key: queryKeys.carpeta(carpetaId),
 		fn: async () => await api.carpetaGET(Number(carpetaId)),
 		activado: !!carpetaId,
 	});

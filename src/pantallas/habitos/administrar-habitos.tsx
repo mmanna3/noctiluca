@@ -2,8 +2,8 @@ import { api } from "@/api/api";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { HabitoDTO, TipoHabitoEnum } from "@/api/clients";
+import { clavesHabitos, queryKeys } from "@/api/query-keys";
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Boton, BotonIcono } from "@/components/ui/botones";
 import Cuerpo from "@/components/ui/cuerpo";
@@ -53,6 +53,7 @@ const FormularioHabito = ({
 		},
 		mensajeDeExito: esEdicion ? "Hábito actualizado" : "Hábito creado",
 		antesDeMensajeExito: onGuardado,
+		invalidarQueries: clavesHabitos,
 	});
 
 	const submit = () => {
@@ -129,22 +130,18 @@ const FormularioHabito = ({
 
 const AdministrarHabitos = () => {
 	const { irAlInicio } = usarNavegacion();
-	const queryClient = useQueryClient();
 	const [mostrarFormulario, setMostrarFormulario] = useState(false);
 	const [habitoEditando, setHabitoEditando] = useState<HabitoDTO | undefined>();
 
-	const { data, isLoading, refetch } = useApiQuery({
-		key: ["habitos"],
+	const { data, isLoading } = useApiQuery({
+		key: queryKeys.habitos,
 		fn: () => api.habitoAll(),
 	});
 
 	const eliminar = useApiMutation({
 		fn: (id: number) => api.habitoDELETE(id),
 		mensajeDeExito: "Hábito eliminado",
-		despuesDeExito: () => {
-			refetch();
-			queryClient.invalidateQueries({ queryKey: ["habitos-tracker"] });
-		},
+		invalidarQueries: clavesHabitos,
 	});
 
 	const desactivar = useApiMutation({
@@ -162,17 +159,12 @@ const AdministrarHabitos = () => {
 			);
 		},
 		mensajeDeExito: "Hábito desactivado",
-		despuesDeExito: () => {
-			refetch();
-			queryClient.invalidateQueries({ queryKey: ["habitos-tracker"] });
-		},
+		invalidarQueries: clavesHabitos,
 	});
 
 	const alGuardar = () => {
 		setMostrarFormulario(false);
 		setHabitoEditando(undefined);
-		refetch();
-		queryClient.invalidateQueries({ queryKey: ["habitos-tracker"] });
 	};
 
 	const habitosActivos = data?.filter((h) => h.activo).length ?? 0;

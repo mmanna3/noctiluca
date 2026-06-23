@@ -1,8 +1,8 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { QueryKey, useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 interface IProps<TData, TTransformed = TData> {
 	fn: () => Promise<TData>;
-	key: Array<string | number | null | undefined>;
+	key: QueryKey;
 	activado?: boolean;
 	transformarResultado?: (data: TData) => TTransformed;
 	onError?: (error: unknown) => void;

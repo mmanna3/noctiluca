@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface IProps<T> {
@@ -7,15 +7,19 @@ interface IProps<T> {
 	antesDeMensajeExito?: () => void;
 	despuesDeExito?: () => void;
 	mensajeDeError?: string;
+	invalidarQueries?: QueryKey[];
 }
 
 const useApiMutation = <T,>({
 	fn,
 	mensajeDeExito = "Operación exitosa",
-	antesDeMensajeExito = () => console.log("antes de mensaje exito"),
-	despuesDeExito = () => console.log("despues de exito"),
+	antesDeMensajeExito = () => {},
+	despuesDeExito = () => {},
 	mensajeDeError = "Ocurrió un error inesperado",
+	invalidarQueries,
 }: IProps<T>) => {
+	const queryClient = useQueryClient();
+
 	const mutation = useMutation({
 		mutationFn: async (args: T) => {
 			return fn(args);
@@ -27,11 +31,15 @@ const useApiMutation = <T,>({
 				error instanceof Error
 					? JSON.parse((error as unknown as { response: string }).response).title
 					: mensajeDeError;
-			console.log();
 
 			toast.error(mensaje);
 		},
-		onSuccess: () => {
+		onSuccess: async () => {
+			if (invalidarQueries?.length) {
+				await Promise.all(
+					invalidarQueries.map((queryKey) => queryClient.invalidateQueries({ queryKey })),
+				);
+			}
 			antesDeMensajeExito();
 			toast.success(mensajeDeExito);
 			despuesDeExito();

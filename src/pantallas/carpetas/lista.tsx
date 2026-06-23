@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import { ActualizarPosicionesDTO, CarpetaDTO, PosicionCarpetaDTO } from "@/api/clients";
+import { queryKeys } from "@/api/query-keys";
 import {
 	closestCenter,
 	DndContext,
@@ -15,6 +16,7 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "../../components/ui/loading-spinner";
@@ -29,6 +31,7 @@ interface IListaDeCarpetas {
 function CarpetasLista(props: IListaDeCarpetas) {
 	const [items, setItems] = useState<CarpetaDTO[]>(props.data);
 	const [isUpdatingPositions, setIsUpdatingPositions] = useState(false);
+	const queryClient = useQueryClient();
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -73,6 +76,8 @@ function CarpetasLista(props: IListaDeCarpetas) {
 
 			// Call the API to update positions
 			await api.actualizarPosiciones(actualizarPosicionesDTO);
+
+			await queryClient.invalidateQueries({ queryKey: queryKeys.carpetas });
 
 			toast.success("Orden de carpetas actualizado");
 		} catch (error) {

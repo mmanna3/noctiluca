@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { ResumenSemanalDTO, UpsertRegistroHabitoDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
+import { queryKeys } from "@/api/query-keys";
 import { useAuth } from "@/hooks/use-auth";
 import usarNavegacion from "@/usar-navegacion";
 import { ChevronLeftIcon, ChevronRightIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
@@ -55,19 +56,19 @@ const HabitTracker = () => {
 	const fechaConsulta = diaSeleccionado;
 
 	const { data, isLoading } = useApiQuery({
-		key: ["habitos-tracker", formatearFechaClave(fechaConsulta)],
+		key: [...queryKeys.habitosTracker, formatearFechaClave(fechaConsulta)],
 		fn: () => api.tracker(fechaConsulta),
 	});
 
 	const { data: resumenSemanal } = useApiQuery({
-		key: ["habitos-resumen-semanal", formatearFechaClave(new Date())],
+		key: [...queryKeys.habitosResumenSemanal, formatearFechaClave(new Date())],
 		fn: () => api.resumenSemanal(new Date()),
 		activado: esDomingo(),
 	});
 
 	const refetchTracker = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ["habitos-tracker"] });
-		queryClient.invalidateQueries({ queryKey: ["habitos-resumen-semanal"] });
+		queryClient.invalidateQueries({ queryKey: queryKeys.habitosTracker });
+		queryClient.invalidateQueries({ queryKey: queryKeys.habitosResumenSemanal });
 	}, [queryClient]);
 
 	const guardarRegistro = useCallback(async (dto: UpsertRegistroHabitoDTO) => {
