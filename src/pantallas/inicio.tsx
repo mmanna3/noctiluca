@@ -3,7 +3,7 @@ import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { queryKeys } from "@/api/query-keys";
 import { BookOpenIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Boton, BotonIcono } from "../components/ui/botones";
 import Cuerpo from "../components/ui/cuerpo";
 import Encabezado from "../components/ui/encabezado";
@@ -13,9 +13,10 @@ import { usePreferenciasHabitos } from "../hooks/use-preferencias-habitos";
 import usarNavegacion from "../usar-navegacion";
 import frasesInicio from "../utils/frases-inicio";
 import ListaDeCarpetas from "./carpetas/lista";
-import HabitTracker from "./habitos/habit-tracker";
-import MenuHabitos from "./habitos/menu-habitos";
-import BuscarEscritos from "./inicio/buscar-escritos";
+
+const HabitTracker = React.lazy(() => import("./habitos/habit-tracker"));
+const MenuHabitos = React.lazy(() => import("./habitos/menu-habitos"));
+const BuscarEscritos = React.lazy(() => import("./inicio/buscar-escritos"));
 
 const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();
@@ -76,11 +77,21 @@ const Inicio = () => {
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
-				{menuHabitosAbierto && <MenuHabitos onCerrar={() => setMenuHabitosAbierto(false)} />}
-				<BuscarEscritos abierto={busquedaAbierta} />
+				{menuHabitosAbierto && (
+					<Suspense fallback={null}>
+						<MenuHabitos onCerrar={() => setMenuHabitosAbierto(false)} />
+					</Suspense>
+				)}
+				{busquedaAbierta && (
+					<Suspense fallback={<LoadingSpinner className='w-6 h-6 text-gray-400' />}>
+						<BuscarEscritos abierto={busquedaAbierta} />
+					</Suspense>
+				)}
 				{!busquedaAbierta && (
 					<>
-						<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
+						<Suspense fallback={null}>
+							<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
+						</Suspense>
 						<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
 					</>
 				)}

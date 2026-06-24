@@ -4,15 +4,41 @@ import path from "path";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+/** Chunks de rutas lazy: no precachear — no forman parte del arranque en frío. */
+const CHUNKS_LAZY_SIN_PRECACHE = [
+	"**/resumen-semanal-*.js",
+	"**/administrar-habitos-*.js",
+	"**/ver-carpeta-*.js",
+	"**/ver-escrito-*.js",
+	"**/modo-lectura-*.js",
+	"**/tacho-*.js",
+	"**/nueva-carpeta-*.js",
+	"**/nuevo-escrito-*.js",
+	"**/modal-seleccionar-carpeta-*.js",
+	"**/habit-tracker-*.js",
+	"**/menu-habitos-*.js",
+	"**/buscar-escritos-*.js",
+	"**/lista-*.js",
+	"**/input-*.js",
+	"**/textarea-*.js",
+	"**/TrashIcon-*.js",
+	"**/ChevronLeftIcon-*.js",
+	"**/useMutation-*.js",
+	"**/use-api-mutation-*.js",
+	"**/utilidades-habitos-*.js",
+];
+
 export default defineConfig({
 	plugins: [
 		react(),
 		VitePWA({
 			registerType: "autoUpdate",
-			includeAssets: ["favicon.ico", "logo192.png", "logo512.png"],
+			includeAssets: ["favicon.ico", "favicon-96x96.png", "apple-touch-icon.png", "logo192.png", "logo512.png"],
 			manifest: false,
 			workbox: {
-				globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+				// Sin svg: favicon.svg suele ser enorme (PNG embebido) y no aporta al arranque.
+				globPatterns: ["**/*.{js,css,html,ico,png,woff2}"],
+				globIgnores: ["**/node_modules/**", ...CHUNKS_LAZY_SIN_PRECACHE],
 				navigateFallback: "index.html",
 				navigateFallbackDenylist: [/^\/api\//],
 			},
@@ -30,5 +56,6 @@ export default defineConfig({
 		globals: true,
 		environment: "jsdom",
 		setupFiles: ["./src/setup-tests.ts"],
+		include: ["src/**/*.{test,spec}.{ts,tsx}", "scripts/**/*.test.mjs"],
 	},
 });

@@ -17,6 +17,26 @@
         "prettier"
     ],
     "overrides": [
+        {
+            "files": ["src/pantallas/inicio.tsx"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            {
+                                "group": [
+                                    "**/habitos/habit-tracker",
+                                    "**/habitos/menu-habitos",
+                                    "**/inicio/buscar-escritos"
+                                ],
+                                "message": "En Inicio usar React.lazy() para no inflar el bundle de arranque."
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

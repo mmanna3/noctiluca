@@ -1,0 +1,42 @@
+---
+description: Reglas de performance para arranque PWA (cold/warm start)
+globs: src/pantallas/inicio.tsx, vite.config.ts, public/**, index.html
+alwaysApply: false
+---
+
+# Performance PWA — arranque rápido
+
+Noctiluca es una PWA instalada en móvil. El objetivo es que **Inicio** cargue lo mínimo indispensable.
+
+## Pantalla de entrada (`src/pantallas/inicio.tsx`)
+
+- **Sí eager**: Login, Inicio (solo lista de carpetas + UI mínima).
+- **Siempre `React.lazy()`**: hábitos, búsqueda, editor, carpetas secundarias, tacho, modo lectura, resumen semanal.
+- **No** agregar `useApiQuery` extra en Inicio salvo `carpetas`. Si una feature necesita datos, cargala dentro del chunk lazy.
+- ESLint bloquea imports estáticos de `./habitos/*` y `./inicio/buscar-escritos` en este archivo.
+
+## Assets en `public/`
+
+- **Prohibido** `favicon.svg` con PNG embebido en base64 (RealFaviconGenerator suele generar ~1 MB). Usar `favicon.ico` + `favicon-96x96.png`.
+- `logo512.png` ≤ 50 KiB, `logo192.png` ≤ 20 KiB. Comprimir antes de commitear.
+- No agregar SVG al precache del SW si no es vectorial liviano.
+
+## Service worker (`vite.config.ts`)
+
+- `globPatterns`: incluir `js,css,html,ico,png,woff2` — **no** `svg` por defecto.
+- `globIgnores`: excluir chunks de rutas lazy (`resumen-semanal`, `habit-tracker`, etc.). El precache debe cubrir solo el app shell (~700–900 KiB).
+- Chunks pesados (p. ej. recharts en resumen semanal) se cachean en runtime al visitar la ruta.
+
+## React Query (`src/app.tsx`)
+
+- Mantener `staleTime: 5 * min` y `gcTime: 10 * min` para evitar refetch al volver a la app en iOS.
+
+## Verificación automática
+
+Después de `yarn build`, ejecutar `yarn verificar:performance`. CI falla si se superan los límites en `scripts/verificar-performance-build.mjs`.
+
+Antes de mergear cambios en Inicio, PWA o `public/`, correr:
+
+```bash
+yarn build && yarn verificar:performance
+```

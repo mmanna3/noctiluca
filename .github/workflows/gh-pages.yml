@@ -23,7 +23,7 @@ jobs:
         run: yarn install
 
       - name: Buildear
-        run: yarn build
+        run: yarn build:ci
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
