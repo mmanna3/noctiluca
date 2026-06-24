@@ -140,7 +140,7 @@ const verificarJsCritico = () => {
 };
 
 const IMPORTS_PESADOS_EN_INICIO = [
-	/habit-tracker["']/,
+	/habitos\/habit-tracker["']/,
 	/menu-habitos["']/,
 	/buscar-escritos["']/,
 ];

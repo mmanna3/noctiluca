@@ -34,6 +34,8 @@
 		"build:ci": "yarn build && yarn verificar:performance",
 		"test": "vitest run",
 		"test:watch": "vitest",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"limpiar": "rm -rf node_modules && rm -f yarn.lock && yarn",
 		"deploy": "yarn build && gh-pages -d dist",
 		"lint": "eslint 'src/**/*.{ts,tsx,json}'",
@@ -53,6 +55,7 @@
 		]
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.61.1",
 		"@typescript-eslint/eslint-plugin": "^5.39.0",
 		"@typescript-eslint/parser": "^5.39.0",
 		"@vitejs/plugin-react": "^6.0.2",

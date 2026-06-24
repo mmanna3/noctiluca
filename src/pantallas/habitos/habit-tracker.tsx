@@ -6,6 +6,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import HabitTrackerGrid from "./habit-tracker-grid";
+import HabitTrackerPlaceholder from "./habit-tracker-placeholder";
 import {
 	diasDeSemana,
 	esDomingo,
@@ -91,7 +92,7 @@ const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 	const esSemanaActual = esMismaFecha(semanaReferencia, inicioDeSemana(new Date()));
 
 	if (isLoading && !data) {
-		return null;
+		return <HabitTrackerPlaceholder ocultarSemanaActual={ocultarSemanaActual} />;
 	}
 
 	const habitos = data?.habitos ?? [];

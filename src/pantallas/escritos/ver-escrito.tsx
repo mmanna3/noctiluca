@@ -75,6 +75,7 @@ const VerEscrito = () => {
 					id: Number(escritoId),
 					titulo,
 					cuerpo,
+					carpetaId: data?.carpetaId ?? (carpetaId ? Number(carpetaId) : undefined),
 				}),
 			);
 	};

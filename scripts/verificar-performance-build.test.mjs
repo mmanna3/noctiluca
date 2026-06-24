@@ -14,7 +14,7 @@ describe("performance PWA — inicio liviano", () => {
 			.filter((l) => l.trimStart().startsWith("import ") && !l.includes("React.lazy"));
 
 		for (const linea of importsEager) {
-			expect(linea).not.toMatch(/habit-tracker/);
+			expect(linea).not.toMatch(/habitos\/habit-tracker["']/);
 			expect(linea).not.toMatch(/menu-habitos/);
 			expect(linea).not.toMatch(/buscar-escritos/);
 		}

@@ -160,7 +160,7 @@ describe("VerCarpeta", () => {
 		expect(mockMutateEliminacion).toHaveBeenCalledWith(1);
 	});
 
-	test("boton + llama irANuevoEscrito", () => {
+	test("boton + llama irANuevoEscrito con id de carpeta", () => {
 		renderComponent();
 		const botonesIcono = screen.getAllByRole("button");
 		const botonesRoundedFull = botonesIcono.filter((b) => b.className.includes("rounded-full"));
@@ -168,7 +168,7 @@ describe("VerCarpeta", () => {
 		expect(botonPlus).toBeDefined();
 		if (!botonPlus) return;
 		fireEvent.click(botonPlus);
-		expect(mockIrANuevoEscrito).toHaveBeenCalledWith("Mi Carpeta");
+		expect(mockIrANuevoEscrito).toHaveBeenCalledWith(1);
 	});
 
 	test("herramientas ocultas por defecto", () => {

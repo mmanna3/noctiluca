@@ -96,7 +96,7 @@ const VerCarpeta = () => {
 				<EncabezadoNormal
 					titulo={data?.titulo || ""}
 					onVolver={volver}
-					onNuevoEscrito={() => irANuevoEscrito(data?.titulo || "")}
+					onNuevoEscrito={() => irANuevoEscrito(data?.id ?? carpetaId)}
 					onNuevaSubcarpeta={esSubcarpeta ? undefined : irANuevaSubcarpeta}
 				/>
 			)}

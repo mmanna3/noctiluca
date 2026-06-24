@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
+import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { clavesEscritos, queryKeys } from "@/api/query-keys";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -13,16 +14,22 @@ import Textarea from "../../components/ui/textarea";
 import usarNavegacion from "../../usar-navegacion";
 
 const NuevoEscrito = () => {
-	const { volverAEscritosHome, carpetaId, carpetaTitulo } = usarNavegacion();
+	const { volverAEscritosHome, carpetaId } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 	const [errorTitulo, setErrorTitulo] = useState("");
+
+	const { data: carpeta } = useApiQuery({
+		key: queryKeys.carpeta(carpetaId),
+		fn: async () => await api.carpetaGET(Number(carpetaId)),
+		activado: !!carpetaId,
+	});
 
 	const creacion = useApiMutation({
 		fn: async (escrito: EscritoDTO) => {
 			await api.escritoPOST(escrito);
 		},
-		antesDeMensajeExito: () => volverAEscritosHome(),
+		antesDeMensajeExito: () => volverAEscritosHome(carpetaId),
 		mensajeDeExito: `Escrito ${titulo.trim() ? `'${titulo}'` : "sin título"} creado`,
 		invalidarQueries: [...clavesEscritos, queryKeys.carpetas, queryKeys.carpeta(carpetaId)],
 	});
@@ -31,7 +38,7 @@ const NuevoEscrito = () => {
 		if (carpetaId) {
 			creacion.mutate(
 				new EscritoDTO({
-					titulo: titulo.trim() || "", // Permitir título vacío
+					titulo: titulo.trim() || "",
 					cuerpo,
 					carpetaId: Number(carpetaId),
 				}),
@@ -51,14 +58,14 @@ const NuevoEscrito = () => {
 					soloBorde
 					className='flex justify-between items-center'
 					onClick={crearYVolver}
-					disabled={creacion.isPending}
+					disabled={creacion.isPending || !carpetaId}
 				>
 					{creacion.isPending ? (
 						<LoadingSpinner className='w-4 h-4 mr-2' />
 					) : (
 						<ChevronLeftIcon className='w-4 h-4 mr-2' />
 					)}
-					Crear en /{carpetaTitulo}
+					Crear en /{carpeta?.titulo ?? "…"}
 				</Boton>
 			</Encabezado>
 			<Cuerpo>

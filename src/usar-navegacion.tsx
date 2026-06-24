@@ -2,13 +2,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const usarNavegacion = () => {
 	const navigate = useNavigate();
-	const { carpetaId, id, carpetaTitulo } = useParams();
+	const { carpetaId, id } = useParams();
 	const location = useLocation();
 
 	return {
 		escritoId: id,
 		carpetaId: carpetaId,
-		carpetaTitulo: carpetaTitulo,
 		irALogin: () => {
 			navigate("/login", { replace: true });
 		},
@@ -18,8 +17,9 @@ const usarNavegacion = () => {
 		verEscritosDeLaCarpeta: (carpetaId: number) => {
 			navigate(`/${carpetaId}/escritos`);
 		},
-		volverAEscritosHome: () => {
-			navigate(`/${carpetaId}/escritos`, { replace: true });
+		volverAEscritosHome: (carpetaIdDestino?: string | number) => {
+			const idCarpeta = carpetaIdDestino ?? carpetaId;
+			navigate(`/${idCarpeta}/escritos`, { replace: true });
 		},
 		irAVerEscrito: (escritoId: string, carpetaIdOverride?: string | number) => {
 			const idCarpeta = carpetaIdOverride ?? carpetaId;
@@ -32,8 +32,9 @@ const usarNavegacion = () => {
 		volverAPapelera: () => {
 			navigate("/papelera", { replace: true });
 		},
-		irANuevoEscrito: (carpetaTitulo: string) => {
-			navigate(`/${carpetaId}/${carpetaTitulo}/nuevo`, { replace: true });
+		irANuevoEscrito: (carpetaIdDestino?: string | number) => {
+			const idCarpeta = carpetaIdDestino ?? carpetaId;
+			navigate(`/${idCarpeta}/nuevo`, { replace: true });
 		},
 		irACarpeta: (carpetaId: number) => {
 			navigate(`/${carpetaId}/escritos`);

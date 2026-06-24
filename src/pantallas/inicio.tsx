@@ -13,6 +13,7 @@ import { usePreferenciasHabitos } from "../hooks/use-preferencias-habitos";
 import usarNavegacion from "../usar-navegacion";
 import frasesInicio from "../utils/frases-inicio";
 import ListaDeCarpetas from "./carpetas/lista";
+import HabitTrackerPlaceholder from "./habitos/habit-tracker-placeholder";
 
 const HabitTracker = React.lazy(() => import("./habitos/habit-tracker"));
 const MenuHabitos = React.lazy(() => import("./habitos/menu-habitos"));
@@ -89,7 +90,7 @@ const Inicio = () => {
 				)}
 				{!busquedaAbierta && (
 					<>
-						<Suspense fallback={null}>
+						<Suspense fallback={<HabitTrackerPlaceholder ocultarSemanaActual={ocultarSemanaActual} />}>
 							<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
 						</Suspense>
 						<ListaDeCarpetas data={data || []} isLoading={isLoading} isError={isError} />
