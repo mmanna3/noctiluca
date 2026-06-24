@@ -11,4 +11,5 @@ export default {
 	MODO_LECTURA: "modo-lectura",
 	HABITOS: "habitos",
 	RESUMEN_HABITOS: "resumen-habitos",
+	LISTA_OBJETIVOS: ":carpetaId/lista-objetivos/:listaId",
 };

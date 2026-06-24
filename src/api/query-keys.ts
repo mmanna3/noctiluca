@@ -12,8 +12,17 @@ export const queryKeys = {
 	habitos: ["habitos"] as const,
 	habitosTracker: ["habitos-tracker"] as const,
 	habitosResumenSemanal: ["habitos-resumen-semanal"] as const,
+	objetivosDia: ["objetivos-dia"] as const,
+	objetivosLista: (id: number | string | null | undefined) => ["objetivos-lista", Number(id)] as const,
+	objetivosHistorico: (tipo: number) => ["objetivos-historico", tipo] as const,
 	buscarEscritos: (texto: string) => ["buscar-escritos", texto] as const,
 };
+
+export const clavesObjetivos: QueryKey[] = [
+	queryKeys.objetivosDia,
+	["objetivos-lista"],
+	["objetivos-historico"],
+];
 
 export const clavesCarpetas: QueryKey[] = [
 	queryKeys.carpetas,

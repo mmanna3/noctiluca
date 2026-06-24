@@ -18,6 +18,7 @@ import HabitTrackerPlaceholder from "./habitos/habit-tracker-placeholder";
 const HabitTracker = React.lazy(() => import("./habitos/habit-tracker"));
 const MenuHabitos = React.lazy(() => import("./habitos/menu-habitos"));
 const BuscarEscritos = React.lazy(() => import("./inicio/buscar-escritos"));
+const ObjetivosDiaWidget = React.lazy(() => import("./objetivos/objetivos-dia-widget"));
 
 const Inicio = () => {
 	const { irANuevaCarpeta, irALogin, irAPapelera, irAModoLectura } = usarNavegacion();
@@ -37,6 +38,8 @@ const Inicio = () => {
 		fn: async () => {
 			const carpetas = await api.carpetaAll();
 			return carpetas.sort((a, b) => {
+				if (a.esSistema && !b.esSistema) return -1;
+				if (!a.esSistema && b.esSistema) return 1;
 				const posA = a.posicion ?? 0;
 				const posB = b.posicion ?? 0;
 				return posA - posB;
@@ -90,6 +93,9 @@ const Inicio = () => {
 				)}
 				{!busquedaAbierta && (
 					<>
+						<Suspense fallback={null}>
+							<ObjetivosDiaWidget carpetas={data || []} />
+						</Suspense>
 						<Suspense fallback={<HabitTrackerPlaceholder ocultarSemanaActual={ocultarSemanaActual} />}>
 							<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
 						</Suspense>

@@ -20,12 +20,12 @@ import {
 
 const iconoEstado = (estado?: string): string => {
 	switch (estado) {
-		case "cumplido":
-			return "✓";
-		case "no_cumplido":
-			return "✗";
-		default:
-			return "—";
+	case "cumplido":
+		return "✓";
+	case "no_cumplido":
+		return "✗";
+	default:
+		return "—";
 	}
 };
 

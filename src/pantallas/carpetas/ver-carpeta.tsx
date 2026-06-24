@@ -2,12 +2,22 @@ import { api } from "@/api/api";
 import { CarpetaDTO, CriterioDeOrdenEnum } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { clavesCarpetas, clavesEscritos, queryKeys } from "@/api/query-keys";
+import { clavesCarpetas, queryKeys } from "@/api/query-keys";
+import { Boton } from "@/components/ui/botones";
 import { useState } from "react";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import ChequearSiRequierePassword from "../../components/requiere-password";
 import Cuerpo from "../../components/ui/cuerpo";
+import Encabezado from "../../components/ui/encabezado";
 import ModalSeleccionarCarpeta from "../../components/ui/modal-seleccionar-carpeta";
 import usarNavegacion from "../../usar-navegacion";
+import EditorListaObjetivos from "../objetivos/editor-lista-objetivos";
+import HistoricoObjetivos from "../objetivos/historico-objetivos";
+import {
+	clavePeriodoActual,
+	propositoATipo,
+	tituloPeriodoActual,
+} from "../objetivos/utilidades-objetivos";
 import ListaDeEscritos from "../escritos/lista";
 import BarraDeHerramientas from "./barra-de-herramientas";
 import EncabezadoNormal from "./encabezado-normal";
@@ -30,6 +40,9 @@ const VerCarpeta = () => {
 
 	const esSubcarpeta = data?.carpetaPadreId !== undefined && data?.carpetaPadreId !== null;
 	const tieneSubcarpetas = !!(data?.cantidadDeSubCarpetas && data.cantidadDeSubCarpetas > 0);
+	const esCarpetaSistema = data?.esSistema === true;
+	const tipoObjetivo = propositoATipo(data?.propositoCarpeta);
+	const esVistaObjetivos = tipoObjetivo !== undefined;
 
 	const volver = () => {
 		if (esSubcarpeta && data?.carpetaPadreId) irACarpeta(data.carpetaPadreId);
@@ -80,7 +93,31 @@ const VerCarpeta = () => {
 	};
 
 	const tieneEscritos = !!(data?.cantidadDeEscritos && data.cantidadDeEscritos > 0);
-	const estaVacia = !tieneEscritos && !tieneSubcarpetas;
+	const estaVacia = !tieneEscritos && !tieneSubcarpetas && !esVistaObjetivos;
+
+	if (esVistaObjetivos && tipoObjetivo && carpetaId) {
+		const claveActual = clavePeriodoActual(tipoObjetivo);
+		return (
+			<ChequearSiRequierePassword>
+				<Encabezado>
+					<Boton soloBorde className='flex justify-between items-center' onClick={volver}>
+						<ChevronLeftIcon className='w-4 h-4 mr-2' />/{data?.titulo ?? "objetivos"}
+					</Boton>
+				</Encabezado>
+				<Cuerpo>
+					<EditorListaObjetivos
+						tipo={tipoObjetivo}
+						clavePeriodo={claveActual}
+						titulo={tituloPeriodoActual(tipoObjetivo)}
+					/>
+					<h3 className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 mt-2'>
+						Histórico
+					</h3>
+					<HistoricoObjetivos tipo={tipoObjetivo} carpetaId={Number(carpetaId)} />
+				</Cuerpo>
+			</ChequearSiRequierePassword>
+		);
+	}
 
 	return (
 		<ChequearSiRequierePassword>
@@ -97,10 +134,12 @@ const VerCarpeta = () => {
 					titulo={data?.titulo || ""}
 					onVolver={volver}
 					onNuevoEscrito={() => irANuevoEscrito(data?.id ?? carpetaId)}
-					onNuevaSubcarpeta={esSubcarpeta ? undefined : irANuevaSubcarpeta}
+					onNuevaSubcarpeta={
+						esSubcarpeta || esCarpetaSistema ? undefined : irANuevaSubcarpeta
+					}
 				/>
 			)}
-			{!modoSeleccion && (
+			{!modoSeleccion && !esCarpetaSistema && (
 				<BarraDeHerramientas
 					mostrar={mostrarHerramientas}
 					onToggle={() => setMostrarHerramientas(!mostrarHerramientas)}
@@ -112,7 +151,11 @@ const VerCarpeta = () => {
 			)}
 			<Cuerpo>
 				{estaVacia ? (
-					<EstadoVacio onEliminar={() => eliminacion.mutate(Number(carpetaId))} />
+					<EstadoVacio
+						onEliminar={
+							esCarpetaSistema ? undefined : () => eliminacion.mutate(Number(carpetaId))
+						}
+					/>
 				) : (
 					<>
 						{tieneSubcarpetas && (

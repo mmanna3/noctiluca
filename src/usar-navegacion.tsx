@@ -2,12 +2,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const usarNavegacion = () => {
 	const navigate = useNavigate();
-	const { carpetaId, id } = useParams();
+	const { carpetaId, id, listaId } = useParams();
 	const location = useLocation();
 
 	return {
 		escritoId: id,
 		carpetaId: carpetaId,
+		listaId,
 		irALogin: () => {
 			navigate("/login", { replace: true });
 		},
@@ -56,6 +57,9 @@ const usarNavegacion = () => {
 		},
 		irAResumenHabitos: () => {
 			navigate("/resumen-habitos", { replace: true });
+		},
+		irAListaObjetivos: (carpetaIdDestino: number, listaIdDestino: number) => {
+			navigate(`/${carpetaIdDestino}/lista-objetivos/${listaIdDestino}`);
 		},
 	};
 };
