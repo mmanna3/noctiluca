@@ -1,6 +1,8 @@
 import { CrearItemObjetivoDTO, EditarItemObjetivoDTO, ItemObjetivoDTO } from "@/api/clients";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
@@ -9,15 +11,39 @@ interface Props {
 	onToggle: (id: number) => Promise<void>;
 	onEditar: (id: number, dto: EditarItemObjetivoDTO) => Promise<void>;
 	onEliminar: (id: number) => Promise<void>;
+	onCrearDebajo?: (despuesDeItemId: number) => Promise<void>;
+	reordenable?: boolean;
+	autoFocus?: boolean;
 }
 
-const ObjetivoItemFila = ({ item, onActualizado, onToggle, onEditar, onEliminar }: Props) => {
+const ObjetivoItemFila = ({
+	item,
+	onActualizado,
+	onToggle,
+	onEditar,
+	onEliminar,
+	onCrearDebajo,
+	reordenable = false,
+	autoFocus = false,
+}: Props) => {
 	const [texto, setTexto] = useState(item.texto ?? "");
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+		id: item.id!,
+		disabled: !reordenable,
+	});
 
 	useEffect(() => {
 		setTexto(item.texto ?? "");
 	}, [item.id, item.texto]);
+
+	useEffect(() => {
+		if (autoFocus) {
+			inputRef.current?.focus();
+		}
+	}, [autoFocus, item.id]);
 
 	const toggleMutation = useMutation({
 		mutationFn: () => onToggle(item.id!),
@@ -31,11 +57,11 @@ const ObjetivoItemFila = ({ item, onActualizado, onToggle, onEditar, onEliminar 
 		onError: () => toast.error("Error al eliminar el objetivo"),
 	});
 
-	const guardarTexto = (nuevoTexto: string) => {
+	const guardarTexto = async (nuevoTexto: string) => {
 		const trimmed = nuevoTexto.trim();
 		if (!trimmed || trimmed === (item.texto ?? "").trim()) return;
 
-		onEditar(item.id!, new EditarItemObjetivoDTO({ texto: trimmed }))
+		await onEditar(item.id!, new EditarItemObjetivoDTO({ texto: trimmed }))
 			.then(() => onActualizado())
 			.catch(() => toast.error("Error al guardar el objetivo"));
 	};
@@ -46,6 +72,15 @@ const ObjetivoItemFila = ({ item, onActualizado, onToggle, onEditar, onEliminar 
 		debounceRef.current = setTimeout(() => guardarTexto(valor), 500);
 	};
 
+	const alPresionarTecla = async (e: KeyboardEvent<HTMLInputElement>) => {
+		if (e.key !== "Enter" || !onCrearDebajo) return;
+
+		e.preventDefault();
+		if (debounceRef.current) clearTimeout(debounceRef.current);
+		await guardarTexto(texto);
+		await onCrearDebajo(item.id!);
+	};
+
 	useEffect(
 		() => () => {
 			if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -53,8 +88,21 @@ const ObjetivoItemFila = ({ item, onActualizado, onToggle, onEditar, onEliminar 
 		[],
 	);
 
+	const style = reordenable
+		? {
+				transform: CSS.Transform.toString(transform),
+				transition,
+				opacity: isDragging ? 0.5 : 1,
+			}
+		: undefined;
+
 	return (
-		<div className='flex items-center gap-2 py-1 group'>
+		<div
+			ref={reordenable ? setNodeRef : undefined}
+			style={style}
+			className='flex items-center gap-2 py-1 group touch-none'
+			{...(reordenable ? { ...attributes, ...listeners } : {})}
+		>
 			<button
 				type='button'
 				onClick={() => toggleMutation.mutate()}
@@ -65,10 +113,12 @@ const ObjetivoItemFila = ({ item, onActualizado, onToggle, onEditar, onEliminar 
 				{item.completado ? "☑" : "☐"}
 			</button>
 			<input
+				ref={inputRef}
 				type='text'
 				value={texto}
 				onChange={(e) => cuandoCambiaTexto(e.target.value)}
 				onBlur={() => guardarTexto(texto)}
+				onKeyDown={alPresionarTecla}
 				disabled={toggleMutation.isPending}
 				className={`flex-1 bg-transparent border-none outline-none text-sm py-1 ${
 					item.completado ? "line-through text-gray-400" : "text-gray-800"
@@ -92,8 +142,10 @@ export default ObjetivoItemFila;
 export const crearItemRequest = (
 	listaObjetivoId: number,
 	texto: string,
+	posicion?: number,
 ): CrearItemObjetivoDTO =>
 	new CrearItemObjetivoDTO({
 		listaObjetivoId,
 		texto: texto.trim(),
+		posicion,
 	});

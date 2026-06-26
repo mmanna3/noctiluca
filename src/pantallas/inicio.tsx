@@ -38,8 +38,6 @@ const Inicio = () => {
 		fn: async () => {
 			const carpetas = await api.carpetaAll();
 			return carpetas.sort((a, b) => {
-				if (a.esSistema && !b.esSistema) return -1;
-				if (!a.esSistema && b.esSistema) return 1;
 				const posA = a.posicion ?? 0;
 				const posB = b.posicion ?? 0;
 				return posA - posB;
@@ -54,7 +52,7 @@ const Inicio = () => {
 
 	if (isLoading) {
 		return (
-			<div className='flex flex-col justify-center items-center h-full gap-2'>
+			<div className='flex flex-col flex-1 justify-center items-center gap-2 min-h-0'>
 				<LoadingSpinner />
 				<div className='mt-6 text-sm text-gray-500'>{obtenerFraseAleatoria()}</div>
 			</div>
@@ -62,7 +60,7 @@ const Inicio = () => {
 	}
 
 	return (
-		<>
+		<div className='flex flex-col flex-1 min-h-0'>
 			<Encabezado>
 				<div className='flex items-center gap-1'>
 					<Boton soloBorde onClick={() => setMenuHabitosAbierto((abierto) => !abierto)}>
@@ -80,7 +78,7 @@ const Inicio = () => {
 					<PlusIcon className='h-8 w-8' />
 				</BotonIcono>
 			</Encabezado>
-			<Cuerpo>
+			<Cuerpo className='flex-1 min-h-0 overflow-y-auto'>
 				{menuHabitosAbierto && (
 					<Suspense fallback={null}>
 						<MenuHabitos onCerrar={() => setMenuHabitosAbierto(false)} />
@@ -94,7 +92,7 @@ const Inicio = () => {
 				{!busquedaAbierta && (
 					<>
 						<Suspense fallback={null}>
-							<ObjetivosDiaWidget carpetas={data || []} />
+							<ObjetivosDiaWidget />
 						</Suspense>
 						<Suspense fallback={<HabitTrackerPlaceholder ocultarSemanaActual={ocultarSemanaActual} />}>
 							<HabitTracker ocultarSemanaActual={ocultarSemanaActual} />
@@ -103,7 +101,7 @@ const Inicio = () => {
 					</>
 				)}
 			</Cuerpo>
-			<div className='flex justify-between w-full'>
+			<div className='flex justify-between w-full mt-auto pt-2'>
 				<Boton soloBorde className='w-14 flex justify-around items-center' onClick={cerrarSesion}>
 					<XMarkIcon className='w-6' />
 				</Boton>
@@ -120,7 +118,7 @@ const Inicio = () => {
 					</Boton>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 

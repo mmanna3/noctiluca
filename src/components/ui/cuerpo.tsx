@@ -1,14 +1,12 @@
 import { ReactNode } from "react";
 
 interface Props {
-    children: ReactNode;
+	children: ReactNode;
+	className?: string;
 }
 
-const Cuerpo = (props: Props) => {
-	
-	return <div className="mt-6 mb-8">
-		{props.children}
-	</div>;
+const Cuerpo = ({ children, className }: Props) => {
+	return <div className={`mt-6 mb-4 ${className ?? ""}`.trim()}>{children}</div>;
 };
 
 export default Cuerpo;

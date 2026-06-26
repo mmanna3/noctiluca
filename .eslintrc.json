@@ -28,7 +28,8 @@
                                 "group": [
                                     "**/habitos/habit-tracker",
                                     "**/habitos/menu-habitos",
-                                    "**/inicio/buscar-escritos"
+                                    "**/inicio/buscar-escritos",
+                                    "**/objetivos/*"
                                 ],
                                 "message": "En Inicio usar React.lazy() para no inflar el bundle de arranque."
                             }

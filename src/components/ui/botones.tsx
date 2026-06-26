@@ -64,7 +64,7 @@ export const BotonIcono = (props: Props) => {
 		<button
 			onClick={props.disabled ? undefined : props.onClick}
 			disabled={props.disabled}
-			className={`bg-slate-900 hover:bg-yellow-200 hover:text-slate-900 hover:border-black hover:border text-white font-bold rounded-full h-10 w-10 pl-1 ${disabledClasses} ${props.className}`}
+			className={`bg-slate-900 hover:bg-yellow-200 hover:text-slate-900 hover:border-black hover:border text-white font-bold rounded-full h-10 w-10 flex items-center justify-center ${disabledClasses} ${props.className}`}
 		>
 			{props.children}
 		</button>

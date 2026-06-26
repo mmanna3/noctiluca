@@ -1469,6 +1469,44 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    itemPosicionesPUT(body: ActualizarPosicionesItemObjetivoDTO | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Objetivo/item/posiciones";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processItemPosicionesPUT(_response);
+        });
+    }
+
+    protected processItemPosicionesPUT(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     completado(id: number): Promise<ItemObjetivoDTO> {
@@ -1779,6 +1817,7 @@ export class CrearItemObjetivoDTO implements ICrearItemObjetivoDTO {
     tipo?: TipoListaObjetivoEnum;
     clavePeriodo?: string | undefined;
     texto!: string;
+    posicion?: number | undefined;
 
     constructor(data?: ICrearItemObjetivoDTO) {
         if (data) {
@@ -1795,6 +1834,7 @@ export class CrearItemObjetivoDTO implements ICrearItemObjetivoDTO {
             this.tipo = _data["tipo"];
             this.clavePeriodo = _data["clavePeriodo"];
             this.texto = _data["texto"];
+            this.posicion = _data["posicion"];
         }
     }
 
@@ -1811,6 +1851,7 @@ export class CrearItemObjetivoDTO implements ICrearItemObjetivoDTO {
         data["tipo"] = this.tipo;
         data["clavePeriodo"] = this.clavePeriodo;
         data["texto"] = this.texto;
+        data["posicion"] = this.posicion;
         return data;
     }
 }
@@ -1820,6 +1861,93 @@ export interface ICrearItemObjetivoDTO {
     tipo?: TipoListaObjetivoEnum;
     clavePeriodo?: string | undefined;
     texto: string;
+    posicion?: number | undefined;
+}
+
+export class ActualizarPosicionesItemObjetivoDTO implements IActualizarPosicionesItemObjetivoDTO {
+    posiciones!: PosicionItemObjetivoDTO[];
+
+    constructor(data?: IActualizarPosicionesItemObjetivoDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!this.posiciones)
+            this.posiciones = [];
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["posiciones"])) {
+                this.posiciones = [] as any;
+                for (let item of _data["posiciones"])
+                    this.posiciones!.push(PosicionItemObjetivoDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ActualizarPosicionesItemObjetivoDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActualizarPosicionesItemObjetivoDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.posiciones)) {
+            data["posiciones"] = [];
+            for (let item of this.posiciones)
+                data["posiciones"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IActualizarPosicionesItemObjetivoDTO {
+    posiciones: PosicionItemObjetivoDTO[];
+}
+
+export class PosicionItemObjetivoDTO implements IPosicionItemObjetivoDTO {
+    idDeItem!: number;
+    posicion!: number;
+
+    constructor(data?: IPosicionItemObjetivoDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.idDeItem = _data["idDeItem"];
+            this.posicion = _data["posicion"];
+        }
+    }
+
+    static fromJS(data: any): PosicionItemObjetivoDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PosicionItemObjetivoDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["idDeItem"] = this.idDeItem;
+        data["posicion"] = this.posicion;
+        return data;
+    }
+}
+
+export interface IPosicionItemObjetivoDTO {
+    idDeItem: number;
+    posicion: number;
 }
 
 export enum CriterioDeOrdenEnum {

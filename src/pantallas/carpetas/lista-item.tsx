@@ -7,33 +7,27 @@ import usarNavegacion from "../../usar-navegacion";
 
 interface IListaDeCarpetasItem extends ICarpetaDTO {
 	isDisabled?: boolean;
-	esSistema?: boolean;
 }
 
-const subtituloCarpeta = (carpeta: IListaDeCarpetasItem): string => {
-	if (carpeta.propositoCarpeta === PropositoCarpetaEnum._1) {
-		return "Objetivos diarios, semanales y mensuales";
-	}
-	if (
-		carpeta.propositoCarpeta === PropositoCarpetaEnum._2 ||
-		carpeta.propositoCarpeta === PropositoCarpetaEnum._3 ||
-		carpeta.propositoCarpeta === PropositoCarpetaEnum._4
-	) {
-		return "Histórico de listas";
+const subtituloCarpeta = (c: IListaDeCarpetasItem): string => {
+	if (c.propositoCarpeta === PropositoCarpetaEnum._1) {
+		const cantidad = c.cantidadDeSubCarpetas ?? 0;
+		if (cantidad === 1) return "1 lista";
+		return `${cantidad} listas`;
 	}
 
-	const cantidadDeEscritos = carpeta.cantidadDeEscritos ?? 0;
+	const cantidadDeEscritos = c.cantidadDeEscritos ?? 0;
 	if (cantidadDeEscritos === 1) return "1 escrito";
 	return `${cantidadDeEscritos} escritos`;
 };
 
-const ListaDeCarpetasItem = (carpeta: IListaDeCarpetasItem) => {
+const ListaDeCarpetasItem = (c: IListaDeCarpetasItem) => {
 	const { verEscritosDeLaCarpeta } = usarNavegacion();
 
-	const sortableDisabled = carpeta.isDisabled || carpeta.esSistema;
+	const sortableDisabled = c.isDisabled;
 
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-		id: carpeta.id || carpeta.titulo,
+		id: c.id || c.titulo,
 		disabled: sortableDisabled,
 	});
 
@@ -54,11 +48,11 @@ const ListaDeCarpetasItem = (carpeta: IListaDeCarpetasItem) => {
 					<Bars3Icon className='h-4 w-4 text-gray-400' />
 				</div>
 			)}
-			<div className={sortableDisabled ? "pl-2" : "pl-8"}>
+			<div className='pl-8'>
 				<ListaItem
-					titulo={carpeta.titulo ?? ""}
-					subtitulo={subtituloCarpeta(carpeta)}
-					onClick={() => carpeta.id && verEscritosDeLaCarpeta(carpeta.id)}
+					titulo={c.titulo ?? ""}
+					subtitulo={subtituloCarpeta(c)}
+					onClick={() => c.id && verEscritosDeLaCarpeta(c.id)}
 				/>
 			</div>
 		</div>

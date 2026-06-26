@@ -17,7 +17,7 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "../../components/ui/loading-spinner";
 import ListaDeCarpetasItem from "./lista-item";
@@ -29,16 +29,7 @@ interface IListaDeCarpetas {
 }
 
 function CarpetasLista(props: IListaDeCarpetas) {
-	const carpetasSistema = useMemo(
-		() => props.data.filter((c) => c.esSistema),
-		[props.data],
-	);
-	const carpetasNormales = useMemo(
-		() => props.data.filter((c) => !c.esSistema),
-		[props.data],
-	);
-
-	const [items, setItems] = useState<CarpetaDTO[]>(carpetasNormales);
+	const [items, setItems] = useState<CarpetaDTO[]>(props.data);
 	const [isUpdatingPositions, setIsUpdatingPositions] = useState(false);
 	const queryClient = useQueryClient();
 
@@ -67,25 +58,21 @@ function CarpetasLista(props: IListaDeCarpetas) {
 		setIsUpdatingPositions(true);
 		try {
 			const posiciones: PosicionCarpetaDTO[] = reorderedData
-				.filter((carpeta) => carpeta.id !== undefined)
+				.filter((c) => c.id !== undefined)
 				.map(
-					(carpeta, index) =>
+					(c, index) =>
 						new PosicionCarpetaDTO({
-							idDeCarpeta: carpeta.id as number,
+							idDeCarpeta: c.id as number,
 							posicion: index + 1,
 						}),
 				);
 
-			const actualizarPosicionesDTO = new ActualizarPosicionesDTO({
-				posiciones: posiciones,
-			});
-
-			await api.actualizarPosiciones(actualizarPosicionesDTO);
+			await api.actualizarPosiciones(new ActualizarPosicionesDTO({ posiciones }));
 
 			await queryClient.invalidateQueries({ queryKey: queryKeys.carpetas });
 
 			toast.success("Orden de carpetas actualizado");
-		} catch (error) {
+		} catch {
 			toast.error("Error al actualizar el orden de las carpetas");
 		} finally {
 			setIsUpdatingPositions(false);
@@ -93,8 +80,12 @@ function CarpetasLista(props: IListaDeCarpetas) {
 	};
 
 	useEffect(() => {
-		setItems(carpetasNormales);
-	}, [carpetasNormales]);
+		setItems(props.data);
+	}, [props.data]);
+
+	if (items.length === 0) {
+		return null;
+	}
 
 	return (
 		<div className='relative'>
@@ -106,34 +97,22 @@ function CarpetasLista(props: IListaDeCarpetas) {
 					</div>
 				</div>
 			)}
-			<div className='space-y-0'>
-				{carpetasSistema.map((carpeta) => (
-					<ListaDeCarpetasItem
-						{...carpeta}
-						key={carpeta.id || carpeta.titulo}
-						esSistema
-						isDisabled
-					/>
-				))}
-			</div>
-			{carpetasNormales.length > 0 && (
-				<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-					<SortableContext
-						items={items.map((item) => item.id || "")}
-						strategy={verticalListSortingStrategy}
-					>
-						<div className='space-y-0'>
-							{items.map((carpeta: CarpetaDTO) => (
-								<ListaDeCarpetasItem
-									{...carpeta}
-									key={carpeta.id || carpeta.titulo}
-									isDisabled={isUpdatingPositions}
-								/>
-							))}
-						</div>
-					</SortableContext>
-				</DndContext>
-			)}
+			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+				<SortableContext
+					items={items.map((item) => item.id || "")}
+					strategy={verticalListSortingStrategy}
+				>
+					<div className='space-y-0'>
+						{items.map((c) => (
+							<ListaDeCarpetasItem
+								{...c}
+								key={c.id || c.titulo}
+								isDisabled={isUpdatingPositions}
+							/>
+						))}
+					</div>
+				</SortableContext>
+			</DndContext>
 		</div>
 	);
 }
