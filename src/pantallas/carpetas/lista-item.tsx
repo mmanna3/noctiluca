@@ -43,18 +43,16 @@ const ListaDeCarpetasItem = (c: IListaDeCarpetasItem) => {
 				<div
 					{...attributes}
 					{...listeners}
-					className='absolute left-0 top-0 h-full w-8 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity'
+					className='absolute left-0 top-0 h-full w-8 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity z-10'
 				>
 					<Bars3Icon className='h-4 w-4 text-gray-400' />
 				</div>
 			)}
-			<div className='pl-8'>
-				<ListaItem
-					titulo={c.titulo ?? ""}
-					subtitulo={subtituloCarpeta(c)}
-					onClick={() => c.id && verEscritosDeLaCarpeta(c.id)}
-				/>
-			</div>
+			<ListaItem
+				titulo={c.titulo ?? ""}
+				subtitulo={subtituloCarpeta(c)}
+				onClick={() => c.id && verEscritosDeLaCarpeta(c.id)}
+			/>
 		</div>
 	);
 };
