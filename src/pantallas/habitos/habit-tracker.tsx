@@ -1,9 +1,10 @@
 import { api } from "@/api/api";
-import { ResumenSemanalDTO, UpsertRegistroHabitoDTO } from "@/api/clients";
+import { ResumenSemanalDTO } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { queryKeys } from "@/api/query-keys";
+import { usarTrackerDia } from "@/sync/lecturas";
+import { guardarRegistroHabitoLocal } from "@/sync/repositorio-habitos";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import HabitTrackerGrid from "./habit-tracker-grid";
 import HabitTrackerPlaceholder from "./habit-tracker-placeholder";
@@ -48,8 +49,6 @@ interface Props {
 }
 
 const HabitTracker = ({ ocultarSemanaActual }: Props) => {
-	const queryClient = useQueryClient();
-
 	const [semanaReferencia, setSemanaReferencia] = useState(() => inicioDeSemana(new Date()));
 	const [diaSeleccionado, setDiaSeleccionado] = useState(() => new Date());
 
@@ -57,10 +56,8 @@ const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 	const hoy = new Date();
 	const fechaConsulta = ocultarSemanaActual ? hoy : diaSeleccionado;
 
-	const { data, isLoading } = useApiQuery({
-		key: [...queryKeys.habitosTracker, formatearFechaClave(fechaConsulta)],
-		fn: () => api.tracker(fechaConsulta),
-	});
+	const habitos = usarTrackerDia(fechaConsulta);
+	const isLoading = habitos === undefined;
 
 	const { data: resumenSemanal } = useApiQuery({
 		key: [...queryKeys.habitosResumenSemanal, formatearFechaClave(new Date())],
@@ -68,14 +65,19 @@ const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 		activado: !ocultarSemanaActual && esDomingo(),
 	});
 
-	const refetchTracker = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: queryKeys.habitosTracker });
-		queryClient.invalidateQueries({ queryKey: queryKeys.habitosResumenSemanal });
-	}, [queryClient]);
-
-	const guardarRegistro = useCallback(async (dto: UpsertRegistroHabitoDTO) => {
-		await api.registro(dto);
-	}, []);
+	// Resumen semanal sigue online (agregado); el tracker diario es offline-first.
+	const guardarRegistro = useCallback(
+		async (params: {
+			habitoClientId: string;
+			habitoId?: number;
+			fecha: Date;
+			valorBooleano?: boolean;
+			valorNumerico?: number;
+		}) => {
+			await guardarRegistroHabitoLocal(params);
+		},
+		[],
+	);
 
 	const semanaAnterior = () => {
 		const nueva = new Date(semanaReferencia);
@@ -91,19 +93,18 @@ const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 
 	const esSemanaActual = esMismaFecha(semanaReferencia, inicioDeSemana(new Date()));
 
-	if (isLoading && !data) {
+	if (isLoading) {
 		return <HabitTrackerPlaceholder ocultarSemanaActual={ocultarSemanaActual} />;
 	}
 
-	const habitos = data?.habitos ?? [];
+	const listaHabitos = habitos ?? [];
 
 	if (ocultarSemanaActual) {
 		return (
 			<div className='mb-4'>
 				<HabitTrackerGrid
-					habitos={habitos}
+					habitos={listaHabitos}
 					fecha={fechaConsulta}
-					onGuardado={refetchTracker}
 					guardarRegistro={guardarRegistro}
 				/>
 			</div>
@@ -148,9 +149,8 @@ const HabitTracker = ({ ocultarSemanaActual }: Props) => {
 			</div>
 
 			<HabitTrackerGrid
-				habitos={habitos}
+				habitos={listaHabitos}
 				fecha={fechaConsulta}
-				onGuardado={refetchTracker}
 				guardarRegistro={guardarRegistro}
 			/>
 

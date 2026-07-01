@@ -1,17 +1,23 @@
-import { HabitoTrackerItemDTO, TipoHabitoEnum, UpsertRegistroHabitoDTO } from "@/api/clients";
+import { TipoHabitoEnum } from "@/api/clients";
+import { TrackerHabitoView } from "@/sync/lecturas-core";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { esHabitoNumerico, esHabitoSiNo } from "./utilidades-habitos";
 
 interface Props {
-	habito: HabitoTrackerItemDTO;
+	habito: TrackerHabitoView;
 	fecha: Date;
-	onGuardado: () => void;
-	guardarRegistro: (dto: UpsertRegistroHabitoDTO) => Promise<void>;
+	guardarRegistro: (params: {
+		habitoClientId: string;
+		habitoId?: number;
+		fecha: Date;
+		valorBooleano?: boolean;
+		valorNumerico?: number;
+	}) => Promise<void>;
 }
 
-const HabitTrackerCelda = ({ habito, fecha, onGuardado, guardarRegistro }: Props) => {
+const HabitTrackerCelda = ({ habito, fecha, guardarRegistro }: Props) => {
 	const [valorNumerico, setValorNumerico] = useState<string>(
 		habito.valorNumerico != null ? String(habito.valorNumerico) : "",
 	);
@@ -19,29 +25,21 @@ const HabitTrackerCelda = ({ habito, fecha, onGuardado, guardarRegistro }: Props
 
 	useEffect(() => {
 		setValorNumerico(habito.valorNumerico != null ? String(habito.valorNumerico) : "");
-	}, [habito.valorNumerico, habito.id, fecha]);
+	}, [habito.valorNumerico, habito.clientId, fecha]);
 
 	const mutation = useMutation({
 		mutationFn: guardarRegistro,
-		onSuccess: () => onGuardado(),
-		onError: (error: unknown) => {
-			const mensaje =
-				error instanceof Error
-					? JSON.parse((error as unknown as { response: string }).response).title
-					: "Error al guardar el hábito";
-			toast.error(mensaje);
-		},
+		onError: () => toast.error("Error al guardar el hábito"),
 	});
 
 	const guardar = (valorBooleano?: boolean, valorNum?: number) => {
-		mutation.mutate(
-			new UpsertRegistroHabitoDTO({
-				habitoId: habito.id,
-				fecha,
-				valorBooleano,
-				valorNumerico: valorNum,
-			}),
-		);
+		mutation.mutate({
+			habitoClientId: habito.clientId,
+			habitoId: habito.id,
+			fecha,
+			valorBooleano,
+			valorNumerico: valorNum,
+		});
 	};
 
 	const alternarSiNo = () => {

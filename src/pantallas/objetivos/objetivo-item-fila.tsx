@@ -1,4 +1,5 @@
-import { CrearItemObjetivoDTO, EditarItemObjetivoDTO, ItemObjetivoDTO } from "@/api/clients";
+import { CrearItemObjetivoDTO, ItemObjetivoDTO } from "@/api/clients";
+import { claveDeItem } from "@/sync/lecturas-core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation } from "@tanstack/react-query";
@@ -7,18 +8,16 @@ import { toast } from "sonner";
 
 interface Props {
 	item: ItemObjetivoDTO;
-	onActualizado: () => void;
-	onToggle: (id: number) => Promise<void>;
-	onEditar: (id: number, dto: EditarItemObjetivoDTO) => Promise<void>;
-	onEliminar: (id: number) => Promise<void>;
-	onCrearDebajo?: (despuesDeItemId: number) => Promise<void>;
+	onToggle: (clientId: string) => Promise<void>;
+	onEditar: (clientId: string, texto: string) => Promise<void>;
+	onEliminar: (clientId: string) => Promise<void>;
+	onCrearDebajo?: (despuesDeClientId: string) => Promise<void>;
 	reordenable?: boolean;
 	autoFocus?: boolean;
 }
 
 const ObjetivoItemFila = ({
 	item,
-	onActualizado,
 	onToggle,
 	onEditar,
 	onEliminar,
@@ -26,34 +25,33 @@ const ObjetivoItemFila = ({
 	reordenable = false,
 	autoFocus = false,
 }: Props) => {
+	const itemClave = claveDeItem(item);
 	const [texto, setTexto] = useState(item.texto ?? "");
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-		id: item.id!,
+		id: itemClave,
 		disabled: !reordenable,
 	});
 
 	useEffect(() => {
 		setTexto(item.texto ?? "");
-	}, [item.id, item.texto]);
+	}, [itemClave, item.texto]);
 
 	useEffect(() => {
 		if (autoFocus) {
 			inputRef.current?.focus();
 		}
-	}, [autoFocus, item.id]);
+	}, [autoFocus, itemClave]);
 
 	const toggleMutation = useMutation({
-		mutationFn: () => onToggle(item.id!),
-		onSuccess: () => onActualizado(),
+		mutationFn: () => onToggle(itemClave),
 		onError: () => toast.error("Error al actualizar el objetivo"),
 	});
 
 	const eliminarMutation = useMutation({
-		mutationFn: () => onEliminar(item.id!),
-		onSuccess: () => onActualizado(),
+		mutationFn: () => onEliminar(itemClave),
 		onError: () => toast.error("Error al eliminar el objetivo"),
 	});
 
@@ -61,9 +59,11 @@ const ObjetivoItemFila = ({
 		const trimmed = nuevoTexto.trim();
 		if (!trimmed || trimmed === (item.texto ?? "").trim()) return;
 
-		await onEditar(item.id!, new EditarItemObjetivoDTO({ texto: trimmed }))
-			.then(() => onActualizado())
-			.catch(() => toast.error("Error al guardar el objetivo"));
+		try {
+			await onEditar(itemClave, trimmed);
+		} catch {
+			toast.error("Error al guardar el objetivo");
+		}
 	};
 
 	const cuandoCambiaTexto = (valor: string) => {
@@ -78,7 +78,7 @@ const ObjetivoItemFila = ({
 		e.preventDefault();
 		if (debounceRef.current) clearTimeout(debounceRef.current);
 		await guardarTexto(texto);
-		await onCrearDebajo(item.id!);
+		await onCrearDebajo(itemClave);
 	};
 
 	useEffect(

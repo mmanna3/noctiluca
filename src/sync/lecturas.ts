@@ -1,12 +1,16 @@
-import { CarpetaDTO, EscritoDTO } from "@/api/clients";
+import { CarpetaDTO, EscritoDTO, ListaObjetivoDTO, TipoListaObjetivoEnum } from "@/api/clients";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "./db";
 import {
 	aEscritoDTO,
 	carpetaDesde,
 	carpetasRaizDesde,
+	listaObjetivosDesde,
+	listaObjetivosPorIdDesde,
 	papeleraDesde,
 	todosLosEscritosDesde,
+	TrackerHabitoView,
+	trackerDiaDesde,
 } from "./lecturas-core";
 
 /**
@@ -44,6 +48,43 @@ export const usarTodosLosEscritos = (): EscritoDTO[] | undefined =>
 		const [carpetas, escritos] = await Promise.all([db.carpetas.toArray(), db.escritos.toArray()]);
 		return todosLosEscritosDesde(carpetas, escritos);
 	}, []);
+
+/** Tracker de hábitos para un día (activos + registro del día). */
+export const usarTrackerDia = (fecha: Date): TrackerHabitoView[] | undefined =>
+	useLiveQuery(async () => {
+		const [habitos, registros] = await Promise.all([
+			db.habitos.toArray(),
+			db.registrosHabito.toArray(),
+		]);
+		return trackerDiaDesde(habitos, registros, fecha);
+	}, [fecha.getTime()]);
+
+/** Lista de objetivos por tipo y clave de período. */
+export const usarListaObjetivos = (
+	tipo: TipoListaObjetivoEnum | undefined,
+	clavePeriodo: string | undefined,
+): ListaObjetivoDTO | undefined =>
+	useLiveQuery(async () => {
+		if (tipo == null || !clavePeriodo) return undefined;
+		const [listas, items] = await Promise.all([
+			db.listasObjetivo.toArray(),
+			db.itemsObjetivo.toArray(),
+		]);
+		return listaObjetivosDesde(listas, items, tipo, clavePeriodo);
+	}, [tipo, clavePeriodo]);
+
+/** Lista de objetivos por id de servidor (vista histórica). */
+export const usarListaObjetivosPorId = (
+	listaId: number | undefined,
+): ListaObjetivoDTO | undefined | null =>
+	useLiveQuery(async () => {
+		if (!listaId) return null;
+		const [listas, items] = await Promise.all([
+			db.listasObjetivo.toArray(),
+			db.itemsObjetivo.toArray(),
+		]);
+		return listaObjetivosPorIdDesde(listas, items, listaId);
+	}, [listaId]);
 
 /** Un escrito por su clientId (GUID) o su id de servidor. */
 export const usarEscrito = (idOClientId: string | undefined): EscritoDTO | undefined | null =>

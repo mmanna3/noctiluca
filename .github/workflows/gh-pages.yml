@@ -1,7 +1,9 @@
 name: CI y Deploy
 
+# CI en cada push y PR; deploy solo en main.
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 jobs:

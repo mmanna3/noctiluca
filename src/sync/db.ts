@@ -1,6 +1,14 @@
 import Dexie, { Table } from "dexie";
 import { nuevoId } from "./ids";
-import { CarpetaLocal, EscritoLocal, OperacionOutbox } from "./tipos";
+import {
+	CarpetaLocal,
+	EscritoLocal,
+	HabitoLocal,
+	ItemObjetivoLocal,
+	ListaObjetivoLocal,
+	OperacionOutbox,
+	RegistroHabitoLocal,
+} from "./tipos";
 
 interface Meta {
 	clave: string;
@@ -14,6 +22,10 @@ interface Meta {
 class NoctilucaDB extends Dexie {
 	escritos!: Table<EscritoLocal, string>;
 	carpetas!: Table<CarpetaLocal, string>;
+	habitos!: Table<HabitoLocal, string>;
+	registrosHabito!: Table<RegistroHabitoLocal, string>;
+	listasObjetivo!: Table<ListaObjetivoLocal, string>;
+	itemsObjetivo!: Table<ItemObjetivoLocal, string>;
 	outbox!: Table<OperacionOutbox, string>;
 	meta!: Table<Meta, string>;
 
@@ -22,6 +34,17 @@ class NoctilucaDB extends Dexie {
 		this.version(1).stores({
 			escritos: "clientId, serverId, carpetaClientId, carpetaId, version",
 			carpetas: "clientId, serverId, carpetaPadreId, version",
+			outbox: "clientOpId, clientEntityId, entityType",
+			meta: "clave",
+		});
+		this.version(2).stores({
+			escritos: "clientId, serverId, carpetaClientId, carpetaId, version",
+			carpetas: "clientId, serverId, carpetaPadreId, version",
+			habitos: "clientId, serverId, version, posicion",
+			registrosHabito: "clientId, serverId, habitoClientId, habitoId, fecha, version",
+			listasObjetivo: "clientId, serverId, tipo, clavePeriodo, version",
+			itemsObjetivo:
+				"clientId, serverId, listaTipo, listaClavePeriodo, version, posicion",
 			outbox: "clientOpId, clientEntityId, entityType",
 			meta: "clave",
 		});

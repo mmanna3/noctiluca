@@ -2,6 +2,7 @@ import { api } from "@/api/api";
 import {
 	ActualizarPosicionesItemObjetivoDTO,
 	CrearItemObjetivoDTO,
+	EditarItemObjetivoDTO,
 	ItemObjetivoDTO,
 	ListaObjetivoDTO,
 	PosicionItemObjetivoDTO,
@@ -9,6 +10,15 @@ import {
 } from "@/api/clients";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { queryKeys } from "@/api/query-keys";
+import { claveDeItem } from "@/sync/lecturas-core";
+import { usarListaObjetivos, usarListaObjetivosPorId } from "@/sync/lecturas";
+import {
+	crearItemObjetivoLocal,
+	editarItemObjetivoLocal,
+	eliminarItemObjetivoLocal,
+	reordenarItemsObjetivoLocal,
+	toggleItemObjetivoLocal,
+} from "@/sync/repositorio-objetivos";
 import {
 	closestCenter,
 	DndContext,
@@ -26,7 +36,7 @@ import {
 } from "@dnd-kit/sortable";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useQueryClient } from "@tanstack/react-query";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatearFechaClave } from "../habitos/utilidades-habitos";
 import ObjetivoItemFila, { crearItemRequest } from "./objetivo-item-fila";
@@ -53,18 +63,28 @@ const EditorListaObjetivos = ({
 	const [nuevoTexto, setNuevoTexto] = useState("");
 	const [creando, setCreando] = useState(false);
 	const [mostrarInputVacio, setMostrarInputVacio] = useState(false);
-	const [itemConFoco, setItemConFoco] = useState<number | null>(null);
+	const [itemConFoco, setItemConFoco] = useState<string | null>(null);
 	const [itemsLocales, setItemsLocales] = useState<ItemObjetivoDTO[]>([]);
 
-	const invalidar = () => {
+	const claveDia = formatearFechaClave(fecha);
+	const tipoLocal = modoDia ? TipoListaObjetivoEnum._1 : tipo;
+	const claveLocal = modoDia ? claveDia : clavePeriodo;
+
+	const dataLocalPorClave = usarListaObjetivos(tipoLocal, claveLocal);
+	const dataLocalPorId = usarListaObjetivosPorId(listaId);
+
+	const usaLocal =
+		modoDia || (!!tipo && !!clavePeriodo) || (listaId != null && dataLocalPorId !== null);
+
+	const invalidarApi = () => {
 		queryClient.invalidateQueries({ queryKey: queryKeys.objetivosDia });
 		queryClient.invalidateQueries({ queryKey: ["objetivos-lista"] });
 		queryClient.invalidateQueries({ queryKey: ["objetivos-historico"] });
 	};
 
-	const { data, isLoading } = useApiQuery({
+	const { data: dataApi, isLoading: cargandoApi } = useApiQuery({
 		key: modoDia
-			? [...queryKeys.objetivosDia, formatearFechaClave(fecha)]
+			? [...queryKeys.objetivosDia, claveDia]
 			: listaId
 				? queryKeys.objetivosLista(listaId)
 				: [...queryKeys.objetivosLista(`${tipo}-${clavePeriodo}`), tipo, clavePeriodo],
@@ -84,8 +104,23 @@ const EditorListaObjetivos = ({
 			}
 			throw new Error("Configuración de lista inválida");
 		},
-		activado: modoDia || !!listaId || (!!tipo && !!clavePeriodo),
+		activado: !usaLocal && (modoDia || !!listaId || (!!tipo && !!clavePeriodo)),
 	});
+
+	const data = usaLocal
+		? modoDia || (tipo && clavePeriodo)
+			? dataLocalPorClave
+			: dataLocalPorId ?? undefined
+		: dataApi;
+
+	const isLoading = usaLocal
+		? modoDia || (tipo && clavePeriodo)
+			? dataLocalPorClave === undefined
+			: dataLocalPorId === undefined
+		: cargandoApi && !dataApi;
+
+	const listaTipo = data?.tipo ?? tipoLocal ?? TipoListaObjetivoEnum._1;
+	const listaClave = data?.clavePeriodo ?? claveLocal ?? claveDia;
 
 	useEffect(() => {
 		setItemsLocales(data?.items ?? []);
@@ -107,8 +142,16 @@ const EditorListaObjetivos = ({
 
 		setCreando(true);
 		try {
-			if (data?.id) {
+			if (usaLocal) {
+				await crearItemObjetivoLocal({
+					listaTipo,
+					listaClavePeriodo: listaClave,
+					texto: valor || " ",
+					posicion,
+				});
+			} else if (data?.id) {
 				await api.itemPOST(crearItemRequest(data.id, valor || " ", posicion));
+				invalidarApi();
 			} else if (tipo && clavePeriodo) {
 				await api.itemPOST(
 					new CrearItemObjetivoDTO({
@@ -118,10 +161,10 @@ const EditorListaObjetivos = ({
 						posicion,
 					}),
 				);
+				invalidarApi();
 			}
 			setNuevoTexto("");
 			setMostrarInputVacio(false);
-			invalidar();
 		} catch {
 			toast.error("Error al agregar el objetivo");
 		} finally {
@@ -129,21 +172,29 @@ const EditorListaObjetivos = ({
 		}
 	};
 
-	const crearDebajo = async (despuesDeItemId: number) => {
-		if (!data?.id) return;
-
-		const indice = itemsLocales.findIndex((i) => i.id === despuesDeItemId);
+	const crearDebajo = async (despuesDeClientId: string) => {
+		const indice = itemsLocales.findIndex((i) => claveDeItem(i) === despuesDeClientId);
 		if (indice < 0) return;
 
 		const posicionInsert = indice + 1;
 
 		setCreando(true);
 		try {
-			const creado = await api.itemPOST(
-				crearItemRequest(data.id, " ", posicionInsert),
-			);
-			setItemConFoco(creado.id ?? null);
-			invalidar();
+			if (usaLocal) {
+				const clientId = await crearItemObjetivoLocal({
+					listaTipo,
+					listaClavePeriodo: listaClave,
+					texto: " ",
+					posicion: posicionInsert,
+				});
+				setItemConFoco(clientId);
+			} else if (data?.id) {
+				const creado = await api.itemPOST(
+					crearItemRequest(data.id, " ", posicionInsert),
+				);
+				setItemConFoco(creado.clientId ?? String(creado.id ?? ""));
+				invalidarApi();
+			}
 		} catch {
 			toast.error("Error al agregar el objetivo");
 		} finally {
@@ -151,7 +202,20 @@ const EditorListaObjetivos = ({
 		}
 	};
 
-	const actualizarPosiciones = async (reordenados: ItemObjetivoDTO[]) => {
+	const actualizarPosicionesLocal = async (reordenados: ItemObjetivoDTO[]) => {
+		try {
+			await reordenarItemsObjetivoLocal(
+				reordenados.map((item, index) => ({
+					clientId: claveDeItem(item),
+					posicion: index,
+				})),
+			);
+		} catch {
+			toast.error("Error al reordenar los objetivos");
+		}
+	};
+
+	const actualizarPosicionesApi = async (reordenados: ItemObjetivoDTO[]) => {
 		try {
 			const posiciones = reordenados
 				.filter((i) => i.id !== undefined)
@@ -164,7 +228,7 @@ const EditorListaObjetivos = ({
 				);
 
 			await api.posiciones(new ActualizarPosicionesItemObjetivoDTO({ posiciones }));
-			invalidar();
+			invalidarApi();
 		} catch {
 			toast.error("Error al reordenar los objetivos");
 		}
@@ -174,12 +238,16 @@ const EditorListaObjetivos = ({
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
 
-		const oldIndex = itemsLocales.findIndex((i) => i.id === active.id);
-		const newIndex = itemsLocales.findIndex((i) => i.id === over.id);
+		const oldIndex = itemsLocales.findIndex((i) => claveDeItem(i) === active.id);
+		const newIndex = itemsLocales.findIndex((i) => claveDeItem(i) === over.id);
 		const reordenados = arrayMove(itemsLocales, oldIndex, newIndex);
 
 		setItemsLocales(reordenados);
-		await actualizarPosiciones(reordenados);
+		if (usaLocal) {
+			await actualizarPosicionesLocal(reordenados);
+		} else {
+			await actualizarPosicionesApi(reordenados);
+		}
 	};
 
 	const tituloMostrado =
@@ -189,6 +257,8 @@ const EditorListaObjetivos = ({
 			: tipo
 				? tituloPeriodoActual(tipo)
 				: "Objetivos");
+
+	const idsOrdenables = useMemo(() => itemsLocales.map(claveDeItem), [itemsLocales]);
 
 	if (isLoading && !data) {
 		if (modoDia) {
@@ -210,27 +280,47 @@ const EditorListaObjetivos = ({
 	const reordenable = items.length >= 2;
 	const permitirEnterCrear = modoDia ? items.length > 0 : true;
 
+	const onToggle = usaLocal
+		? (clientId: string) => toggleItemObjetivoLocal(clientId)
+		: (clientId: string) => {
+			const item = items.find((i) => claveDeItem(i) === clientId);
+			if (!item?.id) return Promise.resolve();
+			return api.completado(item.id).then(() => undefined);
+		};
+
+	const onEditar = usaLocal
+		? (clientId: string, textoEditado: string) => editarItemObjetivoLocal(clientId, textoEditado)
+		: (clientId: string, textoEditado: string) => {
+			const item = items.find((i) => claveDeItem(i) === clientId);
+			if (!item?.id) return Promise.resolve();
+			return api.itemPUT(item.id, new EditarItemObjetivoDTO({ texto: textoEditado })).then(() => undefined);
+		};
+
+	const onEliminar = usaLocal
+		? (clientId: string) => eliminarItemObjetivoLocal(clientId)
+		: (clientId: string) => {
+			const item = items.find((i) => claveDeItem(i) === clientId);
+			if (!item?.id) return Promise.resolve();
+			return api.itemDELETE(item.id).then(() => undefined);
+		};
+
 	const filas = items.map((item) => (
 		<ObjetivoItemFila
-			key={item.id}
+			key={claveDeItem(item)}
 			item={item}
-			onActualizado={invalidar}
-			onToggle={(id) => api.completado(id).then(() => undefined)}
-			onEditar={(id, dto) => api.itemPUT(id, dto).then(() => undefined)}
-			onEliminar={(id) => api.itemDELETE(id).then(() => undefined)}
+			onToggle={onToggle}
+			onEditar={onEditar}
+			onEliminar={onEliminar}
 			onCrearDebajo={permitirEnterCrear ? crearDebajo : undefined}
 			reordenable={reordenable}
-			autoFocus={item.id === itemConFoco}
+			autoFocus={claveDeItem(item) === itemConFoco}
 		/>
 	));
 
 	const contenidoItems =
 		reordenable ? (
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-				<SortableContext
-					items={items.map((i) => i.id!)}
-					strategy={verticalListSortingStrategy}
-				>
+				<SortableContext items={idsOrdenables} strategy={verticalListSortingStrategy}>
 					<div className='space-y-0'>{filas}</div>
 				</SortableContext>
 			</DndContext>

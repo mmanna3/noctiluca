@@ -1,14 +1,19 @@
-import { HabitoTrackerItemDTO, UpsertRegistroHabitoDTO } from "@/api/clients";
+import { TrackerHabitoView } from "@/sync/lecturas-core";
 import HabitTrackerCelda from "./habit-tracker-celda";
 
 interface Props {
-	habitos: HabitoTrackerItemDTO[];
+	habitos: TrackerHabitoView[];
 	fecha: Date;
-	onGuardado: () => void;
-	guardarRegistro: (dto: UpsertRegistroHabitoDTO) => Promise<void>;
+	guardarRegistro: (params: {
+		habitoClientId: string;
+		habitoId?: number;
+		fecha: Date;
+		valorBooleano?: boolean;
+		valorNumerico?: number;
+	}) => Promise<void>;
 }
 
-const HabitTrackerGrid = ({ habitos, fecha, onGuardado, guardarRegistro }: Props) => {
+const HabitTrackerGrid = ({ habitos, fecha, guardarRegistro }: Props) => {
 	if (habitos.length === 0) {
 		return (
 			<p className='text-sm text-gray-500 text-center py-4'>
@@ -24,7 +29,7 @@ const HabitTrackerGrid = ({ habitos, fecha, onGuardado, guardarRegistro }: Props
 				style={{ gridTemplateColumns: `repeat(${habitos.length}, minmax(64px, 1fr))` }}
 			>
 				{habitos.map((habito) => (
-					<div key={habito.id} className='flex flex-col gap-1 min-w-[64px]'>
+					<div key={habito.clientId} className='flex flex-col gap-1 min-w-[64px]'>
 						<span
 							className='text-xs font-medium text-center truncate px-1'
 							title={habito.nombre}
@@ -34,7 +39,6 @@ const HabitTrackerGrid = ({ habitos, fecha, onGuardado, guardarRegistro }: Props
 						<HabitTrackerCelda
 							habito={habito}
 							fecha={fecha}
-							onGuardado={onGuardado}
 							guardarRegistro={guardarRegistro}
 						/>
 					</div>

@@ -3,11 +3,15 @@ import {
 	aEscritoDTO,
 	carpetaDesde,
 	carpetasRaizDesde,
+	claveDeItem,
+	listaObjetivosDesde,
 	ordenarEscritos,
 	papeleraDesde,
 	todosLosEscritosDesde,
+	trackerDiaDesde,
 } from "./lecturas-core";
-import { CarpetaLocal, EscritoLocal } from "./tipos";
+import { CarpetaLocal, EscritoLocal, HabitoLocal, ItemObjetivoLocal, RegistroHabitoLocal } from "./tipos";
+import { ItemObjetivoDTO, TipoHabitoEnum, TipoListaObjetivoEnum } from "@/api/clients";
 
 const carpeta = (over: Partial<CarpetaLocal>): CarpetaLocal => ({
 	clientId: over.clientId ?? "c-" + Math.random(),
@@ -158,5 +162,65 @@ describe("aEscritoDTO", () => {
 		const dto = aEscritoDTO(escrito({ clientId: "guid-offline", serverId: undefined }));
 		expect(dto.id).toBeUndefined();
 		expect(dto.clientId).toBe("guid-offline");
+	});
+});
+
+describe("trackerDiaDesde", () => {
+	test("devuelve hábitos activos con registro del día", () => {
+		const habitos: HabitoLocal[] = [
+			{ clientId: "h1", nombre: "Meditar", tipo: TipoHabitoEnum._1, activo: true, posicion: 0, version: 1 },
+			{ clientId: "h2", nombre: "Inactivo", tipo: TipoHabitoEnum._1, activo: false, posicion: 1, version: 1 },
+		];
+		const registros: RegistroHabitoLocal[] = [
+			{
+				clientId: "r1",
+				habitoClientId: "h1",
+				fecha: "2026-07-01",
+				valorBooleano: true,
+				version: 1,
+				pendiente: false,
+			},
+		];
+		const vista = trackerDiaDesde(habitos, registros, new Date(2026, 6, 1));
+		expect(vista).toHaveLength(1);
+		expect(vista[0].nombre).toBe("Meditar");
+		expect(vista[0].valorBooleano).toBe(true);
+		expect(vista[0].clientId).toBe("h1");
+	});
+});
+
+describe("listaObjetivosDesde", () => {
+	test("agrupa ítems por tipo y clave de período", () => {
+		const items: ItemObjetivoLocal[] = [
+			{
+				clientId: "i2",
+				texto: "B",
+				completado: false,
+				posicion: 1,
+				listaTipo: TipoListaObjetivoEnum._1,
+				listaClavePeriodo: "2026-07-01",
+				version: 1,
+				pendiente: false,
+			},
+			{
+				clientId: "i1",
+				texto: "A",
+				completado: true,
+				posicion: 0,
+				listaTipo: TipoListaObjetivoEnum._1,
+				listaClavePeriodo: "2026-07-01",
+				version: 1,
+				pendiente: false,
+			},
+		];
+		const lista = listaObjetivosDesde([], items, TipoListaObjetivoEnum._1, "2026-07-01");
+		expect(lista.items?.map((i) => i.texto)).toEqual(["A", "B"]);
+	});
+});
+
+describe("claveDeItem", () => {
+	test("prefiere clientId sobre id de servidor", () => {
+		const item = new ItemObjetivoDTO({ id: 5, clientId: "guid", texto: "Objetivo" });
+		expect(claveDeItem(item)).toBe("guid");
 	});
 });

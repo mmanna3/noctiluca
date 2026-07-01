@@ -1,4 +1,9 @@
-export type TipoEntidadSync = "escrito" | "carpeta";
+export type TipoEntidadSync =
+	| "escrito"
+	| "carpeta"
+	| "habito"
+	| "registroHabito"
+	| "itemObjetivo";
 
 export type OperacionSync = "upsert" | "delete";
 
@@ -47,6 +52,59 @@ export interface CarpetaLocal {
 	requiereAutenticacion?: boolean;
 	propositoCarpeta?: number;
 	/** Tiene cambios locales aún no confirmados por el servidor. */
+	pendiente?: boolean;
+}
+
+/** Copia local de un hábito. */
+export interface HabitoLocal {
+	clientId: string;
+	serverId?: number;
+	nombre: string;
+	tipo: number;
+	activo: boolean;
+	posicion: number;
+	metaMinutos?: number;
+	version: number;
+	pendiente?: boolean;
+}
+
+/** Registro diario de un hábito (clave natural: hábito + fecha). */
+export interface RegistroHabitoLocal {
+	clientId: string;
+	serverId?: number;
+	habitoClientId: string;
+	habitoId?: number;
+	/** YYYY-MM-DD */
+	fecha: string;
+	valorBooleano?: boolean;
+	valorNumerico?: number;
+	version: number;
+	pendiente?: boolean;
+}
+
+/** Metadatos de una lista de objetivos (ítems en tabla aparte). */
+export interface ListaObjetivoLocal {
+	clientId: string;
+	serverId?: number;
+	tipo: number;
+	clavePeriodo: string;
+	fechaInicio?: string;
+	fechaFin?: string;
+	fechaCreacion?: string;
+	version: number;
+}
+
+/** Ítem de una lista de objetivos. */
+export interface ItemObjetivoLocal {
+	clientId: string;
+	serverId?: number;
+	listaTipo: number;
+	listaClavePeriodo: string;
+	texto: string;
+	completado: boolean;
+	posicion: number;
+	fechaCompletado?: string;
+	version: number;
 	pendiente?: boolean;
 }
 

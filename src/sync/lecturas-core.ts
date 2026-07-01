@@ -1,5 +1,21 @@
-import { CarpetaDTO, EscritoDTO } from "@/api/clients";
-import { CarpetaLocal, EscritoLocal } from "./tipos";
+import {
+	CarpetaDTO,
+	EscritoDTO,
+	HabitoTrackerItemDTO,
+	ItemObjetivoDTO,
+	ListaObjetivoDTO,
+	TipoHabitoEnum,
+	TipoListaObjetivoEnum,
+} from "@/api/clients";
+import { fechaClave } from "./fechas";
+import {
+	CarpetaLocal,
+	EscritoLocal,
+	HabitoLocal,
+	ItemObjetivoLocal,
+	ListaObjetivoLocal,
+	RegistroHabitoLocal,
+} from "./tipos";
 
 /**
  * Lógica pura de reconstrucción de los DTOs (`CarpetaDTO`/`EscritoDTO`) que la UI
@@ -133,3 +149,86 @@ export const todosLosEscritosDesde = (
 		.filter((e) => !e.estaEnPapelera)
 		.sort(porCreacionDesc)
 		.map((e) => aEscritoDTO(e, tituloDeCarpetaDe(e, carpetas)));
+
+/** Vista del tracker con identificadores offline para guardar registros. */
+export type TrackerHabitoView = HabitoTrackerItemDTO & {
+	clientId: string;
+	registroClientId?: string;
+};
+
+export const trackerDiaDesde = (
+	habitos: HabitoLocal[],
+	registros: RegistroHabitoLocal[],
+	fecha: Date,
+): TrackerHabitoView[] => {
+	const clave = fechaClave(fecha);
+	return habitos
+		.filter((h) => h.activo !== false)
+		.sort((a, b) => (a.posicion ?? 0) - (b.posicion ?? 0))
+		.map((h) => {
+			const reg = registros.find((r) => r.habitoClientId === h.clientId && r.fecha === clave);
+			return Object.assign(new HabitoTrackerItemDTO(), {
+				id: h.serverId,
+				nombre: h.nombre,
+				tipo: h.tipo as TipoHabitoEnum,
+				metaMinutos: h.metaMinutos,
+				registroId: reg?.serverId,
+				valorBooleano: reg?.valorBooleano,
+				valorNumerico: reg?.valorNumerico,
+				clientId: h.clientId,
+				registroClientId: reg?.clientId,
+			}) as TrackerHabitoView;
+		});
+};
+
+export const aItemObjetivoDTO = (i: ItemObjetivoLocal): ItemObjetivoDTO =>
+	new ItemObjetivoDTO({
+		id: i.serverId,
+		clientId: i.clientId,
+		texto: i.texto,
+		completado: i.completado,
+		posicion: i.posicion,
+		fechaCompletado: i.fechaCompletado ? new Date(i.fechaCompletado) : undefined,
+		listaTipo: i.listaTipo as TipoListaObjetivoEnum,
+		listaClavePeriodo: i.listaClavePeriodo,
+		version: i.version,
+	});
+
+export const listaObjetivosDesde = (
+	listas: ListaObjetivoLocal[],
+	items: ItemObjetivoLocal[],
+	tipo: number,
+	clavePeriodo: string,
+): ListaObjetivoDTO => {
+	const lista = listas.find((l) => l.tipo === tipo && l.clavePeriodo === clavePeriodo);
+	const itemsLista = items
+		.filter((i) => i.listaTipo === tipo && i.listaClavePeriodo === clavePeriodo)
+		.sort((a, b) => (a.posicion ?? 0) - (b.posicion ?? 0))
+		.map(aItemObjetivoDTO);
+
+	return new ListaObjetivoDTO({
+		id: lista?.serverId,
+		clientId: lista?.clientId,
+		tipo: tipo as TipoListaObjetivoEnum,
+		clavePeriodo,
+		fechaInicio: lista?.fechaInicio ? new Date(lista.fechaInicio) : undefined,
+		fechaFin: lista?.fechaFin ? new Date(lista.fechaFin) : undefined,
+		fechaCreacion: lista?.fechaCreacion ? new Date(lista.fechaCreacion) : undefined,
+		items: itemsLista,
+		version: lista?.version,
+	});
+};
+
+export const listaObjetivosPorIdDesde = (
+	listas: ListaObjetivoLocal[],
+	items: ItemObjetivoLocal[],
+	listaId: number,
+): ListaObjetivoDTO | null => {
+	const lista = listas.find((l) => l.serverId === listaId);
+	if (!lista) return null;
+	return listaObjetivosDesde(listas, items, lista.tipo, lista.clavePeriodo);
+};
+
+/** Clave estable para ítems (server id o clientId). */
+export const claveDeItem = (item: ItemObjetivoDTO): string =>
+	item.clientId ?? String(item.id ?? "");
