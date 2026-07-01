@@ -1,7 +1,5 @@
-import { api } from "@/api/api";
 import { EscritoDTO } from "@/api/clients";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { queryKeys } from "@/api/query-keys";
+import { usarTodosLosEscritos } from "@/sync/lecturas";
 import usarNavegacion from "@/usar-navegacion";
 import { useState } from "react";
 import { Boton } from "../../components/ui/botones";
@@ -16,10 +14,9 @@ const ModoLectura = () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { irAlInicio } = usarNavegacion();
 
-	const { data, isLoading, isError } = useApiQuery({
-		key: queryKeys.escritos,
-		fn: async () => await api.escritoAll(),
-	});
+	const data = usarTodosLosEscritos();
+	const isLoading = data === undefined;
+	const isError = false;
 
 	const [escritoSeleccionado, setEscritoSeleccionado] = useState<EscritoDTO | null>(null);
 

@@ -29,7 +29,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 vi.mock("@/api/api", () => ({
-	api: {},
+	api: { escritoGET: vi.fn().mockResolvedValue(null) },
 }));
 
 vi.mock("@/sync/estado-sync", () => ({
@@ -37,8 +37,20 @@ vi.mock("@/sync/estado-sync", () => ({
 }));
 
 const mockSembrarEscrito = vi.fn();
+const mockCambiarPapeleraLocal = vi.fn().mockResolvedValue(undefined);
+const mockEliminarEscritoLocal = vi.fn().mockResolvedValue(undefined);
 vi.mock("@/sync/repositorio-escritos", () => ({
 	sembrarEscrito: (...args: unknown[]) => mockSembrarEscrito(...args),
+	cambiarPapeleraLocal: (...args: unknown[]) => mockCambiarPapeleraLocal(...args),
+	eliminarEscritoLocal: (...args: unknown[]) => mockEliminarEscritoLocal(...args),
+}));
+
+vi.mock("@/sync/pedir-sync", () => ({
+	pedirSync: vi.fn(),
+}));
+
+vi.mock("sonner", () => ({
+	toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 const mockFlush = vi.fn().mockResolvedValue(undefined);
@@ -46,32 +58,10 @@ vi.mock("./usar-autoguardado", () => ({
 	usarAutoguardado: () => ({ flush: mockFlush }),
 }));
 
-let mockQueryData: any = null;
-let mockQueryIsLoading = false;
-let mockQueryIsError = false;
+let mockEscrito: any = null;
 
-vi.mock("@/api/custom-hooks/use-api-query", () => ({
-	default: () => ({
-		data: mockQueryData,
-		isLoading: mockQueryIsLoading,
-		isError: mockQueryIsError,
-		refetch: vi.fn(),
-	}),
-}));
-
-const mockMutateEdicion = vi.fn();
-const mockMutateEliminacion = vi.fn();
-
-vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
-	default: (props: { mensajeDeExito?: string }) => {
-		if (props.mensajeDeExito?.includes("actualizado")) {
-			return { mutate: mockMutateEdicion, isPending: false };
-		}
-		if (props.mensajeDeExito?.includes("eliminado") || props.mensajeDeExito?.includes("tacho")) {
-			return { mutate: mockMutateEliminacion, isPending: false };
-		}
-		return { mutate: vi.fn(), isPending: false };
-	},
+vi.mock("@/sync/lecturas", () => ({
+	usarEscrito: () => mockEscrito,
 }));
 
 vi.mock("../../components/requiere-password", () => ({
@@ -105,15 +95,14 @@ const renderComponent = () =>
 beforeEach(() => {
 	vi.clearAllMocks();
 	mockLocationPathname = "/1/escritos/ver/5";
-	mockQueryData = {
+	mockEscrito = {
 		id: 5,
+		clientId: "guid-5",
 		titulo: "Mi Escrito",
 		cuerpo: "Contenido del escrito",
 		carpetaId: 1,
 		carpetaTitulo: "Mi Carpeta",
 	};
-	mockQueryIsLoading = false;
-	mockQueryIsError = false;
 });
 
 describe("VerEscrito", () => {
@@ -133,17 +122,18 @@ describe("VerEscrito", () => {
 	});
 
 	test("loading state", () => {
-		mockQueryIsLoading = true;
-		mockQueryData = null;
+		mockEscrito = undefined;
 		renderComponent();
 		expect(screen.getByText("Cargando...")).toBeInTheDocument();
 	});
 
-	test("error state", () => {
-		mockQueryIsError = true;
-		mockQueryData = null;
+	test("no encontrado cuando no está en local y no se puede sembrar", () => {
+		mockEscrito = null;
+		const original = navigator.onLine;
+		Object.defineProperty(navigator, "onLine", { value: false, configurable: true });
 		renderComponent();
-		expect(screen.getByText("Error al cargar el escrito")).toBeInTheDocument();
+		expect(screen.getByText("No se encontró el escrito")).toBeInTheDocument();
+		Object.defineProperty(navigator, "onLine", { value: original, configurable: true });
 	});
 
 	test("boton volver hace flush del autoguardado y navega (ya no persiste el botón)", () => {
@@ -162,14 +152,14 @@ describe("VerEscrito", () => {
 		expect(screen.getByText("Guardado")).toBeInTheDocument();
 	});
 
-	test("boton eliminar llama mutate", () => {
+	test("boton eliminar manda a papelera en local", () => {
 		renderComponent();
 		const botones = screen.getAllByRole("button");
 		const botonEliminar = botones.find((b) => b.className.includes("border-none"));
 		expect(botonEliminar).toBeDefined();
 		if (!botonEliminar) return;
 		fireEvent.click(botonEliminar);
-		expect(mockMutateEliminacion).toHaveBeenCalledWith(5);
+		expect(mockCambiarPapeleraLocal).toHaveBeenCalledWith("guid-5", true);
 	});
 
 	test("desde papelera muestra Papelera en titulo", () => {

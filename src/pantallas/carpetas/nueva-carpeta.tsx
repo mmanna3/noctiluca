@@ -1,9 +1,7 @@
-import { api } from "@/api/api";
-import { CarpetaDTO } from "@/api/clients";
-import useApiMutation from "@/api/custom-hooks/use-api-mutation";
-import { clavesCarpetas } from "@/api/query-keys";
+import { crearCarpetaLocal } from "@/sync/repositorio-carpetas";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Boton } from "../../components/ui/botones";
 import Cuerpo from "../../components/ui/cuerpo";
 import Encabezado from "../../components/ui/encabezado";
@@ -14,6 +12,7 @@ const NuevaCarpeta = () => {
 	const { irAlInicio, irACarpeta, carpetaId } = usarNavegacion();
 	const [titulo, setTitulo] = useState("");
 	const [errorTitulo, setErrorTitulo] = useState("");
+	const [creando, setCreando] = useState(false);
 
 	// Si hay carpetaId en la URL, estamos creando una subcarpeta
 	const carpetaPadreId = carpetaId ? Number(carpetaId) : undefined;
@@ -24,27 +23,16 @@ const NuevaCarpeta = () => {
 		else irAlInicio();
 	};
 
-	const creacion = useApiMutation({
-		fn: async (carpeta: CarpetaDTO) => {
-			await api.carpetaPOST(carpeta);
-		},
-		antesDeMensajeExito: volverAlOrigen,
-		mensajeDeExito: esSubcarpeta ? `Subcarpeta '${titulo}' creada` : `Carpeta '${titulo}' creada`,
-		invalidarQueries: clavesCarpetas,
-	});
-
 	const crearYVolver = async () => {
-		if (titulo === "") {
-			volverAlOrigen();
+		if (titulo === "" || creando) {
+			if (titulo === "") volverAlOrigen();
 			return;
 		}
 
-		creacion.mutate(
-			new CarpetaDTO({
-				titulo,
-				carpetaPadreId,
-			}),
-		);
+		setCreando(true);
+		await crearCarpetaLocal({ titulo, carpetaPadreId });
+		toast.success(esSubcarpeta ? `Subcarpeta '${titulo}' creada` : `Carpeta '${titulo}' creada`);
+		volverAlOrigen();
 	};
 
 	const cuandoCambie = (e: React.ChangeEvent<HTMLInputElement>) => {

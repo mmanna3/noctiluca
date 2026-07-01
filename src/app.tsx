@@ -6,10 +6,10 @@ import { AppContextProvider } from "./app-context";
 import { RequiereAutenticacion } from "./components/requiere-autenticacion";
 import { LoadingSpinner } from "./components/ui/loading-spinner";
 import Encuadre from "./pantallas/encuadre";
-import Inicio from "./pantallas/inicio";
 import Login from "./pantallas/login/login";
 import rutas from "./rutas";
 
+const Inicio = React.lazy(() => import("./pantallas/inicio"));
 const NuevaCarpeta = React.lazy(() => import("./pantallas/carpetas/nueva-carpeta"));
 const VerCarpeta = React.lazy(() => import("./pantallas/carpetas/ver-carpeta"));
 const NuevoEscrito = React.lazy(() => import("./pantallas/escritos/nuevo-escrito"));

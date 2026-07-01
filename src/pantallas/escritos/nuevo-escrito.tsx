@@ -1,8 +1,5 @@
-import { api } from "@/api/api";
-import { EscritoDTO } from "@/api/clients";
-import useApiMutation from "@/api/custom-hooks/use-api-mutation";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { clavesEscritos, queryKeys } from "@/api/query-keys";
+import { usarCarpeta } from "@/sync/lecturas";
+import { crearEscritoLocal } from "@/sync/repositorio-escritos";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Boton } from "../../components/ui/botones";
@@ -18,32 +15,20 @@ const NuevoEscrito = () => {
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
 	const [errorTitulo, setErrorTitulo] = useState("");
+	const [creando, setCreando] = useState(false);
 
-	const { data: carpeta } = useApiQuery({
-		key: queryKeys.carpeta(carpetaId),
-		fn: async () => await api.carpetaGET(Number(carpetaId)),
-		activado: !!carpetaId,
-	});
-
-	const creacion = useApiMutation({
-		fn: async (escrito: EscritoDTO) => {
-			await api.escritoPOST(escrito);
-		},
-		antesDeMensajeExito: () => volverAEscritosHome(carpetaId),
-		mensajeDeExito: `Escrito ${titulo.trim() ? `'${titulo}'` : "sin título"} creado`,
-		invalidarQueries: [...clavesEscritos, queryKeys.carpetas, queryKeys.carpeta(carpetaId)],
-	});
+	const carpeta = usarCarpeta(carpetaId);
 
 	const crearYVolver = async () => {
-		if (carpetaId) {
-			creacion.mutate(
-				new EscritoDTO({
-					titulo: titulo.trim() || "",
-					cuerpo,
-					carpetaId: Number(carpetaId),
-				}),
-			);
-		}
+		if (!carpetaId || creando) return;
+		setCreando(true);
+		await crearEscritoLocal({
+			titulo: titulo.trim() || "",
+			cuerpo,
+			carpetaId: Number(carpetaId),
+			carpetaClientId: carpeta?.clientId,
+		});
+		volverAEscritosHome(carpetaId);
 	};
 
 	const cuandoCambieElTitulo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +43,9 @@ const NuevoEscrito = () => {
 					soloBorde
 					className='flex justify-between items-center'
 					onClick={crearYVolver}
-					disabled={creacion.isPending || !carpetaId}
+					disabled={creando || !carpetaId}
 				>
-					{creacion.isPending ? (
+					{creando ? (
 						<LoadingSpinner className='w-4 h-4 mr-2' />
 					) : (
 						<ChevronLeftIcon className='w-4 h-4 mr-2' />

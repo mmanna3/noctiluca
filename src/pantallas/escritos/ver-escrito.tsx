@@ -1,11 +1,15 @@
 import { api } from "@/api/api";
-import useApiMutation from "@/api/custom-hooks/use-api-mutation";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { clavesEscritos, queryKeys } from "@/api/query-keys";
 import { useEstadoSync } from "@/sync/estado-sync";
-import { sembrarEscrito } from "@/sync/repositorio-escritos";
+import { usarEscrito } from "@/sync/lecturas";
+import { pedirSync } from "@/sync/pedir-sync";
+import {
+	cambiarPapeleraLocal,
+	eliminarEscritoLocal,
+	sembrarEscrito,
+} from "@/sync/repositorio-escritos";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import ChequearSiRequierePassword from "../../components/requiere-password";
 import Cuerpo from "../../components/ui/cuerpo";
 import ModalSeleccionarCarpeta from "../../components/ui/modal-seleccionar-carpeta";
@@ -22,52 +26,54 @@ const VerEscrito = () => {
 	const [mostrarModalMover, setMostrarModalMover] = useState(false);
 	const estadoGuardado = useEstadoSync((s) => s.estado);
 
-	const { data, isLoading, isError } = useApiQuery({
-		key: queryKeys.escrito(escritoId),
-		fn: async () => await api.escritoGET(Number(escritoId)),
-	});
-
-	const eliminacion = useApiMutation({
-		fn: async () => {
-			if (!escritoId) return;
-			if (vieneDePapelera) {
-				await api.escritoDELETE(Number(escritoId));
-			} else {
-				await api.ponerEnPapelera(Number(escritoId));
-			}
-		},
-		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
-		mensajeDeExito: `Escrito '${data?.titulo}' ${vieneDePapelera ? "eliminado" : "al tacho"}`,
-		invalidarQueries: [
-			queryKeys.escrito(escritoId),
-			queryKeys.carpeta(carpetaId),
-			...clavesEscritos,
-			queryKeys.carpetas,
-		],
-	});
+	const data = usarEscrito(escritoId);
+	const [eliminando, setEliminando] = useState(false);
 
 	const [titulo, setTitulo] = useState("");
 	const [cuerpo, setCuerpo] = useState("");
+	const [inicializado, setInicializado] = useState<string | null>(null);
+	const [seedIntentado, setSeedIntentado] = useState(false);
+	const [seedFinalizado, setSeedFinalizado] = useState(false);
 
+	// Inicializa el editor una única vez por escrito. Las actualizaciones
+	// posteriores de Dexie (por el propio autoguardado) no pisan lo que se tipea.
 	useEffect(() => {
-		if (data) {
+		if (data && data.clientId && inicializado !== data.clientId) {
 			setTitulo(data.titulo ?? "");
 			setCuerpo(data.cuerpo ?? "");
-			if (data.clientId) {
-				void sembrarEscrito({
-					clientId: data.clientId,
-					serverId: data.id,
-					titulo: data.titulo ?? "",
-					cuerpo: data.cuerpo ?? "",
-					carpetaClientId: data.carpetaClientId,
-					carpetaId: data.carpetaId,
-					version: data.version ?? 0,
-				});
-			}
+			setInicializado(data.clientId);
 		}
-	}, [data]);
+	}, [data, inicializado]);
 
-	const { flush } = usarAutoguardado(data, titulo, cuerpo);
+	// Si el escrito aún no está en local (acceso directo por URL antes del pull),
+	// se trae por API y se siembra en Dexie.
+	useEffect(() => {
+		if (data !== null || seedIntentado) return;
+		if (!escritoId || !/^\d+$/.test(escritoId)) return;
+		if (typeof navigator !== "undefined" && !navigator.onLine) return;
+		setSeedIntentado(true);
+		api.escritoGET(Number(escritoId))
+			.then((e) => {
+				if (e?.clientId) {
+					void sembrarEscrito({
+						clientId: e.clientId,
+						serverId: e.id,
+						titulo: e.titulo ?? "",
+						cuerpo: e.cuerpo ?? "",
+						carpetaClientId: e.carpetaClientId,
+						carpetaId: e.carpetaId,
+						version: e.version ?? 0,
+						fechaHoraCreacion: e.fechaHoraCreacion?.toISOString?.(),
+						fechaHoraEdicion: e.fechaHoraEdicion?.toISOString?.(),
+						estaEnPapelera: e.estaEnPapelera ?? false,
+					});
+				}
+			})
+			.catch(() => undefined)
+			.finally(() => setSeedFinalizado(true));
+	}, [data, escritoId, seedIntentado]);
+
+	const { flush } = usarAutoguardado(data ?? undefined, titulo, cuerpo);
 
 	// El botón "atrás" ya no persiste: solo asegura el guardado (flush) y navega.
 	const volver = () => {
@@ -76,13 +82,26 @@ const VerEscrito = () => {
 		else volverAEscritosHome();
 	};
 
-	const eliminarYVolver = () => {
-		if (escritoId) eliminacion.mutate(Number(escritoId));
+	const eliminarYVolver = async () => {
+		if (!data?.clientId || eliminando) return;
+		setEliminando(true);
+		const nombre = data.titulo;
+		if (vieneDePapelera) await eliminarEscritoLocal(data.clientId);
+		else await cambiarPapeleraLocal(data.clientId, true);
+		toast.success(`Escrito '${nombre}' ${vieneDePapelera ? "eliminado" : "al tacho"}`);
+		if (vieneDePapelera) volverAPapelera();
+		else volverAEscritosHome();
 	};
 
-	if (isLoading) return <div>Cargando...</div>;
-	if (isError) return <div>Error al cargar el escrito</div>;
-	if (!data) return <div>No se encontró el escrito</div>;
+	if (data === undefined) return <div>Cargando...</div>;
+	if (data === null) {
+		const puedeSembrar =
+			!!escritoId &&
+			/^\d+$/.test(escritoId) &&
+			(typeof navigator === "undefined" || navigator.onLine);
+		if (puedeSembrar && !seedFinalizado) return <div>Cargando...</div>;
+		return <div>No se encontró el escrito</div>;
+	}
 
 	return (
 		<ChequearSiRequierePassword>
@@ -91,7 +110,7 @@ const VerEscrito = () => {
 				carpetaTitulo={data.carpetaTitulo || ""}
 				vieneDePapelera={vieneDePapelera}
 				estadoGuardado={estadoGuardado}
-				eliminando={eliminacion.isPending}
+				eliminando={eliminando}
 				onVolver={volver}
 				onMover={() => setMostrarModalMover(true)}
 				onEliminar={eliminarYVolver}
@@ -104,13 +123,14 @@ const VerEscrito = () => {
 					onCambiarCuerpo={(e) => setCuerpo(e.target.value)}
 				/>
 			</Cuerpo>
-			{mostrarModalMover && escritoId && carpetaId && (
+			{mostrarModalMover && data.id && carpetaId && (
 				<ModalSeleccionarCarpeta
-					escritoIds={[Number(escritoId)]}
+					escritoIds={[data.id]}
 					carpetaActualId={Number(carpetaId)}
 					onCerrar={() => setMostrarModalMover(false)}
 					onMovido={() => {
 						setMostrarModalMover(false);
+						pedirSync();
 						volverAEscritosHome();
 					}}
 				/>

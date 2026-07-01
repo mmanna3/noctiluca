@@ -46,7 +46,7 @@ const Escrito = (props: Props) => {
 				props.onToggleSeleccion(props.id);
 			}
 		} else {
-			irAVerEscrito(props.id?.toString() || "", props.carpetaId);
+			irAVerEscrito((props.id ?? props.clientId ?? "").toString(), props.carpetaId);
 		}
 	};
 

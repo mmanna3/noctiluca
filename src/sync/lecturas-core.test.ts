@@ -1,0 +1,162 @@
+import { describe, expect, test } from "vitest";
+import {
+	aEscritoDTO,
+	carpetaDesde,
+	carpetasRaizDesde,
+	ordenarEscritos,
+	papeleraDesde,
+	todosLosEscritosDesde,
+} from "./lecturas-core";
+import { CarpetaLocal, EscritoLocal } from "./tipos";
+
+const carpeta = (over: Partial<CarpetaLocal>): CarpetaLocal => ({
+	clientId: over.clientId ?? "c-" + Math.random(),
+	serverId: over.serverId,
+	titulo: over.titulo ?? "Carpeta",
+	version: over.version ?? 1,
+	posicion: over.posicion,
+	criterioDeOrden: over.criterioDeOrden,
+	carpetaPadreId: over.carpetaPadreId,
+	esSistema: over.esSistema,
+	requiereAutenticacion: over.requiereAutenticacion,
+	propositoCarpeta: over.propositoCarpeta,
+});
+
+const escrito = (over: Partial<EscritoLocal>): EscritoLocal => ({
+	clientId: over.clientId ?? "e-" + Math.random(),
+	serverId: over.serverId,
+	titulo: over.titulo ?? "Escrito",
+	cuerpo: over.cuerpo ?? "",
+	carpetaClientId: over.carpetaClientId,
+	carpetaId: over.carpetaId,
+	version: over.version ?? 1,
+	fechaHoraCreacion: over.fechaHoraCreacion,
+	fechaHoraEdicion: over.fechaHoraEdicion,
+	estaEnPapelera: over.estaEnPapelera,
+});
+
+describe("carpetasRaizDesde", () => {
+	test("solo devuelve raíces, ordenadas por posición, con conteos", () => {
+		const carpetas = [
+			carpeta({ clientId: "b", serverId: 2, titulo: "B", posicion: 2 }),
+			carpeta({ clientId: "a", serverId: 1, titulo: "A", posicion: 1 }),
+			carpeta({ clientId: "sub", serverId: 3, titulo: "Sub", carpetaPadreId: 1 }),
+		];
+		const escritos = [
+			escrito({ carpetaClientId: "a" }),
+			escrito({ carpetaClientId: "a" }),
+			escrito({ carpetaClientId: "a", estaEnPapelera: true }),
+		];
+
+		const raices = carpetasRaizDesde(carpetas, escritos);
+
+		expect(raices.map((c) => c.titulo)).toEqual(["A", "B"]);
+		expect(raices[0].cantidadDeEscritos).toBe(2); // excluye papelera
+		expect(raices[0].cantidadDeSubCarpetas).toBe(1);
+		expect(raices[1].cantidadDeEscritos).toBe(0);
+	});
+});
+
+describe("carpetaDesde", () => {
+	test("incluye escritos (sin papelera) y subcarpetas", () => {
+		const carpetas = [
+			carpeta({ clientId: "raiz", serverId: 1, titulo: "Raíz", criterioDeOrden: 3 }),
+			carpeta({ clientId: "sub", serverId: 5, titulo: "Sub", carpetaPadreId: 1 }),
+		];
+		const escritos = [
+			escrito({ clientId: "z", carpetaClientId: "raiz", titulo: "Zeta" }),
+			escrito({ clientId: "a", carpetaClientId: "raiz", titulo: "Alfa" }),
+			escrito({ clientId: "p", carpetaClientId: "raiz", titulo: "Papelera", estaEnPapelera: true }),
+		];
+
+		const dto = carpetaDesde(1, carpetas, escritos);
+
+		expect(dto).not.toBeNull();
+		expect(dto?.cantidadDeEscritos).toBe(2);
+		expect(dto?.cantidadDeSubCarpetas).toBe(1);
+		// criterio 3 = A-Z
+		expect(dto?.escritos?.map((e) => e.titulo)).toEqual(["Alfa", "Zeta"]);
+		expect(dto?.subCarpetas?.[0].titulo).toBe("Sub");
+	});
+
+	test("devuelve null si no existe", () => {
+		expect(carpetaDesde(999, [], [])).toBeNull();
+		expect(carpetaDesde(undefined, [], [])).toBeNull();
+	});
+
+	test("asocia escritos por carpetaId cuando no hay carpetaClientId", () => {
+		const carpetas = [carpeta({ clientId: "raiz", serverId: 7, titulo: "Raíz" })];
+		const escritos = [escrito({ carpetaId: 7, titulo: "Por id numérico" })];
+
+		const dto = carpetaDesde(7, carpetas, escritos);
+
+		expect(dto?.cantidadDeEscritos).toBe(1);
+	});
+});
+
+describe("ordenarEscritos", () => {
+	const base = [
+		escrito({ titulo: "B", fechaHoraCreacion: "2024-01-02T00:00:00Z" }),
+		escrito({ titulo: "A", fechaHoraCreacion: "2024-01-03T00:00:00Z" }),
+		escrito({ titulo: "C", fechaHoraCreacion: "2024-01-01T00:00:00Z" }),
+	];
+
+	test("criterio 1: creación descendente (default)", () => {
+		expect(ordenarEscritos(base, 1).map((e) => e.titulo)).toEqual(["A", "B", "C"]);
+		expect(ordenarEscritos(base, undefined).map((e) => e.titulo)).toEqual(["A", "B", "C"]);
+	});
+
+	test("criterio 3: alfabético A-Z", () => {
+		expect(ordenarEscritos(base, 3).map((e) => e.titulo)).toEqual(["A", "B", "C"]);
+	});
+
+	test("criterio 4: creación ascendente", () => {
+		expect(ordenarEscritos(base, 4).map((e) => e.titulo)).toEqual(["C", "B", "A"]);
+	});
+
+	test("no muta el arreglo original", () => {
+		const copia = [...base];
+		ordenarEscritos(base, 3);
+		expect(base).toEqual(copia);
+	});
+});
+
+describe("papeleraDesde / todosLosEscritosDesde", () => {
+	const carpetas = [carpeta({ clientId: "c1", serverId: 1, titulo: "Trabajo" })];
+	const escritos = [
+		escrito({ clientId: "a", carpetaClientId: "c1", titulo: "Vigente" }),
+		escrito({ clientId: "b", carpetaClientId: "c1", titulo: "Borrado", estaEnPapelera: true }),
+	];
+
+	test("papeleraDesde solo trae los eliminados con título de carpeta", () => {
+		const papelera = papeleraDesde(carpetas, escritos);
+		expect(papelera).toHaveLength(1);
+		expect(papelera[0].titulo).toBe("Borrado");
+		expect(papelera[0].carpetaTitulo).toBe("Trabajo");
+	});
+
+	test("todosLosEscritosDesde excluye los de papelera", () => {
+		const todos = todosLosEscritosDesde(carpetas, escritos);
+		expect(todos).toHaveLength(1);
+		expect(todos[0].titulo).toBe("Vigente");
+		expect(todos[0].carpetaTitulo).toBe("Trabajo");
+	});
+});
+
+describe("aEscritoDTO", () => {
+	test("mapea campos y usa serverId como id", () => {
+		const dto = aEscritoDTO(
+			escrito({ clientId: "guid", serverId: 42, titulo: "T", cuerpo: "C" }),
+			"Mi Carpeta",
+		);
+		expect(dto.id).toBe(42);
+		expect(dto.clientId).toBe("guid");
+		expect(dto.carpetaTitulo).toBe("Mi Carpeta");
+	});
+
+	test("escrito offline sin serverId deja id indefinido pero conserva clientId", () => {
+		const dto = aEscritoDTO(escrito({ clientId: "guid-offline", serverId: undefined }));
+		expect(dto.id).toBeUndefined();
+		expect(dto.clientId).toBe("guid-offline");
+	});
+});

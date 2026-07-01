@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { ActualizarPosicionesDTO, CarpetaDTO, PosicionCarpetaDTO } from "@/api/clients";
 import { queryKeys } from "@/api/query-keys";
+import { pedirSync } from "@/sync/pedir-sync";
 import {
 	closestCenter,
 	DndContext,
@@ -70,6 +71,7 @@ function CarpetasLista(props: IListaDeCarpetas) {
 			await api.actualizarPosiciones(new ActualizarPosicionesDTO({ posiciones }));
 
 			await queryClient.invalidateQueries({ queryKey: queryKeys.carpetas });
+			pedirSync();
 
 			toast.success("Orden de carpetas actualizado");
 		} catch {

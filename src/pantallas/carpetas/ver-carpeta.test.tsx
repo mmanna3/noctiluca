@@ -8,9 +8,8 @@ const mockIrAlInicio = vi.fn();
 const mockIrANuevoEscrito = vi.fn();
 const mockIrACarpeta = vi.fn();
 const mockIrANuevaSubcarpeta = vi.fn();
-const mockMutateEliminacion = vi.fn();
-const mockMutateActualizarCriterio = vi.fn();
-const mockRefetch = vi.fn();
+const mockEliminarCarpetaLocal = vi.fn().mockResolvedValue(undefined);
+const mockActualizarCriterioLocal = vi.fn().mockResolvedValue(undefined);
 
 vi.mock("../../usar-navegacion", () => ({
 	default: () => ({
@@ -33,28 +32,22 @@ vi.mock("@/api/clients", () => ({
 }));
 
 let mockQueryData: any = null;
-let mockQueryIsLoading = false;
-let mockQueryIsError = false;
 
-vi.mock("@/api/custom-hooks/use-api-query", () => ({
-	default: () => ({
-		data: mockQueryData,
-		isLoading: mockQueryIsLoading,
-		isError: mockQueryIsError,
-		refetch: mockRefetch,
-	}),
+vi.mock("@/sync/lecturas", () => ({
+	usarCarpeta: () => mockQueryData,
 }));
 
-vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
-	default: (props: { mensajeDeExito?: string }) => {
-		if (props.mensajeDeExito?.includes("eliminada")) {
-			return { mutate: mockMutateEliminacion, isPending: false };
-		}
-		if (props.mensajeDeExito?.includes("Criterio")) {
-			return { mutate: mockMutateActualizarCriterio, isPending: false };
-		}
-		return { mutate: vi.fn(), isPending: false };
-	},
+vi.mock("@/sync/pedir-sync", () => ({
+	pedirSync: vi.fn(),
+}));
+
+vi.mock("@/sync/repositorio-carpetas", () => ({
+	eliminarCarpetaLocal: (...args: unknown[]) => mockEliminarCarpetaLocal(...args),
+	actualizarCriterioLocal: (...args: unknown[]) => mockActualizarCriterioLocal(...args),
+}));
+
+vi.mock("sonner", () => ({
+	toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 vi.mock("../../components/requiere-password", () => ({
@@ -113,6 +106,7 @@ beforeEach(() => {
 	vi.clearAllMocks();
 	mockQueryData = {
 		id: 1,
+		clientId: "carpeta-1",
 		titulo: "Mi Carpeta",
 		escritos: [
 			{ id: 10, titulo: "Escrito 1" },
@@ -123,8 +117,6 @@ beforeEach(() => {
 		criterioDeOrden: 1,
 		carpetaPadreId: null,
 	};
-	mockQueryIsLoading = false;
-	mockQueryIsError = false;
 });
 
 describe("VerCarpeta", () => {
@@ -150,16 +142,17 @@ describe("VerCarpeta", () => {
 		expect(screen.getByText("¿Eliminar carpeta?")).toBeInTheDocument();
 	});
 
-	test("boton eliminar carpeta llama mutate", () => {
+	test("boton eliminar carpeta borra en local", () => {
 		mockQueryData = {
 			id: 1,
+			clientId: "carpeta-1",
 			titulo: "Mi Carpeta",
 			escritos: [],
 			cantidadDeEscritos: 0,
 		};
 		renderComponent();
 		fireEvent.click(screen.getByText("¿Eliminar carpeta?"));
-		expect(mockMutateEliminacion).toHaveBeenCalledWith(1);
+		expect(mockEliminarCarpetaLocal).toHaveBeenCalledWith("carpeta-1");
 	});
 
 	test("boton + llama irANuevoEscrito con id de carpeta", () => {

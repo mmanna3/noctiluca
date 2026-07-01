@@ -1,10 +1,10 @@
-import { api } from "@/api/api";
 import { CarpetaDTO, CriterioDeOrdenEnum } from "@/api/clients";
-import useApiMutation from "@/api/custom-hooks/use-api-mutation";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { clavesCarpetas, queryKeys } from "@/api/query-keys";
+import { usarCarpeta } from "@/sync/lecturas";
+import { pedirSync } from "@/sync/pedir-sync";
+import { actualizarCriterioLocal, eliminarCarpetaLocal } from "@/sync/repositorio-carpetas";
 import { Boton } from "@/components/ui/botones";
 import { useState } from "react";
+import { toast } from "sonner";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import ChequearSiRequierePassword from "../../components/requiere-password";
 import Cuerpo from "../../components/ui/cuerpo";
@@ -33,10 +33,9 @@ const VerCarpeta = () => {
 	const [escritosSeleccionados, setEscritosSeleccionados] = useState<Set<number>>(new Set());
 	const [mostrarModalMover, setMostrarModalMover] = useState(false);
 
-	const { data, isLoading, isError } = useApiQuery({
-		key: queryKeys.carpeta(carpetaId),
-		fn: async () => await api.carpetaGET(Number(carpetaId)),
-	});
+	const data = usarCarpeta(carpetaId);
+	const isLoading = data === undefined;
+	const isError = false;
 
 	const esSubcarpeta = data?.carpetaPadreId !== undefined && data?.carpetaPadreId !== null;
 	const tieneSubcarpetas = !!(data?.cantidadDeSubCarpetas && data.cantidadDeSubCarpetas > 0);
@@ -49,19 +48,25 @@ const VerCarpeta = () => {
 		else irAlInicio();
 	};
 
-	const eliminacion = useApiMutation({
-		fn: async () => await api.carpetaDELETE(Number(carpetaId)),
-		antesDeMensajeExito: volver,
-		mensajeDeExito: `Carpeta '${data?.titulo}' eliminada`,
-		invalidarQueries: clavesCarpetas,
-	});
+	const [eliminando, setEliminando] = useState(false);
+	const [actualizandoCriterio, setActualizandoCriterio] = useState(false);
 
-	const actualizarCriterio = useApiMutation({
-		fn: async (criterio: CriterioDeOrdenEnum) =>
-			await api.criterioOrden(Number(carpetaId), criterio),
-		mensajeDeExito: "Criterio de orden actualizado",
-		invalidarQueries: [queryKeys.carpeta(carpetaId)],
-	});
+	const eliminarCarpeta = async () => {
+		if (!data?.clientId || eliminando) return;
+		setEliminando(true);
+		const nombre = data.titulo;
+		await eliminarCarpetaLocal(data.clientId);
+		toast.success(`Carpeta '${nombre}' eliminada`);
+		volver();
+	};
+
+	const cambiarCriterio = async (criterio: CriterioDeOrdenEnum) => {
+		if (!data?.clientId) return;
+		setActualizandoCriterio(true);
+		await actualizarCriterioLocal(data.clientId, criterio);
+		setActualizandoCriterio(false);
+		toast.success("Criterio de orden actualizado");
+	};
 
 	const handleLongPress = (escritoId: number) => {
 		setModoSeleccion(true);
@@ -145,17 +150,13 @@ const VerCarpeta = () => {
 					onToggle={() => setMostrarHerramientas(!mostrarHerramientas)}
 					criterioActual={data?.criterioDeOrden || CriterioDeOrdenEnum._1}
 					tieneEscritos={tieneEscritos}
-					actualizandoCriterio={actualizarCriterio.isPending}
-					onCambiarCriterio={(criterio) => actualizarCriterio.mutate(criterio)}
+					actualizandoCriterio={actualizandoCriterio}
+					onCambiarCriterio={cambiarCriterio}
 				/>
 			)}
 			<Cuerpo>
 				{estaVacia ? (
-					<EstadoVacio
-						onEliminar={
-							esCarpetaSistema ? undefined : () => eliminacion.mutate(Number(carpetaId))
-						}
-					/>
+					<EstadoVacio onEliminar={esCarpetaSistema ? undefined : eliminarCarpeta} />
 				) : (
 					<>
 						{tieneSubcarpetas && (
@@ -187,6 +188,7 @@ const VerCarpeta = () => {
 					onMovido={() => {
 						setMostrarModalMover(false);
 						cancelarSeleccion();
+						pedirSync();
 					}}
 				/>
 			)}

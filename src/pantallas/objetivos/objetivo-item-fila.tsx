@@ -90,10 +90,10 @@ const ObjetivoItemFila = ({
 
 	const style = reordenable
 		? {
-				transform: CSS.Transform.toString(transform),
-				transition,
-				opacity: isDragging ? 0.5 : 1,
-			}
+			transform: CSS.Transform.toString(transform),
+			transition,
+			opacity: isDragging ? 0.5 : 1,
+		}
 		: undefined;
 
 	return (

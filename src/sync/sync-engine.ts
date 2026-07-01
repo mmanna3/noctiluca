@@ -65,6 +65,7 @@ const pull = async (): Promise<void> => {
 		for (const c of res.carpetas ?? []) {
 			if (!c.clientId) continue;
 			const local = await db.carpetas.get(c.clientId);
+			if (local?.pendiente) continue; // no pisar cambios locales sin sincronizar
 			if (local?.serverId && local.version > (c.version ?? 0)) continue;
 			await db.carpetas.put({
 				clientId: c.clientId,
@@ -72,6 +73,11 @@ const pull = async (): Promise<void> => {
 				titulo: c.titulo ?? "",
 				version: c.version ?? 0,
 				posicion: c.posicion,
+				criterioDeOrden: c.criterioDeOrden,
+				carpetaPadreId: c.carpetaPadreId ?? undefined,
+				esSistema: c.esSistema,
+				requiereAutenticacion: c.requiereAutenticacion,
+				propositoCarpeta: c.propositoCarpeta ?? undefined,
 			});
 		}
 
@@ -87,7 +93,9 @@ const pull = async (): Promise<void> => {
 				carpetaClientId: e.carpetaClientId,
 				carpetaId: e.carpetaId,
 				version: e.version ?? 0,
-				estaEnPapelera: false,
+				fechaHoraCreacion: e.fechaHoraCreacion?.toISOString?.() ?? undefined,
+				fechaHoraEdicion: e.fechaHoraEdicion?.toISOString?.() ?? undefined,
+				estaEnPapelera: e.estaEnPapelera ?? false,
 				pendiente: false,
 			});
 		}
@@ -147,7 +155,17 @@ const push = async (): Promise<void> => {
 };
 
 const confirmarLocal = async (op: OperacionOutbox, serverId?: number, version?: number) => {
-	if (op.entityType !== "escrito") return;
+	if (op.entityType === "carpeta") {
+		const local = await db.carpetas.get(op.clientEntityId);
+		if (!local) return;
+		await db.carpetas.put({
+			...local,
+			serverId: serverId ?? local.serverId,
+			version: version ?? local.version,
+			pendiente: false,
+		});
+		return;
+	}
 	const local = await db.escritos.get(op.clientEntityId);
 	if (!local) return;
 	await db.escritos.put({
@@ -159,7 +177,11 @@ const confirmarLocal = async (op: OperacionOutbox, serverId?: number, version?: 
 };
 
 const marcarNoPendiente = async (op: OperacionOutbox) => {
-	if (op.entityType !== "escrito") return;
+	if (op.entityType === "carpeta") {
+		const local = await db.carpetas.get(op.clientEntityId);
+		if (local) await db.carpetas.put({ ...local, pendiente: false });
+		return;
+	}
 	const local = await db.escritos.get(op.clientEntityId);
 	if (local) await db.escritos.put({ ...local, pendiente: false });
 };

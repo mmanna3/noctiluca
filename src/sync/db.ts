@@ -20,8 +20,8 @@ class NoctilucaDB extends Dexie {
 	constructor() {
 		super("noctiluca");
 		this.version(1).stores({
-			escritos: "clientId, serverId, carpetaClientId, version",
-			carpetas: "clientId, serverId, version",
+			escritos: "clientId, serverId, carpetaClientId, carpetaId, version",
+			carpetas: "clientId, serverId, carpetaPadreId, version",
 			outbox: "clientOpId, clientEntityId, entityType",
 			meta: "clave",
 		});

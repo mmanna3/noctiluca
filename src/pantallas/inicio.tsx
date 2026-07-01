@@ -1,6 +1,4 @@
-import { api } from "@/api/api";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { queryKeys } from "@/api/query-keys";
+import { usarCarpetasRaiz } from "@/sync/lecturas";
 import { BookOpenIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import React, { Suspense, useState } from "react";
@@ -33,17 +31,9 @@ const Inicio = () => {
 		return frasesInicio[indiceAleatorio];
 	};
 
-	const { data, isLoading, isError } = useApiQuery({
-		key: queryKeys.carpetas,
-		fn: async () => {
-			const carpetas = await api.carpetaAll();
-			return carpetas.sort((a, b) => {
-				const posA = a.posicion ?? 0;
-				const posB = b.posicion ?? 0;
-				return posA - posB;
-			});
-		},
-	});
+	const data = usarCarpetasRaiz();
+	const isLoading = data === undefined;
+	const isError = false;
 
 	const cerrarSesion = () => {
 		logout();

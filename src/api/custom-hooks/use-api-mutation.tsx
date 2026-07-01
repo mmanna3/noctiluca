@@ -13,8 +13,8 @@ interface IProps<T> {
 const useApiMutation = <T,>({
 	fn,
 	mensajeDeExito = "Operación exitosa",
-	antesDeMensajeExito = () => {},
-	despuesDeExito = () => {},
+	antesDeMensajeExito = () => undefined,
+	despuesDeExito = () => undefined,
 	mensajeDeError = "Ocurrió un error inesperado",
 	invalidarQueries,
 }: IProps<T>) => {

@@ -26,6 +26,8 @@ export interface EscritoLocal {
 	carpetaId?: number;
 	version: number;
 	actualizadoEn?: string;
+	fechaHoraCreacion?: string;
+	fechaHoraEdicion?: string;
 	estaEnPapelera?: boolean;
 	/** Tiene cambios locales aún no confirmados por el servidor. */
 	pendiente?: boolean;
@@ -37,8 +39,15 @@ export interface CarpetaLocal {
 	serverId?: number;
 	titulo: string;
 	version: number;
-	carpetaPadreClientId?: string;
 	posicion?: number;
+	criterioDeOrden?: number;
+	carpetaPadreId?: number;
+	carpetaPadreClientId?: string;
+	esSistema?: boolean;
+	requiereAutenticacion?: boolean;
+	propositoCarpeta?: number;
+	/** Tiene cambios locales aún no confirmados por el servidor. */
+	pendiente?: boolean;
 }
 
 export type EstadoGuardado = "guardado" | "guardando" | "pendiente" | "sin-conexion" | "error";

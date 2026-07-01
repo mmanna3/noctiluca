@@ -5,7 +5,7 @@ import NuevaCarpeta from "./nueva-carpeta";
 
 const mockIrAlInicio = vi.fn();
 const mockIrACarpeta = vi.fn();
-const mockMutateCreacion = vi.fn();
+const mockCrearCarpetaLocal = vi.fn().mockResolvedValue("guid-nueva");
 
 let mockCarpetaId: string | undefined = undefined;
 
@@ -17,26 +17,12 @@ vi.mock("../../usar-navegacion", () => ({
 	}),
 }));
 
-vi.mock("@/api/api", () => ({
-	api: {},
+vi.mock("@/sync/repositorio-carpetas", () => ({
+	crearCarpetaLocal: (...args: unknown[]) => mockCrearCarpetaLocal(...args),
 }));
 
-vi.mock("@/api/clients", () => ({
-	CarpetaDTO: class {
-		titulo: string;
-		carpetaPadreId: number | undefined;
-		constructor(data: { titulo?: string; carpetaPadreId?: number }) {
-			this.titulo = data?.titulo ?? "";
-			this.carpetaPadreId = data?.carpetaPadreId;
-		}
-	},
-}));
-
-vi.mock("@/api/custom-hooks/use-api-mutation", () => ({
-	default: () => ({
-		mutate: mockMutateCreacion,
-		isPending: false,
-	}),
+vi.mock("sonner", () => ({
+	toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 const renderComponent = () =>
@@ -73,7 +59,7 @@ describe("NuevaCarpeta", () => {
 		renderComponent();
 		fireEvent.click(screen.getByText("Crear carpeta"));
 		expect(mockIrAlInicio).toHaveBeenCalled();
-		expect(mockMutateCreacion).not.toHaveBeenCalled();
+		expect(mockCrearCarpetaLocal).not.toHaveBeenCalled();
 	});
 
 	test("titulo vacio en subcarpeta navega a carpeta padre sin crear", () => {
@@ -81,26 +67,26 @@ describe("NuevaCarpeta", () => {
 		renderComponent();
 		fireEvent.click(screen.getByText("Crear subcarpeta"));
 		expect(mockIrACarpeta).toHaveBeenCalledWith(7);
-		expect(mockMutateCreacion).not.toHaveBeenCalled();
+		expect(mockCrearCarpetaLocal).not.toHaveBeenCalled();
 	});
 
-	test("con titulo llama mutate con datos de carpeta raiz", () => {
+	test("con titulo crea carpeta raiz en local", () => {
 		renderComponent();
 		const input = screen.getByPlaceholderText("Título");
 		fireEvent.change(input, { target: { value: "Mi carpeta" } });
 		fireEvent.click(screen.getByText("Crear carpeta"));
-		expect(mockMutateCreacion).toHaveBeenCalledWith(
+		expect(mockCrearCarpetaLocal).toHaveBeenCalledWith(
 			expect.objectContaining({ titulo: "Mi carpeta", carpetaPadreId: undefined }),
 		);
 	});
 
-	test("con titulo llama mutate con carpetaPadreId para subcarpeta", () => {
+	test("con titulo crea subcarpeta con carpetaPadreId en local", () => {
 		mockCarpetaId = "3";
 		renderComponent();
 		const input = screen.getByPlaceholderText("Título");
 		fireEvent.change(input, { target: { value: "Mi subcarpeta" } });
 		fireEvent.click(screen.getByText("Crear subcarpeta"));
-		expect(mockMutateCreacion).toHaveBeenCalledWith(
+		expect(mockCrearCarpetaLocal).toHaveBeenCalledWith(
 			expect.objectContaining({ titulo: "Mi subcarpeta", carpetaPadreId: 3 }),
 		);
 	});
