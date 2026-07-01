@@ -29,6 +29,7 @@ const CHUNKS_LAZY_SIN_PRECACHE = [
 	"**/useMutation-*.js",
 	"**/use-api-mutation-*.js",
 	"**/utilidades-habitos-*.js",
+	"**/sync-engine-*.js",
 ];
 
 export default defineConfig({

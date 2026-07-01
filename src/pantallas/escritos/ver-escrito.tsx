@@ -1,8 +1,9 @@
 import { api } from "@/api/api";
-import { EscritoDTO } from "@/api/clients";
 import useApiMutation from "@/api/custom-hooks/use-api-mutation";
 import useApiQuery from "@/api/custom-hooks/use-api-query";
 import { clavesEscritos, queryKeys } from "@/api/query-keys";
+import { useEstadoSync } from "@/sync/estado-sync";
+import { sembrarEscrito } from "@/sync/repositorio-escritos";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChequearSiRequierePassword from "../../components/requiere-password";
@@ -11,6 +12,7 @@ import ModalSeleccionarCarpeta from "../../components/ui/modal-seleccionar-carpe
 import usarNavegacion from "../../usar-navegacion";
 import CuerpoEscrito from "./cuerpo-escrito";
 import EncabezadoEscrito from "./encabezado-escrito";
+import { usarAutoguardado } from "./usar-autoguardado";
 
 const VerEscrito = () => {
 	const { volverAEscritosHome, volverAPapelera, escritoId, carpetaId } = usarNavegacion();
@@ -18,25 +20,11 @@ const VerEscrito = () => {
 	const vieneDePapelera = location.pathname.includes("/papelera");
 
 	const [mostrarModalMover, setMostrarModalMover] = useState(false);
+	const estadoGuardado = useEstadoSync((s) => s.estado);
 
 	const { data, isLoading, isError } = useApiQuery({
 		key: queryKeys.escrito(escritoId),
 		fn: async () => await api.escritoGET(Number(escritoId)),
-	});
-
-	const edicion = useApiMutation({
-		fn: async (escritoActualizado: EscritoDTO) => {
-			if (!escritoId) return;
-			await api.escritoPUT(Number(escritoId), escritoActualizado);
-		},
-		antesDeMensajeExito: () => (vieneDePapelera ? volverAPapelera() : volverAEscritosHome()),
-		mensajeDeExito: `Escrito '${data?.titulo}' actualizado`,
-		invalidarQueries: [
-			queryKeys.escrito(escritoId),
-			queryKeys.carpeta(carpetaId),
-			...clavesEscritos,
-			queryKeys.carpetas,
-		],
 	});
 
 	const eliminacion = useApiMutation({
@@ -65,19 +53,27 @@ const VerEscrito = () => {
 		if (data) {
 			setTitulo(data.titulo ?? "");
 			setCuerpo(data.cuerpo ?? "");
+			if (data.clientId) {
+				void sembrarEscrito({
+					clientId: data.clientId,
+					serverId: data.id,
+					titulo: data.titulo ?? "",
+					cuerpo: data.cuerpo ?? "",
+					carpetaClientId: data.carpetaClientId,
+					carpetaId: data.carpetaId,
+					version: data.version ?? 0,
+				});
+			}
 		}
 	}, [data]);
 
-	const editarYVolver = () => {
-		if (escritoId && titulo != "")
-			edicion.mutate(
-				new EscritoDTO({
-					id: Number(escritoId),
-					titulo,
-					cuerpo,
-					carpetaId: data?.carpetaId ?? (carpetaId ? Number(carpetaId) : undefined),
-				}),
-			);
+	const { flush } = usarAutoguardado(data, titulo, cuerpo);
+
+	// El botón "atrás" ya no persiste: solo asegura el guardado (flush) y navega.
+	const volver = () => {
+		void flush();
+		if (vieneDePapelera) volverAPapelera();
+		else volverAEscritosHome();
 	};
 
 	const eliminarYVolver = () => {
@@ -94,9 +90,9 @@ const VerEscrito = () => {
 				titulo={titulo}
 				carpetaTitulo={data.carpetaTitulo || ""}
 				vieneDePapelera={vieneDePapelera}
-				guardando={edicion.isPending}
+				estadoGuardado={estadoGuardado}
 				eliminando={eliminacion.isPending}
-				onVolver={editarYVolver}
+				onVolver={volver}
 				onMover={() => setMostrarModalMover(true)}
 				onEliminar={eliminarYVolver}
 			/>

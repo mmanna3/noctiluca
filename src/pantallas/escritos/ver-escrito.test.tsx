@@ -32,6 +32,20 @@ vi.mock("@/api/api", () => ({
 	api: {},
 }));
 
+vi.mock("@/sync/estado-sync", () => ({
+	useEstadoSync: (selector: (s: { estado: string }) => unknown) => selector({ estado: "guardado" }),
+}));
+
+const mockSembrarEscrito = vi.fn();
+vi.mock("@/sync/repositorio-escritos", () => ({
+	sembrarEscrito: (...args: unknown[]) => mockSembrarEscrito(...args),
+}));
+
+const mockFlush = vi.fn().mockResolvedValue(undefined);
+vi.mock("./usar-autoguardado", () => ({
+	usarAutoguardado: () => ({ flush: mockFlush }),
+}));
+
 let mockQueryData: any = null;
 let mockQueryIsLoading = false;
 let mockQueryIsError = false;
@@ -132,20 +146,20 @@ describe("VerEscrito", () => {
 		expect(screen.getByText("Error al cargar el escrito")).toBeInTheDocument();
 	});
 
-	test("boton volver guarda cambios", () => {
+	test("boton volver hace flush del autoguardado y navega (ya no persiste el botón)", () => {
 		renderComponent();
 		const botones = screen.getAllByRole("button");
 		const botonVolver = botones.find((b) => b.textContent?.includes("Mi Carpeta"));
 		expect(botonVolver).toBeDefined();
 		if (!botonVolver) return;
 		fireEvent.click(botonVolver);
-		expect(mockMutateEdicion).toHaveBeenCalledWith(
-			expect.objectContaining({
-				id: 5,
-				titulo: "Mi Escrito",
-				cuerpo: "Contenido del escrito",
-			}),
-		);
+		expect(mockFlush).toHaveBeenCalled();
+		expect(mockVolverAEscritosHome).toHaveBeenCalled();
+	});
+
+	test("muestra el indicador de estado de guardado", () => {
+		renderComponent();
+		expect(screen.getByText("Guardado")).toBeInTheDocument();
 	});
 
 	test("boton eliminar llama mutate", () => {

@@ -163,7 +163,7 @@ const EditorListaObjetivos = ({
 						}),
 				);
 
-			await api.itemPosicionesPUT(new ActualizarPosicionesItemObjetivoDTO({ posiciones }));
+			await api.posiciones(new ActualizarPosicionesItemObjetivoDTO({ posiciones }));
 			invalidar();
 		} catch {
 			toast.error("Error al reordenar los objetivos");

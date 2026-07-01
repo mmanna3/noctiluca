@@ -28,6 +28,8 @@ vi.mock("@/api/api", () => ({
 
 vi.mock("@/api/clients", () => ({
 	CriterioDeOrdenEnum: { _1: 1, _2: 2, _3: 3, _4: 4, _5: 5, _6: 6 },
+	PropositoCarpetaEnum: { _1: 1, _2: 2, _3: 3, _4: 4 },
+	TipoListaObjetivoEnum: { _1: 1, _2: 2, _3: 3 },
 }));
 
 let mockQueryData: any = null;
