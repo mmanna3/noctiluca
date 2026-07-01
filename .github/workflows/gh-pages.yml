@@ -1,14 +1,13 @@
-name: Deploy to FTP
+name: CI y Deploy
 
 on:
   push:
-    branches: ["main"]
   workflow_dispatch:
 
 jobs:
-  deploy:
+  ci:
+    name: Lint, tests y build
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkoutear repo
         uses: actions/checkout@v4
@@ -17,10 +16,37 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "npm"
+          cache: "yarn"
 
       - name: Instalar dependencias
-        run: yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Tests
+        run: yarn test
+
+      - name: Buildear (incluye chequeos de performance)
+        run: yarn build:ci
+
+  deploy:
+    name: Deploy por FTP
+    needs: ci
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkoutear repo
+        uses: actions/checkout@v4
+
+      - name: Set de versión de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "yarn"
+
+      - name: Instalar dependencias
+        run: yarn install --frozen-lockfile
 
       - name: Buildear
         run: yarn build:ci
