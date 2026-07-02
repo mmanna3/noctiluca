@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import { ActualizarPosicionesDTO, CarpetaDTO, PosicionCarpetaDTO } from "@/api/clients";
 import { queryKeys } from "@/api/query-keys";
+import { useEstadoSync } from "@/sync/estado-sync";
 import { pedirSync } from "@/sync/pedir-sync";
 import {
 	closestCenter,
@@ -33,6 +34,7 @@ function CarpetasLista(props: IListaDeCarpetas) {
 	const [items, setItems] = useState<CarpetaDTO[]>(props.data);
 	const [isUpdatingPositions, setIsUpdatingPositions] = useState(false);
 	const queryClient = useQueryClient();
+	const online = useEstadoSync((s) => s.online);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -87,6 +89,22 @@ function CarpetasLista(props: IListaDeCarpetas) {
 
 	if (items.length === 0) {
 		return null;
+	}
+
+	const listaEstatica = (
+		<div className='space-y-0'>
+			{items.map((c) => (
+				<ListaDeCarpetasItem
+					{...c}
+					key={c.id || c.titulo}
+					isDisabled
+				/>
+			))}
+		</div>
+	);
+
+	if (!online) {
+		return listaEstatica;
 	}
 
 	return (

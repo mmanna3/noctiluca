@@ -6,6 +6,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { bloquearSiOffline } from "@/utils/requiere-online";
 import { Boton } from "./botones";
 import { LoadingSpinner } from "./loading-spinner";
 
@@ -54,6 +55,7 @@ const ModalSeleccionarCarpeta = ({ escritoIds, carpetaActualId, onCerrar, onMovi
 	const carpetasDestino = obtenerCarpetasDestino(carpetas || [], carpetaActualId);
 
 	const moverACarpeta = async (carpetaDestinoId: number) => {
+		if (bloquearSiOffline("No podés mover escritos sin conexión a internet.")) return;
 		setMoviendo(true);
 		try {
 			await api.mover(

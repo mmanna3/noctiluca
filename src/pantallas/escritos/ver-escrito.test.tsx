@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
 import React from "react";
+import { bloquearSiOffline } from "@/utils/requiere-online";
 import VerEscrito from "./ver-escrito";
 
 const mockVolverAEscritosHome = vi.fn();
@@ -47,6 +48,10 @@ vi.mock("@/sync/repositorio-escritos", () => ({
 
 vi.mock("@/sync/pedir-sync", () => ({
 	pedirSync: vi.fn(),
+}));
+
+vi.mock("@/utils/requiere-online", () => ({
+	bloquearSiOffline: vi.fn(() => false),
 }));
 
 vi.mock("sonner", () => ({
@@ -169,6 +174,7 @@ describe("VerEscrito", () => {
 	});
 
 	test("boton mover abre modal", () => {
+		vi.mocked(bloquearSiOffline).mockReturnValue(false);
 		renderComponent();
 		expect(screen.queryByTestId("modal-mover")).not.toBeInTheDocument();
 		const botones = screen.getAllByRole("button");
@@ -179,6 +185,19 @@ describe("VerEscrito", () => {
 		if (!botonMover) return;
 		fireEvent.click(botonMover);
 		expect(screen.getByTestId("modal-mover")).toBeInTheDocument();
+	});
+
+	test("boton mover no abre modal si esta offline", () => {
+		vi.mocked(bloquearSiOffline).mockReturnValue(true);
+		renderComponent();
+		const botones = screen.getAllByRole("button");
+		const botonMover = botones.find(
+			(b) => b.className.includes("text-slate-400") && b.className.includes("hover:bg-yellow-200"),
+		);
+		expect(botonMover).toBeDefined();
+		if (!botonMover) return;
+		fireEvent.click(botonMover);
+		expect(screen.queryByTestId("modal-mover")).not.toBeInTheDocument();
 	});
 
 	test("cambiar titulo actualiza input", () => {

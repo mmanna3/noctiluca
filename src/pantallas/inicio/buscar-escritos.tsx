@@ -1,12 +1,11 @@
-import { api } from "@/api/api";
-import useApiQuery from "@/api/custom-hooks/use-api-query";
-import { queryKeys } from "@/api/query-keys";
+import { MINIMO_CARACTERES_BUSQUEDA } from "@/sync/busqueda-core";
+import { usarBusquedaEscritos } from "@/sync/busqueda";
+import { useEstadoSync } from "@/sync/estado-sync";
 import { useEffect, useState } from "react";
 import Input from "../../components/ui/input";
 import { LoadingSpinner } from "../../components/ui/loading-spinner";
 import ListaDeEscritos from "../escritos/lista";
 
-const MINIMO_CARACTERES = 3;
 const DEBOUNCE_MS = 300;
 
 interface Props {
@@ -16,6 +15,7 @@ interface Props {
 const BuscarEscritos = ({ abierto }: Props) => {
 	const [textoBusqueda, setTextoBusqueda] = useState("");
 	const [textoDebounced, setTextoDebounced] = useState("");
+	const online = useEstadoSync((s) => s.online);
 
 	useEffect(() => {
 		if (!abierto) {
@@ -29,13 +29,9 @@ const BuscarEscritos = ({ abierto }: Props) => {
 		return () => clearTimeout(timer);
 	}, [textoBusqueda]);
 
-	const busquedaActiva = textoDebounced.length >= MINIMO_CARACTERES;
-
-	const { data, isLoading, isError } = useApiQuery({
-		key: queryKeys.buscarEscritos(textoDebounced),
-		fn: async () => await api.buscar(textoDebounced),
-		activado: abierto && busquedaActiva,
-	});
+	const busquedaActiva = textoDebounced.length >= MINIMO_CARACTERES_BUSQUEDA;
+	const resultados = usarBusquedaEscritos(busquedaActiva ? textoDebounced : "");
+	const isLoading = busquedaActiva && resultados === undefined;
 
 	if (!abierto) return null;
 
@@ -50,17 +46,21 @@ const BuscarEscritos = ({ abierto }: Props) => {
 
 			{busquedaActiva && (
 				<div className='mt-2'>
+					{!online && (
+						<p className='px-2 pb-2 text-xs text-amber-700'>
+							Sin conexión — buscando en tus escritos sincronizados
+						</p>
+					)}
 					{isLoading && (
 						<div className='flex justify-center py-4'>
 							<LoadingSpinner />
 						</div>
 					)}
-					{isError && <p className='px-2 py-3 text-sm text-red-600'>Error al buscar</p>}
-					{!isLoading && !isError && data && data.length === 0 && (
+					{!isLoading && resultados && resultados.length === 0 && (
 						<p className='px-2 py-3 text-sm text-gray-500'>Sin resultados</p>
 					)}
-					{!isLoading && !isError && data && data.length > 0 && (
-						<ListaDeEscritos data={data} isLoading={false} isError={false} mostrarCarpeta />
+					{!isLoading && resultados && resultados.length > 0 && (
+						<ListaDeEscritos data={resultados} isLoading={false} isError={false} mostrarCarpeta />
 					)}
 				</div>
 			)}

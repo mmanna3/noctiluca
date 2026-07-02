@@ -6,10 +6,12 @@ import { clavesHabitos, queryKeys } from "@/api/query-keys";
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Boton, BotonIcono } from "@/components/ui/botones";
+import AvisoSoloOnline from "@/components/ui/aviso-solo-online";
 import Cuerpo from "@/components/ui/cuerpo";
 import Encabezado from "@/components/ui/encabezado";
 import Input from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useEstadoSync } from "@/sync/estado-sync";
 import usarNavegacion from "@/usar-navegacion";
 import { esHabitoNumerico, MAX_HABITOS_ACTIVOS } from "./utilidades-habitos";
 
@@ -17,10 +19,12 @@ const FormularioHabito = ({
 	habitoInicial,
 	onCancelar,
 	onGuardado,
+	soloLectura,
 }: {
 	habitoInicial?: HabitoDTO;
 	onCancelar: () => void;
 	onGuardado: () => void;
+	soloLectura?: boolean;
 }) => {
 	const [nombre, setNombre] = useState(habitoInicial?.nombre ?? "");
 	const [tipo, setTipo] = useState<TipoHabitoEnum>(
@@ -57,6 +61,7 @@ const FormularioHabito = ({
 	});
 
 	const submit = () => {
+		if (soloLectura) return;
 		if (!nombre.trim()) {
 			setError("El nombre es obligatorio");
 			return;
@@ -117,7 +122,7 @@ const FormularioHabito = ({
 			</label>
 
 			<div className='flex gap-2'>
-				<Boton onClick={submit} disabled={guardar.isPending}>
+				<Boton onClick={submit} disabled={guardar.isPending || soloLectura}>
 					{esEdicion ? "Guardar" : "Crear"}
 				</Boton>
 				<Boton soloBorde onClick={onCancelar}>
@@ -130,6 +135,7 @@ const FormularioHabito = ({
 
 const AdministrarHabitos = () => {
 	const { irAlInicio } = usarNavegacion();
+	const online = useEstadoSync((s) => s.online);
 	const [mostrarFormulario, setMostrarFormulario] = useState(false);
 	const [habitoEditando, setHabitoEditando] = useState<HabitoDTO | undefined>();
 
@@ -187,14 +193,22 @@ const AdministrarHabitos = () => {
 				</Boton>
 				<BotonIcono
 					onClick={() => {
+						if (!online) return;
 						setHabitoEditando(undefined);
 						setMostrarFormulario(true);
 					}}
+					disabled={!online}
 				>
 					<PlusIcon className='h-8 w-8' />
 				</BotonIcono>
 			</Encabezado>
 			<Cuerpo>
+				{!online && (
+					<AvisoSoloOnline
+						className='mb-4'
+						mensaje='Administrar hábitos requiere conexión a internet.'
+					/>
+				)}
 				<p className='text-sm text-gray-500 mb-4'>
 					{habitosActivos}/{MAX_HABITOS_ACTIVOS} hábitos activos
 					{!puedeCrearActivo && " (límite alcanzado)"}
@@ -203,6 +217,7 @@ const AdministrarHabitos = () => {
 				{(mostrarFormulario || habitoEditando) && (
 					<FormularioHabito
 						habitoInicial={habitoEditando}
+						soloLectura={!online}
 						onCancelar={() => {
 							setMostrarFormulario(false);
 							setHabitoEditando(undefined);
@@ -235,26 +250,29 @@ const AdministrarHabitos = () => {
 										<button
 											type='button'
 											onClick={() => {
+												if (!online) return;
 												setHabitoEditando(habito);
 												setMostrarFormulario(false);
 											}}
-											className='text-xs text-gray-600 hover:text-gray-900 px-2 py-1'
+											disabled={!online}
+											className='text-xs text-gray-600 hover:text-gray-900 px-2 py-1 disabled:opacity-40'
 										>
 											Editar
 										</button>
 										{habito.activo && (
 											<button
 												type='button'
-												onClick={() => desactivar.mutate(habito)}
-												className='text-xs text-amber-600 hover:text-amber-800 px-2 py-1'
+												onClick={() => online && desactivar.mutate(habito)}
+												disabled={!online}
+												className='text-xs text-amber-600 hover:text-amber-800 px-2 py-1 disabled:opacity-40'
 											>
 												Desactivar
 											</button>
 										)}
 										<button
 											type='button'
-											onClick={() => habito.id && eliminar.mutate(habito.id)}
-											disabled={tieneRegistros}
+											onClick={() => online && habito.id && eliminar.mutate(habito.id)}
+											disabled={!online || tieneRegistros}
 											title={
 												tieneRegistros
 													? "No se puede eliminar un hábito con registros"

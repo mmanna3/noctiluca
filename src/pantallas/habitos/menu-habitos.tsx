@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/use-auth";
 import { usePreferenciasHabitos } from "@/hooks/use-preferencias-habitos";
+import { bloquearSiOffline } from "@/utils/requiere-online";
 import usarNavegacion from "@/usar-navegacion";
 
 interface Props {
@@ -28,6 +29,13 @@ const MenuHabitos = ({ onCerrar }: Props) => {
 				<button
 					type='button'
 					onClick={() => {
+						if (
+							bloquearSiOffline(
+								"No podés administrar hábitos sin conexión a internet.",
+							)
+						) {
+							return;
+						}
 						irAHabitos();
 						onCerrar();
 					}}

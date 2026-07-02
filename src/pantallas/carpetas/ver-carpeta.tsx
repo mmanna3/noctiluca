@@ -2,6 +2,7 @@ import { CarpetaDTO, CriterioDeOrdenEnum } from "@/api/clients";
 import { usarCarpeta } from "@/sync/lecturas";
 import { pedirSync } from "@/sync/pedir-sync";
 import { actualizarCriterioLocal, eliminarCarpetaLocal } from "@/sync/repositorio-carpetas";
+import { bloquearSiOffline } from "@/utils/requiere-online";
 import { Boton } from "@/components/ui/botones";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -130,7 +131,16 @@ const VerCarpeta = () => {
 				<EncabezadoSeleccion
 					cantidadSeleccionados={escritosSeleccionados.size}
 					onSeleccionarTodos={seleccionarTodos}
-					onMover={() => setMostrarModalMover(true)}
+					onMover={() => {
+						if (
+							bloquearSiOffline(
+								"No podés mover escritos sin conexión a internet.",
+							)
+						) {
+							return;
+						}
+						setMostrarModalMover(true);
+					}}
 					onCancelar={cancelarSeleccion}
 					puedeMover={escritosSeleccionados.size > 0}
 				/>

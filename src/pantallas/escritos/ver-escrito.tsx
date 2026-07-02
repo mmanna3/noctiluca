@@ -7,6 +7,7 @@ import {
 	eliminarEscritoLocal,
 	sembrarEscrito,
 } from "@/sync/repositorio-escritos";
+import { bloquearSiOffline } from "@/utils/requiere-online";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -112,7 +113,14 @@ const VerEscrito = () => {
 				estadoGuardado={estadoGuardado}
 				eliminando={eliminando}
 				onVolver={volver}
-				onMover={() => setMostrarModalMover(true)}
+				onMover={() => {
+					if (
+						bloquearSiOffline("No podés mover escritos sin conexión a internet.")
+					) {
+						return;
+					}
+					setMostrarModalMover(true);
+				}}
 				onEliminar={eliminarYVolver}
 			/>
 			<Cuerpo>
