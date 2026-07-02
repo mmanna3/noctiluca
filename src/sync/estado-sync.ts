@@ -6,10 +6,12 @@ interface EstadoSyncState {
 	estado: EstadoGuardado;
 	pendientes: number;
 	online: boolean;
+	sincronizando: boolean;
 	ultimoError?: string;
 	setEstado: (estado: EstadoGuardado) => void;
 	setPendientes: (pendientes: number) => void;
 	setOnline: (online: boolean) => void;
+	setSincronizando: (sincronizando: boolean) => void;
 	setError: (mensaje?: string) => void;
 }
 
@@ -21,9 +23,11 @@ export const useEstadoSync = create<EstadoSyncState>((set) => ({
 	estado: "guardado",
 	pendientes: 0,
 	online: typeof navigator !== "undefined" ? navigator.onLine : true,
+	sincronizando: false,
 	setEstado: (estado) => set({ estado }),
 	setPendientes: (pendientes) => set({ pendientes }),
 	setOnline: (online) => set({ online }),
+	setSincronizando: (sincronizando) => set({ sincronizando }),
 	setError: (ultimoError) => set({ ultimoError, estado: ultimoError ? "error" : "guardado" }),
 }));
 

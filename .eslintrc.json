@@ -18,6 +18,12 @@
     ],
     "overrides": [
         {
+            "files": ["src/api/clients.ts"],
+            "rules": {
+                "spaced-comment": "off"
+            }
+        },
+        {
             "files": ["src/pantallas/inicio.tsx"],
             "rules": {
                 "no-restricted-imports": [

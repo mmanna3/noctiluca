@@ -23,6 +23,7 @@ export const sincronizar = async (): Promise<void> => {
 	}
 
 	enEjecucion = true;
+	useEstadoSync.getState().setSincronizando(true);
 	try {
 		await conLockDeLider(async () => {
 			await push();
@@ -34,6 +35,7 @@ export const sincronizar = async (): Promise<void> => {
 		useEstadoSync.getState().setError((error as Error)?.message ?? "Error de sincronización");
 	} finally {
 		enEjecucion = false;
+		useEstadoSync.getState().setSincronizando(false);
 		await refrescarPendientes();
 		if (pendienteDeCorrer) {
 			pendienteDeCorrer = false;
