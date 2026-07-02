@@ -1,8 +1,9 @@
 import { convertirEnKey, fechaEsDeHaceMenosDe5Minutos, generarKeyAPartirDeFecha } from "./utilidades";
 
 test("generarKeyAPartirDeFecha", () => {
-	const resultado = generarKeyAPartirDeFecha(new Date(2022, 2, 29, 15, 44, 31));
-	expect(resultado).toBe("20220329184431"); // La hora es 18 en vez de 15 por el GMT-3
+	const fecha = new Date(Date.UTC(2022, 2, 29, 18, 44, 31));
+	const resultado = generarKeyAPartirDeFecha(fecha);
+	expect(resultado).toBe("20220329184431");
 });
 
 test("convertirEnKey: Espacios y mayúsculas en el medio", () => {

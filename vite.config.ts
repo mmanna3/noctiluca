@@ -33,6 +33,15 @@ const CHUNKS_LAZY_SIN_PRECACHE = [
 ];
 
 export default defineConfig({
+	server: {
+		host: true,
+		proxy: {
+			"/api": {
+				target: "http://localhost:5072",
+				changeOrigin: true,
+			},
+		},
+	},
 	plugins: [
 		react(),
 		VitePWA({
