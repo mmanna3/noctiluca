@@ -46,7 +46,7 @@ describe("IndicadorSync", () => {
 
 	test("muestra sincronizado cuando no hay pendientes", () => {
 		render(<IndicadorSync />);
-		expect(screen.getByRole("button", { name: /Sincronizado/i })).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: /Sincronizado ✓/i })).toBeInTheDocument();
 	});
 
 	test("muestra contador de pendientes", () => {
